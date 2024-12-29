@@ -8,8 +8,6 @@ export default async function Page() {
         .from("cvs")
         .select()
         .setHeader('Cache-Control', 'no-cache')
-    console.log(cvs)
-
 
     return <CVForm />;
 }
