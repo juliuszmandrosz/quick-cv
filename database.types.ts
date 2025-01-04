@@ -9,29 +9,112 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      cvs: {
+      cv_user_data: {
         Row: {
+          additional_skills: string | null
+          city: string | null
           created_at: string
-          cv_name: string | null
+          email: string
+          full_name: string
           id: string
-          sections: Json | null
-          user_id: string
+          phone: string
+          profile_photo_url: string | null
+          user_id: string | null
         }
         Insert: {
+          additional_skills?: string | null
+          city?: string | null
           created_at?: string
-          cv_name?: string | null
+          email: string
+          full_name: string
           id?: string
-          sections?: Json | null
-          user_id?: string
+          phone: string
+          profile_photo_url?: string | null
+          user_id?: string | null
         }
         Update: {
+          additional_skills?: string | null
+          city?: string | null
           created_at?: string
-          cv_name?: string | null
+          email?: string
+          full_name?: string
           id?: string
-          sections?: Json | null
-          user_id?: string
+          phone?: string
+          profile_photo_url?: string | null
+          user_id?: string | null
         }
         Relationships: []
+      }
+      education: {
+        Row: {
+          cv_user_data_id: string
+          duration: string
+          field_of_study: string
+          id: string
+          school_name: string
+        }
+        Insert: {
+          cv_user_data_id: string
+          duration: string
+          field_of_study: string
+          id?: string
+          school_name: string
+        }
+        Update: {
+          cv_user_data_id?: string
+          duration?: string
+          field_of_study?: string
+          id?: string
+          school_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "education_cv_user_data_id_fkey"
+            columns: ["cv_user_data_id"]
+            isOneToOne: false
+            referencedRelation: "cv_user_data"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      experience: {
+        Row: {
+          company_name: string
+          cv_user_data_id: string
+          details: string | null
+          id: string
+          position: string
+        }
+        Insert: {
+          company_name: string
+          cv_user_data_id: string
+          details?: string | null
+          id?: string
+          position: string
+        }
+        Update: {
+          company_name?: string
+          cv_user_data_id?: string
+          details?: string | null
+          id?: string
+          position?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experience_cv_user_data_id_fkey"
+            columns: ["cv_user_data_id"]
+            isOneToOne: false
+            referencedRelation: "cv_user_data"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experience_cv_user_data_id_fkey1"
+            columns: ["cv_user_data_id"]
+            isOneToOne: false
+            referencedRelation: "cv_user_data"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       job_offers: {
         Row: {
@@ -65,6 +148,35 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      languages: {
+        Row: {
+          cv_user_data_id: string
+          id: string
+          level: string
+          name: string
+        }
+        Insert: {
+          cv_user_data_id?: string
+          id?: string
+          level: string
+          name: string
+        }
+        Update: {
+          cv_user_data_id?: string
+          id?: string
+          level?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "languages_cv_user_data_id_fkey"
+            columns: ["cv_user_data_id"]
+            isOneToOne: false
+            referencedRelation: "cv_user_data"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
