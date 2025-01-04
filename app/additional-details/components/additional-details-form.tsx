@@ -17,6 +17,30 @@ import { Separator } from "@/components/ui/separator";
 import { Database } from "@/database.types";
 import { Loader2 } from "lucide-react";
 
+interface Language {
+  languageName: string;
+  level: string;
+}
+
+interface Education {
+  schoolName: string;
+  fieldOfStudy: string;
+  startMonth: string;
+  startYear: string;
+  endMonth: string;
+  endYear: string;
+}
+
+interface Experience {
+  companyName: string;
+  position: string;
+  details: string;
+  startYear: string;
+  startMonth: string;
+  endYear: string;
+  endMonth: string;
+}
+
 export default function AdditionalDetailsForm() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -24,28 +48,9 @@ export default function AdditionalDetailsForm() {
   const [city, setCity] = useState("");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [additionalSkills, setAdditionalSkills] = useState("");
-  const [languages, setLanguages] = useState([{ languageName: "", level: "" }]);
-  const [education, setEducation] = useState([
-    {
-      schoolName: "",
-      fieldOfStudy: "",
-      startMonth: "",
-      startYear: "",
-      endMonth: "",
-      endYear: "",
-    },
-  ]);
-  const [experience, setExperience] = useState([
-    {
-      companyName: "",
-      position: "",
-      details: "",
-      startYear: "",
-      startMonth: "",
-      endYear: "",
-      endMonth: "",
-    },
-  ]);
+  const [languages, setLanguages] = useState<Language[]>([]);
+  const [education, setEducation] = useState<Education[]>([]);
+  const [experience, setExperience] = useState<Experience[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<{
     type: "success" | "error";
