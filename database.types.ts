@@ -48,24 +48,27 @@ export type Database = {
       education: {
         Row: {
           cv_user_data_id: string
-          duration: string
+          end_date: string | null
           field_of_study: string
           id: string
           school_name: string
+          start_date: string
         }
         Insert: {
           cv_user_data_id: string
-          duration: string
+          end_date?: string | null
           field_of_study: string
           id?: string
           school_name: string
+          start_date: string
         }
         Update: {
           cv_user_data_id?: string
-          duration?: string
+          end_date?: string | null
           field_of_study?: string
           id?: string
           school_name?: string
+          start_date?: string
         }
         Relationships: [
           {
@@ -82,22 +85,28 @@ export type Database = {
           company_name: string
           cv_user_data_id: string
           details: string | null
+          end_date: string | null
           id: string
           position: string
+          start_date: string
         }
         Insert: {
           company_name: string
           cv_user_data_id: string
           details?: string | null
+          end_date?: string | null
           id?: string
           position: string
+          start_date: string
         }
         Update: {
           company_name?: string
           cv_user_data_id?: string
           details?: string | null
+          end_date?: string | null
           id?: string
           position?: string
+          start_date?: string
         }
         Relationships: [
           {
@@ -183,13 +192,42 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      insert_cv_user_data: {
+        Args: {
+          email: string
+          full_name: string
+          phone: string
+          city?: string
+          additional_skills?: string
+          profile_photo_url?: string
+          language_list?: Database["public"]["CompositeTypes"]["language_input"][]
+          education_list?: Database["public"]["CompositeTypes"]["education_input"][]
+          experience_list?: Database["public"]["CompositeTypes"]["experience_input"][]
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
     }
     CompositeTypes: {
-      [_ in never]: never
+      education_input: {
+        school_name: string | null
+        field_of_study: string | null
+        start_date: string | null
+        end_date: string | null
+      }
+      experience_input: {
+        company_name: string | null
+        position: string | null
+        details: string | null
+        start_date: string | null
+        end_date: string | null
+      }
+      language_input: {
+        name: string | null
+        level: string | null
+      }
     }
   }
 }

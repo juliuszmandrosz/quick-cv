@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { Database } from "@/database.types";
+import { Loader2 } from "lucide-react";
 
 export default function AdditionalDetailsForm() {
   const [fullName, setFullName] = useState("");
@@ -24,11 +26,31 @@ export default function AdditionalDetailsForm() {
   const [additionalSkills, setAdditionalSkills] = useState("");
   const [languages, setLanguages] = useState([{ languageName: "", level: "" }]);
   const [education, setEducation] = useState([
-    { schoolName: "", fieldOfStudy: "", duration: "" },
+    {
+      schoolName: "",
+      fieldOfStudy: "",
+      startMonth: "",
+      startYear: "",
+      endMonth: "",
+      endYear: "",
+    },
   ]);
   const [experience, setExperience] = useState([
-    { companyName: "", position: "", details: "" },
+    {
+      companyName: "",
+      position: "",
+      details: "",
+      startYear: "",
+      startMonth: "",
+      endYear: "",
+      endMonth: "",
+    },
   ]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const handleFullNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFullName(e.target.value);
@@ -92,7 +114,14 @@ export default function AdditionalDetailsForm() {
   const addEducationField = () => {
     setEducation([
       ...education,
-      { schoolName: "", fieldOfStudy: "", duration: "" },
+      {
+        schoolName: "",
+        fieldOfStudy: "",
+        startMonth: "",
+        startYear: "",
+        endMonth: "",
+        endYear: "",
+      },
     ]);
   };
 
@@ -116,7 +145,15 @@ export default function AdditionalDetailsForm() {
   const addExperienceField = () => {
     setExperience([
       ...experience,
-      { companyName: "", position: "", details: "" },
+      {
+        companyName: "",
+        position: "",
+        details: "",
+        startYear: "",
+        startMonth: "",
+        endYear: "",
+        endMonth: "",
+      },
     ]);
   };
 
@@ -125,20 +162,86 @@ export default function AdditionalDetailsForm() {
     setExperience(updatedExperience);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Tutaj dodaj logikę zapisywania danych
-    console.log("Dane formularza:", {
-      fullName,
+    setLoading(true);
+    setMessage(null);
+
+    const formData = {
       email,
+      full_name: fullName,
       phone,
-      city,
-      photoFile,
-      additionalSkills,
-      languages,
-      education,
-      experience,
-    });
+      city: city || null,
+      additional_skills: additionalSkills || null,
+      profile_photo_url: photoFile ? photoFile.name : null,
+      language_list: languages.map((lang) => ({
+        name: lang.languageName,
+        level: lang.level,
+      })),
+      education_list: education.map((edu) => {
+        const dateStart =
+          edu.startYear && edu.startMonth
+            ? `${edu.startYear}-${edu.startMonth}-01`
+            : null;
+        const dateEnd =
+          edu.endYear && edu.endMonth
+            ? `${edu.endYear}-${edu.endMonth}-01`
+            : null;
+
+        return {
+          school_name: edu.schoolName,
+          field_of_study: edu.fieldOfStudy,
+          start_date: dateStart,
+          end_date: dateEnd,
+        };
+      }),
+      experience_list: experience.map((exp) => {
+        const dateStart =
+          exp.startYear && exp.startMonth
+            ? `${exp.startYear}-${exp.startMonth}-01`
+            : null;
+        const dateEnd =
+          exp.endYear && exp.endMonth
+            ? `${exp.endYear}-${exp.endMonth}-01`
+            : null;
+
+        return {
+          company_name: exp.companyName,
+          position: exp.position,
+          details: exp.details || null,
+          start_date: dateStart,
+          end_date: dateEnd,
+        };
+      }),
+    } as Database["public"]["Functions"]["insert_cv_user_data"]["Args"];
+
+    try {
+      const response = await fetch("/api/additional-details", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setMessage({
+          type: "success",
+          text: "Dane zostały pomyślnie zapisane.",
+        });
+      } else {
+        throw new Error(result.error || "Nie udało się zapisać danych.");
+      }
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text:
+          error instanceof Error
+            ? error.message
+            : "Wystąpił nieznany błąd podczas przetwarzania.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -303,17 +406,87 @@ export default function AdditionalDetailsForm() {
                     />
                   </div>
                 </div>
-                <div>
-                  <Label htmlFor={`duration-${index}`}>Czas trwania</Label>
-                  <Input
-                    id={`duration-${index}`}
-                    type="text"
-                    name="duration"
-                    placeholder="Np. 2017-2021"
-                    value={edu.duration}
-                    onChange={(e) => handleEducationChange(index, e)}
-                    required
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor={`startMonth-${index}`}>
+                      Miesiąc rozpoczęcia
+                    </Label>
+                    <select
+                      id={`startMonth-${index}`}
+                      name="startMonth"
+                      value={edu.startMonth}
+                      onChange={(e) => handleEducationChange(index, e)}
+                      required
+                      className="w-full p-2 border rounded-md"
+                    >
+                      <option value="">Wybierz</option>
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                        (month) => (
+                          <option
+                            key={month}
+                            value={month.toString().padStart(2, "0")}
+                          >
+                            {month.toString().padStart(2, "0")}
+                          </option>
+                        ),
+                      )}
+                    </select>
+                  </div>
+                  <div>
+                    <Label htmlFor={`startYear-${index}`}>
+                      Rok rozpoczęcia
+                    </Label>
+                    <Input
+                      id={`startYear-${index}`}
+                      type="number"
+                      name="startYear"
+                      placeholder="RRRR"
+                      value={edu.startYear}
+                      onChange={(e) => handleEducationChange(index, e)}
+                      required
+                      min="1900"
+                      max={new Date().getFullYear()}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor={`endMonth-${index}`}>
+                      Miesiąc zakończenia
+                    </Label>
+                    <select
+                      id={`endMonth-${index}`}
+                      name="endMonth"
+                      value={edu.endMonth}
+                      onChange={(e) => handleEducationChange(index, e)}
+                      className="w-full p-2 border rounded-md"
+                    >
+                      <option value="">Wybierz</option>
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                        (month) => (
+                          <option
+                            key={month}
+                            value={month.toString().padStart(2, "0")}
+                          >
+                            {month.toString().padStart(2, "0")}
+                          </option>
+                        ),
+                      )}
+                    </select>
+                  </div>
+                  <div>
+                    <Label htmlFor={`endYear-${index}`}>Rok zakończenia</Label>
+                    <Input
+                      id={`endYear-${index}`}
+                      type="number"
+                      name="endYear"
+                      placeholder="RRRR"
+                      value={edu.endYear}
+                      onChange={(e) => handleEducationChange(index, e)}
+                      min="1900"
+                      max={new Date().getFullYear()}
+                    />
+                  </div>
                 </div>
                 <Button
                   type="button"
@@ -364,6 +537,86 @@ export default function AdditionalDetailsForm() {
                     />
                   </div>
                 </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <Label htmlFor={`startMonth-${index}`}>
+                      Miesiąc rozpoczęcia
+                    </Label>
+                    <select
+                      id={`startMonth-${index}`}
+                      name="startMonth"
+                      value={exp.startMonth}
+                      onChange={(e) => handleExperienceChange(index, e)}
+                      required
+                      className="w-full p-2 border rounded-md"
+                    >
+                      <option value="">Wybierz</option>
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                        (month) => (
+                          <option
+                            key={month}
+                            value={month.toString().padStart(2, "0")}
+                          >
+                            {month.toString().padStart(2, "0")}
+                          </option>
+                        ),
+                      )}
+                    </select>
+                  </div>
+                  <div>
+                    <Label htmlFor={`startYear-${index}`}>
+                      Rok rozpoczęcia
+                    </Label>
+                    <Input
+                      id={`startYear-${index}`}
+                      type="number"
+                      name="startYear"
+                      placeholder="RRRR"
+                      value={exp.startYear}
+                      onChange={(e) => handleExperienceChange(index, e)}
+                      required
+                      min="1900"
+                      max={new Date().getFullYear()}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`endMonth-${index}`}>
+                      Miesiąc zakończenia
+                    </Label>
+                    <select
+                      id={`endMonth-${index}`}
+                      name="endMonth"
+                      value={exp.endMonth}
+                      onChange={(e) => handleExperienceChange(index, e)}
+                      className="w-full p-2 border rounded-md"
+                    >
+                      <option value="">Wybierz</option>
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                        (month) => (
+                          <option
+                            key={month}
+                            value={month.toString().padStart(2, "0")}
+                          >
+                            {month.toString().padStart(2, "0")}
+                          </option>
+                        ),
+                      )}
+                    </select>
+                  </div>
+                  <div>
+                    <Label htmlFor={`endYear-${index}`}>Rok zakończenia</Label>
+                    <Input
+                      id={`endYear-${index}`}
+                      type="number"
+                      name="endYear"
+                      placeholder="RRRR"
+                      value={exp.endYear}
+                      onChange={(e) => handleExperienceChange(index, e)}
+                      min="1900"
+                      max={new Date().getFullYear()}
+                    />
+                  </div>
+                </div>
                 <div>
                   <Label htmlFor={`details-${index}`}>
                     Zakres obowiązków / opis (opcjonalne)
@@ -393,10 +646,26 @@ export default function AdditionalDetailsForm() {
               Dodaj kolejne doświadczenie
             </Button>
           </div>
+          {message && (
+            <p
+              className={`mt-2 text-sm ${message.type === "success" ? "text-green-600" : "text-red-600"}`}
+            >
+              {message.text}
+            </p>
+          )}
         </CardContent>
 
         <CardFooter className="flex justify-end">
-          <Button type="submit">Zapisz CV</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Przetwarzanie...
+              </>
+            ) : (
+              "Dalej"
+            )}
+          </Button>
         </CardFooter>
       </form>
     </Card>
