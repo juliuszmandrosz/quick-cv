@@ -167,13 +167,30 @@ export default function AdditionalDetailsForm() {
     setLoading(true);
     setMessage(null);
 
+    let profilePhotoFile = null;
+
+    if (photoFile) {
+      const reader = new FileReader();
+      reader.readAsDataURL(photoFile);
+      await new Promise((resolve) => {
+        reader.onload = () => {
+          const base64Content = reader.result?.toString().split(",")[1];
+          profilePhotoFile = {
+            name: photoFile.name,
+            content: base64Content,
+          };
+          resolve(null);
+        };
+      });
+    }
+
     const formData = {
       email,
       full_name: fullName,
       phone,
       city: city || null,
       additional_skills: additionalSkills || null,
-      profile_photo_url: photoFile ? photoFile.name : null,
+      profile_photo_file: profilePhotoFile,
       language_list: languages.map((lang) => ({
         name: lang.languageName,
         level: lang.level,

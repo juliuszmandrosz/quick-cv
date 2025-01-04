@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { Database } from "@/database.types"; // Importuj swoją definicję Database
+import { Database } from "@/database.types";
 
 export async function POST(request: Request) {
   try {
@@ -8,13 +8,40 @@ export async function POST(request: Request) {
 
     const supabase = await createClient();
 
+    let profilePhotoUrl: string | null = null;
+    if (body.profile_photo_file) {
+      const { name, content } = body.profile_photo_file;
+
+      const fileName = `${Date.now()}-${name}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("profile_photos") // Bucket 'profile-photos'
+        .upload(fileName, Buffer.from(content, "base64"), {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        return NextResponse.json({
+          success: false,
+          error: `Błąd uploadu zdjęcia: ${uploadError.message}`,
+        });
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from("profile_photos")
+        .getPublicUrl(fileName);
+
+      profilePhotoUrl = publicUrlData?.publicUrl || null;
+    }
+
     const { data, error } = await supabase.rpc("insert_cv_user_data", {
       email: body.email,
       full_name: body.full_name,
       phone: body.phone,
       city: body.city || null,
       additional_skills: body.additional_skills || null,
-      profile_photo_url: body.profile_photo_url || null,
+      profile_photo_url: profilePhotoUrl || null,
       language_list: body.language_list || [],
       education_list: body.education_list || [],
       experience_list: body.experience_list || [],
