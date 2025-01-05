@@ -1,8 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -12,8 +11,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { LinkIcon, Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function JobOfferForm() {
+  const router = useRouter();
+
   const [jobUrl, setJobUrl] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<{
@@ -41,6 +44,9 @@ export default function JobOfferForm() {
           text: "Dane z oferty pracy zostały pomyślnie zapisane.",
         });
         setJobUrl("");
+        await router.push(
+          `/additional-details?job_offer_id=${result.data[0].id}`,
+        );
       } else {
         throw new Error(result.error || "Nie udało się przetworzyć linku.");
       }

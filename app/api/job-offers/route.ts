@@ -22,7 +22,8 @@ export async function POST(request: Request) {
       .insert<Tables<"job_offers">>({
         ...parsedData,
         job_url: jobUrl,
-      });
+      })
+      .select("id");
 
     if (error) {
       return NextResponse.json({ success: false, error: error.message });

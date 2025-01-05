@@ -18,6 +18,7 @@ export type Database = {
           full_name: string
           id: string
           phone: string
+          profile_name: string
           profile_photo_url: string | null
           user_id: string | null
         }
@@ -29,6 +30,7 @@ export type Database = {
           full_name: string
           id?: string
           phone: string
+          profile_name: string
           profile_photo_url?: string | null
           user_id?: string | null
         }
@@ -40,6 +42,7 @@ export type Database = {
           full_name?: string
           id?: string
           phone?: string
+          profile_name?: string
           profile_photo_url?: string | null
           user_id?: string | null
         }
@@ -128,6 +131,7 @@ export type Database = {
       job_offers: {
         Row: {
           created_at: string | null
+          cv_user_data_id: string | null
           description: string | null
           id: string
           job_url: string | null
@@ -138,6 +142,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          cv_user_data_id?: string | null
           description?: string | null
           id?: string
           job_url?: string | null
@@ -148,6 +153,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          cv_user_data_id?: string | null
           description?: string | null
           id?: string
           job_url?: string | null
@@ -156,7 +162,15 @@ export type Database = {
           title?: string | null
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "job_offers_cv_user_data_id_fkey"
+            columns: ["cv_user_data_id"]
+            isOneToOne: false
+            referencedRelation: "cv_user_data"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       languages: {
         Row: {
@@ -192,8 +206,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      insert_cv_user_data: {
+      create_default_cv_user_data: {
         Args: {
+          job_offer_id: string
           email: string
           full_name: string
           phone: string
@@ -204,7 +219,7 @@ export type Database = {
           education_list?: Database["public"]["CompositeTypes"]["education_input"][]
           experience_list?: Database["public"]["CompositeTypes"]["experience_input"][]
         }
-        Returns: undefined
+        Returns: string
       }
     }
     Enums: {

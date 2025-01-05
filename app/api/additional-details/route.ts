@@ -35,7 +35,7 @@ export async function POST(request: Request) {
       profilePhotoUrl = publicUrlData?.publicUrl || null;
     }
 
-    const { data, error } = await supabase.rpc("insert_cv_user_data", {
+    const { data, error } = await supabase.rpc("create_default_cv_user_data", {
       email: body.email,
       full_name: body.full_name,
       phone: body.phone,
@@ -45,7 +45,8 @@ export async function POST(request: Request) {
       language_list: body.language_list || [],
       education_list: body.education_list || [],
       experience_list: body.experience_list || [],
-    } as Database["public"]["Functions"]["insert_cv_user_data"]["Args"]);
+      job_offer_id: body.job_offer_id,
+    } as Database["public"]["Functions"]["create_default_cv_user_data"]["Args"]);
 
     if (error) {
       return NextResponse.json({ success: false, error: error.message });

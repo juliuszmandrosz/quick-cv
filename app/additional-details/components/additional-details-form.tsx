@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Database } from "@/database.types";
 import { Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Language {
   languageName: string;
@@ -42,6 +43,8 @@ interface Experience {
 }
 
 export default function AdditionalDetailsForm() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -196,6 +199,7 @@ export default function AdditionalDetailsForm() {
       city: city || null,
       additional_skills: additionalSkills || null,
       profile_photo_file: profilePhotoFile,
+      job_offer_id: searchParams.get("job_offer_id"),
       language_list: languages.map((lang) => ({
         name: lang.languageName,
         level: lang.level,
@@ -235,7 +239,7 @@ export default function AdditionalDetailsForm() {
           end_date: dateEnd,
         };
       }),
-    } as Database["public"]["Functions"]["insert_cv_user_data"]["Args"];
+    } as Database["public"]["Functions"]["create_default_cv_user_data"]["Args"];
 
     try {
       const response = await fetch("/api/additional-details", {
