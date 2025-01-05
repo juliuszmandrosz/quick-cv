@@ -254,6 +254,8 @@ export default function AdditionalDetailsForm() {
           type: "success",
           text: "Dane zostały pomyślnie zapisane.",
         });
+
+        await router.push(`/generate-cv?cv_user_data_id=${result.data}`);
       } else {
         throw new Error(result.error || "Nie udało się zapisać danych.");
       }
