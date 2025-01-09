@@ -48,7 +48,9 @@ export async function POST(request: Request) {
     }
 
     const prompt = `
-      Napisz zwięzłe, profesjonalne CV na bazie następujących danych użytkownika:
+      Napisz zwięzłe, profesjonalne CV na podstawie poniższych danych użytkownika. Skup się na podkreśleniu umiejętności kandydata oraz jego doświadczenia zawodowego, 
+      a także dopasowaniu do wymagań stanowiska. Nie kopiuj dosłownie opisu oferty pracy. 
+      Zamiast tego, opracuj spersonalizowany profil zawodowy, który podkreśli kluczowe kompetencje kandydata w kontekście oferty pracy.
       
       DANE OSOBOWE
       - Imię i nazwisko: ${data.full_name ?? "brak danych"}
@@ -113,12 +115,13 @@ export async function POST(request: Request) {
           : "Brak danych o językach obcych"
       }
       
-      Uwzględnij proszę wszystkie powyższe informacje i napisz zwięzły, schludny opis kandydata, 
-      który będzie wyglądał jak profesjonalne CV. Zwróć uwagę na dopasowanie kluczowych umiejętności oraz doświadczenia do oferty pracy.
-`;
+      Zadanie: 
+      Użyj powyższych informacji do stworzenia profesjonalnego CV, które będzie wyglądało atrakcyjnie dla pracodawcy. 
+      Uwzględnij wymagania oferty pracy, ale nie kopiuj ich dosłownie. Zamiast tego podkreśl mocne strony kandydata i jego zdolności do sprostania obowiązkom. 
+  `;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       messages: [
         {
           role: "system",
