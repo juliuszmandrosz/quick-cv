@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams } from "next/navigation"; // do wyciągania query param
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
@@ -10,7 +10,7 @@ export default function Page() {
   const [cvResult, setCvResult] = useState<string>("");
 
   const searchParams = useSearchParams();
-  const cvUserDataId = searchParams.get("cv_user_data_id"); // np. ?cvUserDataId=123
+  const cvUserDataId = searchParams.get("cv_user_data_id");
 
   const handleGenerateCV = async () => {
     if (!cvUserDataId) {
