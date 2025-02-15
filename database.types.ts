@@ -119,11 +119,183 @@ export type Database = {
             referencedRelation: "cv_user_data"
             referencedColumns: ["id"]
           },
+        ]
+      }
+      generated_cv: {
+        Row: {
+          candidate_description: string
+          created_at: string
+          cv_user_data_id: string
+          id: string
+          job_offer_id: string
+        }
+        Insert: {
+          candidate_description: string
+          created_at?: string
+          cv_user_data_id: string
+          id?: string
+          job_offer_id: string
+        }
+        Update: {
+          candidate_description?: string
+          created_at?: string
+          cv_user_data_id?: string
+          id?: string
+          job_offer_id?: string
+        }
+        Relationships: [
           {
-            foreignKeyName: "experience_cv_user_data_id_fkey1"
+            foreignKeyName: "generated_cv_cv_user_data_id_fkey"
             columns: ["cv_user_data_id"]
             isOneToOne: false
             referencedRelation: "cv_user_data"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generated_cv_job_offer_id_fkey"
+            columns: ["job_offer_id"]
+            isOneToOne: false
+            referencedRelation: "job_offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      generated_education: {
+        Row: {
+          end_date: string | null
+          field_of_study: string
+          generated_cv_id: string
+          id: string
+          school_name: string
+          start_date: string
+        }
+        Insert: {
+          end_date?: string | null
+          field_of_study: string
+          generated_cv_id: string
+          id?: string
+          school_name: string
+          start_date: string
+        }
+        Update: {
+          end_date?: string | null
+          field_of_study?: string
+          generated_cv_id?: string
+          id?: string
+          school_name?: string
+          start_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_education_generated_cv_id_fkey"
+            columns: ["generated_cv_id"]
+            isOneToOne: false
+            referencedRelation: "generated_cv"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      generated_experience: {
+        Row: {
+          company_name: string
+          end_date: string | null
+          generated_cv_id: string
+          id: string
+          position: string
+          responsibilities: string[]
+          start_date: string
+        }
+        Insert: {
+          company_name: string
+          end_date?: string | null
+          generated_cv_id: string
+          id?: string
+          position: string
+          responsibilities?: string[]
+          start_date: string
+        }
+        Update: {
+          company_name?: string
+          end_date?: string | null
+          generated_cv_id?: string
+          id?: string
+          position?: string
+          responsibilities?: string[]
+          start_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_experience_generated_cv_id_fkey"
+            columns: ["generated_cv_id"]
+            isOneToOne: false
+            referencedRelation: "generated_cv"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      generated_language: {
+        Row: {
+          generated_cv_id: string
+          id: string
+          level: string
+          name: string
+        }
+        Insert: {
+          generated_cv_id: string
+          id?: string
+          level: string
+          name: string
+        }
+        Update: {
+          generated_cv_id?: string
+          id?: string
+          level?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_language_generated_cv_id_fkey"
+            columns: ["generated_cv_id"]
+            isOneToOne: false
+            referencedRelation: "generated_cv"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      generated_personal_data: {
+        Row: {
+          additional_skills: string[]
+          city: string
+          email: string
+          full_name: string
+          generated_cv_id: string
+          id: string
+          phone: string
+        }
+        Insert: {
+          additional_skills?: string[]
+          city: string
+          email: string
+          full_name: string
+          generated_cv_id: string
+          id?: string
+          phone: string
+        }
+        Update: {
+          additional_skills?: string[]
+          city?: string
+          email?: string
+          full_name?: string
+          generated_cv_id?: string
+          id?: string
+          phone?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_personal_data_generated_cv_id_fkey"
+            columns: ["generated_cv_id"]
+            isOneToOne: false
+            referencedRelation: "generated_cv"
             referencedColumns: ["id"]
           },
         ]
