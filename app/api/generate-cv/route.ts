@@ -182,11 +182,102 @@ export async function POST(request: Request) {
       temperature: 0.8,
     });
 
-    const cv = completion.choices[0].message;
+    const cvResponse = completion.choices[0].message;
+
+    if (!cvResponse?.content) {
+      return NextResponse.json({ success: false, error: "No cv generated" });
+    }
+
+    let cvJson: {
+      candidate_description: string;
+      personal_data: {
+        full_name: string;
+        email: string;
+        phone: string;
+        city: string;
+        additional_skills: string[];
+      };
+      education: {
+        school_name: string;
+        field_of_study: string;
+        start_date: string;
+        end_date: string;
+      }[];
+      experience: {
+        position: string;
+        company_name: string;
+        start_date: string;
+        end_date: string;
+        responsibilities: string[];
+      }[];
+      languages: {
+        name: string;
+        level: string;
+      }[];
+    } = JSON.parse(cvResponse.content);
+
+    const {
+      candidate_description,
+      personal_data,
+      education,
+      experience,
+      languages,
+    } = cvJson;
+
+    console.log("Generated CV", cvJson);
+    console.log(experience[0].responsibilities);
+
+    const { data: generatedCvId, error: transactionError } = await supabase.rpc(
+      "save_generated_cv",
+      {
+        cv_user_data_id: cvUserDataId,
+        job_offer_id: jobOffer.id,
+        candidate_description: candidate_description,
+        personal_data: JSON.stringify({
+          full_name: personal_data.full_name,
+          email: personal_data.email,
+          phone: personal_data.phone,
+          city: personal_data.city,
+          additional_skills: personal_data.additional_skills,
+        }),
+        education_list: education.map((edu) =>
+          JSON.stringify({
+            school_name: edu.school_name,
+            field_of_study: edu.field_of_study,
+            start_date: edu.start_date,
+            end_date: edu.end_date,
+          }),
+        ),
+        experience_list: experience.map((exp) =>
+          JSON.stringify({
+            position: exp.position,
+            company_name: exp.company_name,
+            start_date: exp.start_date,
+            end_date: exp.end_date,
+            responsibilities: exp.responsibilities,
+          }),
+        ),
+        language_list: languages.map((lang) =>
+          JSON.stringify({
+            name: lang.name,
+            level: lang.level,
+          }),
+        ),
+      },
+    );
+
+    if (transactionError) {
+      console.log(transactionError);
+      console.log(transactionError.message);
+      return NextResponse.json({
+        success: false,
+        error: transactionError.message,
+      });
+    }
 
     return NextResponse.json({
       success: true,
-      cv: cv?.content ?? "No CV generated",
+      cv: cvJson ?? "No CV generated",
     });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message });
