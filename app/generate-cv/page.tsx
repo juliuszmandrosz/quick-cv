@@ -34,7 +34,13 @@ type CVData = {
   }[];
 };
 
-const CVTemplate = ({ data }: { data: CVData }) => {
+const CVTemplate = ({
+  data,
+  language,
+}: {
+  data: CVData;
+  language: "en" | "pl";
+}) => {
   const formatDate = (dateString: string) => {
     try {
       return format(new Date(dateString), "MM.yyyy");
@@ -59,7 +65,7 @@ const CVTemplate = ({ data }: { data: CVData }) => {
         <div className="space-y-6">
           <div>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">
-              Dane kontaktowe
+              {language === "pl" ? "Dane osobowe" : "Personal data"}
             </h2>
             <div className="space-y-2">
               <p>
@@ -79,7 +85,7 @@ const CVTemplate = ({ data }: { data: CVData }) => {
 
           <div>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">
-              Umiejętności
+              {language === "pl" ? "Umiejętności" : "Skills"}
             </h2>
             <ul className="list-disc list-inside space-y-1">
               {data.personal_data.additional_skills.map((skill, index) => (
@@ -89,7 +95,9 @@ const CVTemplate = ({ data }: { data: CVData }) => {
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">Języki</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+              {language === "pl" ? "Języki obce" : "Languages"}
+            </h2>
             <ul className="space-y-1">
               {data.languages.map((language, index) => (
                 <li key={index}>
@@ -105,7 +113,7 @@ const CVTemplate = ({ data }: { data: CVData }) => {
         <div className="col-span-2 space-y-6">
           <div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Doświadczenie zawodowe
+              {language === "pl" ? "Doświadczenie zawodowe" : "Work experience"}
             </h2>
             <div className="space-y-6">
               {data.experience.map((exp, index) => (
@@ -132,7 +140,7 @@ const CVTemplate = ({ data }: { data: CVData }) => {
 
           <div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Edukacja
+              {language === "pl" ? "Wykształcenie" : "Education"}
             </h2>
             <div className="space-y-4">
               {data.education.map((edu, index) => (
@@ -160,6 +168,7 @@ export default function Page() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [cvData, setCvData] = useState<CVData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [language, setLanguage] = useState<"pl" | "en">("pl");
 
   const searchParams = useSearchParams();
   const cvUserDataId = searchParams.get("cv_user_data_id");
@@ -177,7 +186,7 @@ export default function Page() {
       const response = await fetch("/api/generate-cv", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cvUserDataId }),
+        body: JSON.stringify({ cvUserDataId, language }),
       });
 
       const json = await response.json();
@@ -196,15 +205,41 @@ export default function Page() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">CV Generator</h1>
-      <Separator className="my-4" />
-      <p className="mb-4">
-        Kliknij przycisk poniżej, aby wygenerować CV. Upewnij się, że w adresie
-        URL znajduje się parametr <code>cv_user_data_id</code>.
-      </p>
-      <Button onClick={handleGenerateCV} disabled={isGenerating}>
-        {isGenerating ? "Generowanie..." : "Generuj CV"}
-      </Button>
+      {!cvData && (
+        <>
+          <h1 className="text-2xl font-bold mb-4">CV Generator</h1>
+          <Separator className="my-4" />
+          <p className="mb-4">Kliknij przycisk poniżej, aby wygenerować CV.</p>
+          <div className="mb-4">
+            <p className="mb-2">Wybierz język CV:</p>
+            <div className="flex space-x-2">
+              <Button
+                variant={
+                  language === "pl"
+                    ? "default"
+                    : ("outline" as "default" | "outline")
+                }
+                onClick={() => setLanguage("pl")}
+              >
+                Polski
+              </Button>
+              <Button
+                variant={
+                  language === "en"
+                    ? "default"
+                    : ("outline" as "default" | "outline")
+                }
+                onClick={() => setLanguage("en")}
+              >
+                English
+              </Button>
+            </div>
+          </div>
+          <Button onClick={handleGenerateCV} disabled={isGenerating}>
+            {isGenerating ? "Generowanie..." : "Generuj CV"}
+          </Button>
+        </>
+      )}
 
       {error && (
         <div className="mt-4 p-4 bg-red-50 text-red-600 rounded-md">
@@ -215,7 +250,12 @@ export default function Page() {
       {cvData && (
         <div className="mt-8">
           <h2 className="text-xl font-semibold mb-4">Wygenerowane CV:</h2>
-          <CVTemplate data={cvData} />
+          <div className="mb-4">
+            <Button onClick={() => console.log("Generate PDF")}>
+              Pobierz jako PDF
+            </Button>
+          </div>
+          <CVTemplate data={cvData} language={language} />
         </div>
       )}
     </div>

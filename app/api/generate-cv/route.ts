@@ -5,7 +5,7 @@ import { CvUserDataFull } from "@/types/cv-user-data-full";
 
 export async function POST(request: Request) {
   try {
-    const { cvUserDataId } = await request.json();
+    const { cvUserDataId, language } = await request.json();
 
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
@@ -54,8 +54,8 @@ export async function POST(request: Request) {
     `;
 
     const prompt = `
-      Napisz zwięzłe, profesjonalne CV w formacie JSON na podstawie poniższych danych użytkownika. Skup się na podkreśleniu umiejętności kandydata oraz jego
-      doświadczenia zawodowego, 
+      Napisz zwięzłe, profesjonalne CV w formacie JSON w języku ${language ?? "en"} na podstawie poniższych danych użytkownika. 
+      Skup się na podkreśleniu umiejętności kandydata oraz jego doświadczenia zawodowego, 
       a także dopasowaniu do wymagań stanowiska. Nie kopiuj dosłownie opisu oferty pracy. 
       Zamiast tego, opracuj spersonalizowany profil zawodowy, który podkreśli kluczowe kompetencje kandydata w kontekście oferty pracy.
       Jeśli czegoś brakuje w danych kandydata, uzupełnij na podstawie wymagań oferty.
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
       - Email: ${data.email}
       - Numer telefonu: ${data.phone}
       
-      OFERTA PRACY
+      OFERTA PRACY (przetłumacz nagłówek w zależności od języka ${language})
       - Stanowisko: ${jobOffer.title ?? "brak danych"}
       - Opis: ${jobOffer.description ?? "brak danych"}
       - Wymagania: ${jobOffer.requirements?.join(", ") || "brak danych"}
@@ -160,7 +160,7 @@ export async function POST(request: Request) {
       }
       
       Zadanie: 
-      Użyj powyższych informacji do stworzenia profesjonalnego CV w formacie JSON, w języku angielskim (nagłówki równiez w jezyku angielskim), 
+      Użyj powyższych informacji do stworzenia profesjonalnego CV w formacie JSON, w języku ${language ?? "en"}, 
       które będzie wyglądało atrakcyjnie dla pracodawcy. 
       Uwzględnij wymagania oferty pracy, ale nie kopiuj ich dosłownie. Zamiast tego podkreśl mocne strony kandydata i jego zdolności do sprostania obowiązkom. 
       
