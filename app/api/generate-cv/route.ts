@@ -118,7 +118,7 @@ export async function POST(request: Request) {
         - Nazwa szkoły: ${edu.school_name}
         - Kierunek: ${edu.field_of_study}
         - Data rozpoczęcia (rok): ${edu.start_date}
-        - Data zakończenia (rok): ${edu.end_date ?? "w trakcie"}\
+        - Data zakończenia (rok): ${edu.end_date}\
       `,
               )
               .join("\n")
@@ -135,7 +135,7 @@ export async function POST(request: Request) {
         - Stanowisko: ${exp.position ?? "brak danych"}
         - Firma: ${exp.company_name ?? "brak danych"}
         - Data rozpoczęcia (rok i miesiąc): ${exp.start_date ?? "brak danych"}
-        - Data zakończenia (rok i miesiąc): ${exp.end_date ?? "w trakcie"}
+        - Data zakończenia (rok i miesiąc): ${exp.end_date}
         - Zakres obowiązków (to jest dodatkowe, na podstawie tego dopasuj to do oferty pracy): 
         ${exp.details ?? "uzupełnij na podstawie oferty pracy"}\
       `,
@@ -160,7 +160,8 @@ export async function POST(request: Request) {
       }
       
       Zadanie: 
-      Użyj powyższych informacji do stworzenia profesjonalnego CV w formacie JSON, które będzie wyglądało atrakcyjnie dla pracodawcy. 
+      Użyj powyższych informacji do stworzenia profesjonalnego CV w formacie JSON, w języku angielskim (nagłówki równiez w jezyku angielskim), 
+      które będzie wyglądało atrakcyjnie dla pracodawcy. 
       Uwzględnij wymagania oferty pracy, ale nie kopiuj ich dosłownie. Zamiast tego podkreśl mocne strony kandydata i jego zdolności do sprostania obowiązkom. 
       
       Nie używaj polskich znaków w kluczach JSON. Nie dodawaj żadnych dodatkowych pól.
@@ -179,7 +180,7 @@ export async function POST(request: Request) {
           content: prompt,
         },
       ],
-      temperature: 0.8,
+      temperature: 0.4,
     });
 
     const cvResponse = completion.choices[0].message;
@@ -224,51 +225,40 @@ export async function POST(request: Request) {
       languages,
     } = cvJson;
 
-    console.log("Generated CV", cvJson);
-    console.log(experience[0].responsibilities);
-
     const { data: generatedCvId, error: transactionError } = await supabase.rpc(
       "save_generated_cv",
       {
         cv_user_data_id: cvUserDataId,
         job_offer_id: jobOffer.id,
-        candidate_description: candidate_description,
-        personal_data: JSON.stringify({
+        candidate_description,
+        personal_data: {
           full_name: personal_data.full_name,
           email: personal_data.email,
           phone: personal_data.phone,
           city: personal_data.city,
           additional_skills: personal_data.additional_skills,
-        }),
-        education_list: education.map((edu) =>
-          JSON.stringify({
-            school_name: edu.school_name,
-            field_of_study: edu.field_of_study,
-            start_date: edu.start_date,
-            end_date: edu.end_date,
-          }),
-        ),
-        experience_list: experience.map((exp) =>
-          JSON.stringify({
-            position: exp.position,
-            company_name: exp.company_name,
-            start_date: exp.start_date,
-            end_date: exp.end_date,
-            responsibilities: exp.responsibilities,
-          }),
-        ),
-        language_list: languages.map((lang) =>
-          JSON.stringify({
-            name: lang.name,
-            level: lang.level,
-          }),
-        ),
+        },
+        education_list: education.map((edu) => ({
+          school_name: edu.school_name,
+          field_of_study: edu.field_of_study,
+          start_date: edu.start_date,
+          end_date: edu.end_date,
+        })),
+        experience_list: experience.map((exp) => ({
+          position: exp.position,
+          company_name: exp.company_name,
+          start_date: exp.start_date,
+          end_date: exp.end_date,
+          responsibilities: exp.responsibilities,
+        })),
+        language_list: languages.map((lang) => ({
+          name: lang.name,
+          level: lang.level,
+        })),
       },
     );
 
     if (transactionError) {
-      console.log(transactionError);
-      console.log(transactionError.message);
       return NextResponse.json({
         success: false,
         error: transactionError.message,
