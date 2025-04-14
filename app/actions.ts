@@ -226,12 +226,14 @@ export const createCheckoutSession = async (
 
   if (!config) throw new Error("Invalid plan");
 
+  const { user } = await supabase.auth.getUser();
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     mode: "payment",
     line_items: [{ price: config.priceId, quantity: 1 }],
     metadata: {
-      user_id: supabase.auth._getUser()?.id,
+      user_id: user.id,
       plan,
       tokens: config.tokens,
     },
