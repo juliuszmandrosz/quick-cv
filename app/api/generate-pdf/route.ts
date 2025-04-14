@@ -3,7 +3,6 @@ import { createClient } from "@/utils/supabase/server";
 import { chromium } from "playwright";
 
 export async function POST(req: Request) {
-  console.log("siema");
   const { cvId, cvDataId, language } = await req.json();
   if (!cvId) {
     return new Response(null, {
@@ -26,19 +25,43 @@ export async function POST(req: Request) {
     });
   }
 
-  const { data: sub } = (await supabase)
-    .from("subscriptions")
-    .select("tokens")
-    .eq("user_id", user.id)
+  const { data: cv } = await supabase
+    .from("generated_cv")
+    .select("token_consumed")
+    .eq("id", cvId)
     .single();
 
-  console.log(sub);
+  if (!cv) return new Response("CV not found", { status: 404 });
 
-  if (!sub || sub.tokens <= 0) {
-    return new Response("Insufficient tokens", { status: 402 });
+  if (!cv.token_consumed) {
+    const { data: sub } = (await supabase)
+      .from("subscriptions")
+      .select("tokens")
+      .eq("user_id", user.id)
+      .single();
+
+    console.log(sub);
+
+    if (!sub || sub.tokens <= 0) {
+      return new Response("Insufficient tokens", { status: 402 });
+    }
+
+    await supabase
+      .from("subscriptions")
+      .update({ tokens: sub.tokens - 1 })
+      .eq("user_id", user.id);
+
+    await supabase
+      .from("generated_cv")
+      .update({ token_consumed: true })
+      .eq("id", cvId);
+
+    const { error: updateUserIdError } = await supabase
+      .from("cv_user_data")
+      .update({ user_id: user.id })
+      .eq("id", cvDataId);
   }
 
-  // Generate PDF
   try {
     const url = `${process.env.NEXT_PUBLIC_BASE_URL}/cv-download?cvId=${cvId}&language=${language}`;
     const browser = await chromium.launch({ headless: true });
@@ -56,21 +79,6 @@ export async function POST(req: Request) {
     });
 
     await browser.close();
-
-    (await supabase)
-      .from("subscriptions")
-      .update({ tokens: sub.tokens - 1 })
-      .eq("user_id", user.id);
-
-    const { error: updatePaymentError } = await supabase
-      .from("generated_cv")
-      .update({ payment_completed: true })
-      .eq("id", cvId);
-
-    const { error: updateUserIdError } = await supabase
-      .from("cv_user_data")
-      .update({ user_id: user.id })
-      .eq("id", cvDataId);
 
     return new Response(pdfBuffer, {
       headers: {

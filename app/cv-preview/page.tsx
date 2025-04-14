@@ -13,6 +13,8 @@ const CVPreviewPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const cvId = searchParams.get("cvId");
+  const lang = searchParams.get("lang");
+  const paymentPending = searchParams.get("paymentPending");
 
   const [cvData, setCvData] = useState<CVData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,32 +22,48 @@ const CVPreviewPage = () => {
   useEffect(() => {
     if (!cvId) return;
 
-    const pollCVData = async () => {
+    const fetchCV = async () => {
       try {
         const res = await fetch(`/api/cv-data?cvId=${cvId}`);
-        if (!res.ok) throw new Error("Failed to fetch CV data");
         const data = await res.json();
-
-        // Załóżmy, że backend zwraca "paymentCompleted" (true/false)
-        if (data.data && data.data.paymentCompleted) {
-          setCvData(data.data);
-          setIsLoading(false);
-        } else {
-          // Jeśli płatność nie została potwierdzona, polluj ponownie za 3 sekundy
-          setTimeout(pollCVData, 3000);
-        }
-      } catch (error) {
+        setCvData(data.data);
+      } catch (e) {
         toast({
           title: "Error",
           description: "Failed to load CV data",
           variant: "destructive",
         });
+      } finally {
         setIsLoading(false);
       }
     };
 
-    pollCVData();
-  }, [cvId, toast]);
+    fetchCV();
+  }, [cvId]);
+
+  useEffect(() => {
+    if (!paymentPending) return;
+
+    setIsLoading(true);
+
+    const pollTokens = async () => {
+      const res = await fetch("/api/subscription-status");
+      const data = await res.json();
+
+      if (data.tokens_left > 0) {
+        toast({
+          title: "Payment Successful",
+          description: "Your CV is ready for download.",
+          variant: "default",
+        });
+        setIsLoading(false);
+      } else {
+        setTimeout(pollTokens, 3000);
+      }
+    };
+
+    pollTokens();
+  }, [paymentPending]);
 
   const handleDownload = async () => {
     try {
@@ -107,6 +125,11 @@ const CVPreviewPage = () => {
           <h1 className="text-3xl font-bold tracking-tight">CV Preview</h1>
           <p className="text-muted-foreground mt-2">
             Your tailored CV is ready for download
+          </p>
+          <p className="text-muted-foreground mt-2">
+            <a href="https://nofluffjobs.com/pl/job/mid-net-developer-connectis--remote">
+              Link do oferty
+            </a>
           </p>
         </div>
 

@@ -4,514 +4,580 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[]
+  | Json[];
 
 export type Database = {
   public: {
     Tables: {
       cv_user_data: {
         Row: {
-          additional_skills: string | null
-          city: string | null
-          created_at: string
-          email: string
-          full_name: string
-          id: string
-          phone: string
-          profile_name: string
-          profile_photo_url: string | null
-          user_id: string | null
-        }
+          additional_skills: string | null;
+          city: string | null;
+          created_at: string;
+          email: string;
+          full_name: string;
+          id: string;
+          phone: string;
+          profile_name: string;
+          profile_photo_url: string | null;
+          user_id: string | null;
+        };
         Insert: {
-          additional_skills?: string | null
-          city?: string | null
-          created_at?: string
-          email: string
-          full_name: string
-          id?: string
-          phone: string
-          profile_name: string
-          profile_photo_url?: string | null
-          user_id?: string | null
-        }
+          additional_skills?: string | null;
+          city?: string | null;
+          created_at?: string;
+          email: string;
+          full_name: string;
+          id?: string;
+          phone: string;
+          profile_name: string;
+          profile_photo_url?: string | null;
+          user_id?: string | null;
+        };
         Update: {
-          additional_skills?: string | null
-          city?: string | null
-          created_at?: string
-          email?: string
-          full_name?: string
-          id?: string
-          phone?: string
-          profile_name?: string
-          profile_photo_url?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
+          additional_skills?: string | null;
+          city?: string | null;
+          created_at?: string;
+          email?: string;
+          full_name?: string;
+          id?: string;
+          phone?: string;
+          profile_name?: string;
+          profile_photo_url?: string | null;
+          user_id?: string | null;
+        };
+        Relationships: [];
+      };
       education: {
         Row: {
-          cv_user_data_id: string
-          end_date: string | null
-          field_of_study: string
-          id: string
-          school_name: string
-          start_date: string
-        }
+          cv_user_data_id: string;
+          end_date: string | null;
+          field_of_study: string;
+          id: string;
+          school_name: string;
+          start_date: string;
+        };
         Insert: {
-          cv_user_data_id: string
-          end_date?: string | null
-          field_of_study: string
-          id?: string
-          school_name: string
-          start_date: string
-        }
+          cv_user_data_id: string;
+          end_date?: string | null;
+          field_of_study: string;
+          id?: string;
+          school_name: string;
+          start_date: string;
+        };
         Update: {
-          cv_user_data_id?: string
-          end_date?: string | null
-          field_of_study?: string
-          id?: string
-          school_name?: string
-          start_date?: string
-        }
+          cv_user_data_id?: string;
+          end_date?: string | null;
+          field_of_study?: string;
+          id?: string;
+          school_name?: string;
+          start_date?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "education_cv_user_data_id_fkey"
-            columns: ["cv_user_data_id"]
-            isOneToOne: false
-            referencedRelation: "cv_user_data"
-            referencedColumns: ["id"]
+            foreignKeyName: "education_cv_user_data_id_fkey";
+            columns: ["cv_user_data_id"];
+            isOneToOne: false;
+            referencedRelation: "cv_user_data";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       experience: {
         Row: {
-          company_name: string
-          cv_user_data_id: string
-          details: string | null
-          end_date: string | null
-          id: string
-          position: string
-          start_date: string
-        }
+          company_name: string;
+          cv_user_data_id: string;
+          details: string | null;
+          end_date: string | null;
+          id: string;
+          position: string;
+          start_date: string;
+        };
         Insert: {
-          company_name: string
-          cv_user_data_id: string
-          details?: string | null
-          end_date?: string | null
-          id?: string
-          position: string
-          start_date: string
-        }
+          company_name: string;
+          cv_user_data_id: string;
+          details?: string | null;
+          end_date?: string | null;
+          id?: string;
+          position: string;
+          start_date: string;
+        };
         Update: {
-          company_name?: string
-          cv_user_data_id?: string
-          details?: string | null
-          end_date?: string | null
-          id?: string
-          position?: string
-          start_date?: string
-        }
+          company_name?: string;
+          cv_user_data_id?: string;
+          details?: string | null;
+          end_date?: string | null;
+          id?: string;
+          position?: string;
+          start_date?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "experience_cv_user_data_id_fkey"
-            columns: ["cv_user_data_id"]
-            isOneToOne: false
-            referencedRelation: "cv_user_data"
-            referencedColumns: ["id"]
+            foreignKeyName: "experience_cv_user_data_id_fkey";
+            columns: ["cv_user_data_id"];
+            isOneToOne: false;
+            referencedRelation: "cv_user_data";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       generated_cv: {
         Row: {
-          candidate_description: string
-          created_at: string
-          cv_user_data_id: string
-          id: string
-          job_offer_id: string
-        }
+          candidate_description: string;
+          created_at: string;
+          cv_user_data_id: string;
+          id: string;
+          job_offer_id: string;
+          profile_photo_url: string | null;
+          token_consumed: boolean;
+        };
         Insert: {
-          candidate_description: string
-          created_at?: string
-          cv_user_data_id: string
-          id?: string
-          job_offer_id: string
-        }
+          candidate_description: string;
+          created_at?: string;
+          cv_user_data_id: string;
+          id?: string;
+          job_offer_id: string;
+          profile_photo_url?: string | null;
+          token_consumed?: boolean;
+        };
         Update: {
-          candidate_description?: string
-          created_at?: string
-          cv_user_data_id?: string
-          id?: string
-          job_offer_id?: string
-        }
+          candidate_description?: string;
+          created_at?: string;
+          cv_user_data_id?: string;
+          id?: string;
+          job_offer_id?: string;
+          profile_photo_url?: string | null;
+          token_consumed?: boolean;
+        };
         Relationships: [
           {
-            foreignKeyName: "generated_cv_cv_user_data_id_fkey"
-            columns: ["cv_user_data_id"]
-            isOneToOne: false
-            referencedRelation: "cv_user_data"
-            referencedColumns: ["id"]
+            foreignKeyName: "generated_cv_cv_user_data_id_fkey";
+            columns: ["cv_user_data_id"];
+            isOneToOne: false;
+            referencedRelation: "cv_user_data";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "generated_cv_job_offer_id_fkey"
-            columns: ["job_offer_id"]
-            isOneToOne: false
-            referencedRelation: "job_offers"
-            referencedColumns: ["id"]
+            foreignKeyName: "generated_cv_job_offer_id_fkey";
+            columns: ["job_offer_id"];
+            isOneToOne: false;
+            referencedRelation: "job_offers";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       generated_education: {
         Row: {
-          end_date: string | null
-          field_of_study: string
-          generated_cv_id: string
-          id: string
-          school_name: string
-          start_date: string
-        }
+          end_date: string | null;
+          field_of_study: string;
+          generated_cv_id: string;
+          id: string;
+          school_name: string;
+          start_date: string;
+        };
         Insert: {
-          end_date?: string | null
-          field_of_study: string
-          generated_cv_id: string
-          id?: string
-          school_name: string
-          start_date: string
-        }
+          end_date?: string | null;
+          field_of_study: string;
+          generated_cv_id: string;
+          id?: string;
+          school_name: string;
+          start_date: string;
+        };
         Update: {
-          end_date?: string | null
-          field_of_study?: string
-          generated_cv_id?: string
-          id?: string
-          school_name?: string
-          start_date?: string
-        }
+          end_date?: string | null;
+          field_of_study?: string;
+          generated_cv_id?: string;
+          id?: string;
+          school_name?: string;
+          start_date?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "generated_education_generated_cv_id_fkey"
-            columns: ["generated_cv_id"]
-            isOneToOne: false
-            referencedRelation: "generated_cv"
-            referencedColumns: ["id"]
+            foreignKeyName: "generated_education_generated_cv_id_fkey";
+            columns: ["generated_cv_id"];
+            isOneToOne: false;
+            referencedRelation: "generated_cv";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       generated_experience: {
         Row: {
-          company_name: string
-          end_date: string | null
-          generated_cv_id: string
-          id: string
-          position: string
-          responsibilities: string[]
-          start_date: string
-        }
+          company_name: string;
+          end_date: string | null;
+          generated_cv_id: string;
+          id: string;
+          position: string;
+          responsibilities: string[];
+          start_date: string;
+        };
         Insert: {
-          company_name: string
-          end_date?: string | null
-          generated_cv_id: string
-          id?: string
-          position: string
-          responsibilities?: string[]
-          start_date: string
-        }
+          company_name: string;
+          end_date?: string | null;
+          generated_cv_id: string;
+          id?: string;
+          position: string;
+          responsibilities?: string[];
+          start_date: string;
+        };
         Update: {
-          company_name?: string
-          end_date?: string | null
-          generated_cv_id?: string
-          id?: string
-          position?: string
-          responsibilities?: string[]
-          start_date?: string
-        }
+          company_name?: string;
+          end_date?: string | null;
+          generated_cv_id?: string;
+          id?: string;
+          position?: string;
+          responsibilities?: string[];
+          start_date?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "generated_experience_generated_cv_id_fkey"
-            columns: ["generated_cv_id"]
-            isOneToOne: false
-            referencedRelation: "generated_cv"
-            referencedColumns: ["id"]
+            foreignKeyName: "generated_experience_generated_cv_id_fkey";
+            columns: ["generated_cv_id"];
+            isOneToOne: false;
+            referencedRelation: "generated_cv";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       generated_language: {
         Row: {
-          generated_cv_id: string
-          id: string
-          level: string
-          name: string
-        }
+          generated_cv_id: string;
+          id: string;
+          level: string;
+          name: string;
+        };
         Insert: {
-          generated_cv_id: string
-          id?: string
-          level: string
-          name: string
-        }
+          generated_cv_id: string;
+          id?: string;
+          level: string;
+          name: string;
+        };
         Update: {
-          generated_cv_id?: string
-          id?: string
-          level?: string
-          name?: string
-        }
+          generated_cv_id?: string;
+          id?: string;
+          level?: string;
+          name?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "generated_language_generated_cv_id_fkey"
-            columns: ["generated_cv_id"]
-            isOneToOne: false
-            referencedRelation: "generated_cv"
-            referencedColumns: ["id"]
+            foreignKeyName: "generated_language_generated_cv_id_fkey";
+            columns: ["generated_cv_id"];
+            isOneToOne: false;
+            referencedRelation: "generated_cv";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       generated_personal_data: {
         Row: {
-          additional_skills: string[]
-          city: string
-          email: string
-          full_name: string
-          generated_cv_id: string
-          id: string
-          phone: string
-        }
+          additional_skills: string[];
+          city: string | null;
+          email: string;
+          full_name: string;
+          generated_cv_id: string;
+          id: string;
+          phone: string;
+        };
         Insert: {
-          additional_skills?: string[]
-          city: string
-          email: string
-          full_name: string
-          generated_cv_id: string
-          id?: string
-          phone: string
-        }
+          additional_skills?: string[];
+          city?: string | null;
+          email: string;
+          full_name: string;
+          generated_cv_id: string;
+          id?: string;
+          phone: string;
+        };
         Update: {
-          additional_skills?: string[]
-          city?: string
-          email?: string
-          full_name?: string
-          generated_cv_id?: string
-          id?: string
-          phone?: string
-        }
+          additional_skills?: string[];
+          city?: string | null;
+          email?: string;
+          full_name?: string;
+          generated_cv_id?: string;
+          id?: string;
+          phone?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "generated_personal_data_generated_cv_id_fkey"
-            columns: ["generated_cv_id"]
-            isOneToOne: false
-            referencedRelation: "generated_cv"
-            referencedColumns: ["id"]
+            foreignKeyName: "generated_personal_data_generated_cv_id_fkey";
+            columns: ["generated_cv_id"];
+            isOneToOne: false;
+            referencedRelation: "generated_cv";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       job_offers: {
         Row: {
-          created_at: string | null
-          cv_user_data_id: string | null
-          description: string | null
-          id: string
-          job_url: string | null
-          requirements: string[] | null
-          tasks: string[] | null
-          title: string | null
-          user_id: string | null
-        }
+          created_at: string | null;
+          cv_user_data_id: string | null;
+          description: string | null;
+          id: string;
+          job_url: string | null;
+          requirements: string[] | null;
+          tasks: string[] | null;
+          title: string | null;
+          user_id: string | null;
+        };
         Insert: {
-          created_at?: string | null
-          cv_user_data_id?: string | null
-          description?: string | null
-          id?: string
-          job_url?: string | null
-          requirements?: string[] | null
-          tasks?: string[] | null
-          title?: string | null
-          user_id?: string | null
-        }
+          created_at?: string | null;
+          cv_user_data_id?: string | null;
+          description?: string | null;
+          id?: string;
+          job_url?: string | null;
+          requirements?: string[] | null;
+          tasks?: string[] | null;
+          title?: string | null;
+          user_id?: string | null;
+        };
         Update: {
-          created_at?: string | null
-          cv_user_data_id?: string | null
-          description?: string | null
-          id?: string
-          job_url?: string | null
-          requirements?: string[] | null
-          tasks?: string[] | null
-          title?: string | null
-          user_id?: string | null
-        }
+          created_at?: string | null;
+          cv_user_data_id?: string | null;
+          description?: string | null;
+          id?: string;
+          job_url?: string | null;
+          requirements?: string[] | null;
+          tasks?: string[] | null;
+          title?: string | null;
+          user_id?: string | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "job_offers_cv_user_data_id_fkey"
-            columns: ["cv_user_data_id"]
-            isOneToOne: false
-            referencedRelation: "cv_user_data"
-            referencedColumns: ["id"]
+            foreignKeyName: "job_offers_cv_user_data_id_fkey";
+            columns: ["cv_user_data_id"];
+            isOneToOne: false;
+            referencedRelation: "cv_user_data";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       languages: {
         Row: {
-          cv_user_data_id: string
-          id: string
-          level: string
-          name: string
-        }
+          cv_user_data_id: string;
+          id: string;
+          level: string;
+          name: string;
+        };
         Insert: {
-          cv_user_data_id?: string
-          id?: string
-          level: string
-          name: string
-        }
+          cv_user_data_id?: string;
+          id?: string;
+          level: string;
+          name: string;
+        };
         Update: {
-          cv_user_data_id?: string
-          id?: string
-          level?: string
-          name?: string
-        }
+          cv_user_data_id?: string;
+          id?: string;
+          level?: string;
+          name?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "languages_cv_user_data_id_fkey"
-            columns: ["cv_user_data_id"]
-            isOneToOne: false
-            referencedRelation: "cv_user_data"
-            referencedColumns: ["id"]
+            foreignKeyName: "languages_cv_user_data_id_fkey";
+            columns: ["cv_user_data_id"];
+            isOneToOne: false;
+            referencedRelation: "cv_user_data";
+            referencedColumns: ["id"];
           },
-        ]
-      }
-    }
+        ];
+      };
+      subscriptions: {
+        Row: {
+          created_at: string | null;
+          id: string;
+          plan: string;
+          stripe_checkout_id: string | null;
+          tokens_left: number;
+          total_tokens: number;
+          updated_at: string | null;
+          user_id: string | null;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: string;
+          plan: string;
+          stripe_checkout_id?: string | null;
+          tokens_left: number;
+          total_tokens: number;
+          updated_at?: string | null;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: string;
+          plan?: string;
+          stripe_checkout_id?: string | null;
+          tokens_left?: number;
+          total_tokens?: number;
+          updated_at?: string | null;
+          user_id?: string | null;
+        };
+        Relationships: [];
+      };
+    };
     Views: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     Functions: {
       create_default_cv_user_data: {
         Args: {
-          job_offer_id: string
-          email: string
-          full_name: string
-          phone: string
-          city?: string
-          additional_skills?: string
-          profile_photo_url?: string
-          language_list?: Database["public"]["CompositeTypes"]["language_input"][]
-          education_list?: Database["public"]["CompositeTypes"]["education_input"][]
-          experience_list?: Database["public"]["CompositeTypes"]["experience_input"][]
-        }
-        Returns: string
-      }
-    }
+          job_offer_id: string;
+          email: string;
+          full_name: string;
+          phone: string;
+          city?: string;
+          additional_skills?: string;
+          profile_photo_url?: string;
+          language_list?: Database["public"]["CompositeTypes"]["language_input"][];
+          education_list?: Database["public"]["CompositeTypes"]["education_input"][];
+          experience_list?: Database["public"]["CompositeTypes"]["experience_input"][];
+        };
+        Returns: string;
+      };
+      save_generated_cv: {
+        Args: {
+          cv_user_data_id: string;
+          job_offer_id: string;
+          candidate_description: string;
+          personal_data: Json;
+          education_list: Json[];
+          experience_list: Json[];
+          language_list: Json[];
+          profile_photo_url?: string;
+        };
+        Returns: string;
+      };
+    };
     Enums: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     CompositeTypes: {
       education_input: {
-        school_name: string | null
-        field_of_study: string | null
-        start_date: string | null
-        end_date: string | null
-      }
+        school_name: string | null;
+        field_of_study: string | null;
+        start_date: string | null;
+        end_date: string | null;
+      };
       experience_input: {
-        company_name: string | null
-        position: string | null
-        details: string | null
-        start_date: string | null
-        end_date: string | null
-      }
+        company_name: string | null;
+        position: string | null;
+        details: string | null;
+        start_date: string | null;
+        end_date: string | null;
+      };
       language_input: {
-        name: string | null
-        level: string | null
-      }
-    }
-  }
-}
+        name: string | null;
+        level: string | null;
+      };
+    };
+  };
+};
 
-type PublicSchema = Database[Extract<keyof Database, "public">]
+type DefaultSchema = Database[Extract<keyof Database, "public">];
 
 export type Tables<
-  PublicTableNameOrOptions extends
-    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-        Database[PublicTableNameOrOptions["schema"]]["Views"])
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database;
+  }
+    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R;
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
-        PublicSchema["Views"])
-    ? (PublicSchema["Tables"] &
-        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
-        Row: infer R
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R;
       }
       ? R
       : never
-    : never
+    : never;
 
 export type TablesInsert<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema["Tables"]
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database;
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I;
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Insert: infer I
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I;
       }
       ? I
       : never
-    : never
+    : never;
 
 export type TablesUpdate<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema["Tables"]
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database;
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U;
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Update: infer U
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U;
       }
       ? U
       : never
-    : never
+    : never;
 
 export type Enums<
-  PublicEnumNameOrOptions extends
-    | keyof PublicSchema["Enums"]
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
     | { schema: keyof Database },
-  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof Database;
+  }
+    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = PublicEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
-    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
-    : never
+> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never;
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof PublicSchema["CompositeTypes"]
+    | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof Database },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof Database;
   }
     ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
   ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
-    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never;
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const;

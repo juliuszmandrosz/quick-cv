@@ -64,8 +64,12 @@ export default function Login() {
     setLoading(true);
     try {
       const formData = new FormData();
+      const cvId = searchParams.get("cvId");
+      const lang = searchParams.get("lang");
       formData.append("email", email);
       formData.append("password", password);
+      if (cvId) formData.append("cvId", cvId);
+      if (lang) formData.append("lang", lang);
       startTransition(async () => {
         await signInAction(formData);
       });

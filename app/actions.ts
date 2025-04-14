@@ -60,6 +60,8 @@ export const signUpAction = async (formData: FormData) => {
 export const signInAction = async (formData: FormData) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const cvId = formData.get("cvId") as string;
+  const lang = formData.get("lang") as string;
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -73,7 +75,11 @@ export const signInAction = async (formData: FormData) => {
     return encodedRedirect("error", "/login", error.message);
   }
 
-  return redirect("/dashboard");
+  if (cvId && lang) {
+    return redirect("/cv-preview?cvId=" + cvId + "&lang=" + lang);
+  } else {
+    return redirect("/dashboard");
+  }
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {
@@ -231,7 +237,7 @@ export const createCheckoutSession = async (
       plan,
       tokens: config.tokens,
     },
-    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cv-preview?cvId=${cvId}&lang=${lang}`,
+    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cv-preview?cvId=${cvId}&lang=${lang}&paymentPending=true`,
     cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/subscriptions?cvId=${cvId}&lang=${lang}`,
   });
 

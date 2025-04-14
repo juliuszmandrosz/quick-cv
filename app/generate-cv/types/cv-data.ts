@@ -1,6 +1,5 @@
 export type CVData = {
   id: string;
-  paymentCompleted: boolean;
   candidate_description: string;
   profile_photo_url: string;
   cv_user_data_id: string;

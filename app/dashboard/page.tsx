@@ -16,6 +16,7 @@ import {
   User,
 } from "lucide-react";
 import Link from "next/link";
+import { signOutAction } from "@/app/actions";
 
 const DashboardStats = () => {
   return (
@@ -176,6 +177,7 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+      <Button onClick={signOutAction}>Sign out</Button>
     </div>
   );
 };
