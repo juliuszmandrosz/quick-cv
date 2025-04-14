@@ -1,21 +1,23 @@
-// contexts/AuthContext.tsx
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { getUserData } from "@/lib/api"; // np. api call do /me
+import { createClient } from "@/utils/supabase/client";
 
-const AuthContext = createContext(null);
+const AuthContext = createContext();
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const supabase = createClient();
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await getUserData();
-      setUser(userData);
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
     };
 
-    fetchUser();
+    getUser();
   }, []);
 
   return (
