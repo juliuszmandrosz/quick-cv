@@ -25,6 +25,9 @@ export async function POST(request: Request) {
       })
       .select("id");
 
+    console.log(parsedData);
+    console.log(data);
+
     if (error) {
       return NextResponse.json({ success: false, error: error.message });
     }

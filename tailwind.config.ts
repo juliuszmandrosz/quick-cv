@@ -52,6 +52,8 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        "nicecv-purple": "#9B87F5",
+        "nicecv-dark-purple": "#5B2EFF",
       },
       borderRadius: {
         lg: "var(--radius)",

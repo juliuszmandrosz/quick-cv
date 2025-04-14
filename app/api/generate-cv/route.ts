@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { createClient } from "@/utils/supabase/server";
 import { CvUserDataFull } from "@/types/cv-user-data-full";
+import { CVData } from "@/app/generate-cv/types/cv-data";
 
 export async function POST(request: Request) {
   try {
@@ -59,40 +60,6 @@ export async function POST(request: Request) {
       a także dopasowaniu do wymagań stanowiska. Nie kopiuj dosłownie opisu oferty pracy. 
       Zamiast tego, opracuj spersonalizowany profil zawodowy, który podkreśli kluczowe kompetencje kandydata w kontekście oferty pracy.
       Jeśli czegoś brakuje w danych kandydata, uzupełnij na podstawie wymagań oferty.
-    
-    {
-      "personal_data": {
-        "full_name": "",
-        "email": "",
-        "phone": "",
-        "city": "",
-        "additional_skills": []
-      },
-      "candidate_description": "",
-      "education": [
-        {
-          "school_name": "",
-          "field_of_study": "",
-          "start_date": "",
-          "end_date": ""
-        }
-      ],
-      "experience": [
-        {
-          "position": "",
-          "company_name": "",
-          "start_date": "",
-          "end_date": "",
-          "responsibilities": []
-        }
-      ],
-      "languages": [
-        {
-          "name": "",
-          "level": ""
-        }
-      ]
-    }
       
       DANE OSOBOWE
       - Imię i nazwisko: ${data.full_name}
@@ -163,9 +130,44 @@ export async function POST(request: Request) {
       Użyj powyższych informacji do stworzenia profesjonalnego CV w formacie JSON, w języku ${language ?? "en"}, 
       które będzie wyglądało atrakcyjnie dla pracodawcy. 
       Uwzględnij wymagania oferty pracy, ale nie kopiuj ich dosłownie. Zamiast tego podkreśl mocne strony kandydata i jego zdolności do sprostania obowiązkom. 
+      Do kazdego doswiadczenia wygeneruj conajmniej 4 obowiazki.
       
       Nie używaj polskich znaków w kluczach JSON. Nie dodawaj żadnych dodatkowych pól.
       Nie dodawaj code blocków, markdown itp. Po prostu zwróć czysty JSON.
+      Zwróć response w dokładnie takim formacie json jak ponizej:
+      {
+      "generated_personal_data": {
+        "full_name": "",
+        "email": "",
+        "phone": "",
+        "city": "",
+        "additional_skills": []
+      },
+      "candidate_description": "",
+      "generated_education": [
+        {
+          "school_name": "",
+          "field_of_study": "",
+          "start_date": "",
+          "end_date": ""
+        }
+      ],
+      "generated_experience": [
+        {
+          "position": "",
+          "company_name": "",
+          "start_date": "",
+          "end_date": "",
+          "responsibilities": []
+        }
+      ],
+      "generated_language": [
+        {
+          "name": "",
+          "level": ""
+        }
+      ]
+    }
   `;
 
     const completion = await openai.chat.completions.create({
@@ -189,41 +191,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "No cv generated" });
     }
 
-    let cvJson: {
-      candidate_description: string;
-      personal_data: {
-        full_name: string;
-        email: string;
-        phone: string;
-        city: string;
-        additional_skills: string[];
-      };
-      education: {
-        school_name: string;
-        field_of_study: string;
-        start_date: string;
-        end_date: string;
-      }[];
-      experience: {
-        position: string;
-        company_name: string;
-        start_date: string;
-        end_date: string;
-        responsibilities: string[];
-      }[];
-      languages: {
-        name: string;
-        level: string;
-      }[];
-    } = JSON.parse(cvResponse.content);
+    console.log(JSON.parse(cvResponse.content));
+
+    console.log("aaaaaa");
+
+    let cvJson: CVData = JSON.parse(cvResponse.content);
 
     const {
       candidate_description,
-      personal_data,
-      education,
-      experience,
-      languages,
+      generated_personal_data,
+      generated_education,
+      generated_experience,
+      generated_language,
     } = cvJson;
+
+    console.log(cvJson);
 
     const { data: generatedCvId, error: transactionError } = await supabase.rpc(
       "save_generated_cv",
@@ -232,26 +214,26 @@ export async function POST(request: Request) {
         job_offer_id: jobOffer.id,
         candidate_description,
         personal_data: {
-          full_name: personal_data.full_name,
-          email: personal_data.email,
-          phone: personal_data.phone,
-          city: personal_data.city,
-          additional_skills: personal_data.additional_skills,
+          full_name: generated_personal_data.full_name,
+          email: generated_personal_data.email,
+          phone: generated_personal_data.phone,
+          city: generated_personal_data.city,
+          additional_skills: generated_personal_data.additional_skills,
         },
-        education_list: education.map((edu) => ({
+        education_list: generated_education.map((edu) => ({
           school_name: edu.school_name,
           field_of_study: edu.field_of_study,
           start_date: edu.start_date,
           end_date: edu.end_date,
         })),
-        experience_list: experience.map((exp) => ({
+        experience_list: generated_experience.map((exp) => ({
           position: exp.position,
           company_name: exp.company_name,
           start_date: exp.start_date,
           end_date: exp.end_date,
           responsibilities: exp.responsibilities,
         })),
-        language_list: languages.map((lang) => ({
+        language_list: generated_language.map((lang) => ({
           name: lang.name,
           level: lang.level,
         })),
@@ -265,9 +247,17 @@ export async function POST(request: Request) {
       });
     }
 
+    if (!cvJson) {
+      return NextResponse.json({ success: false, error: "No CV generated" });
+    }
+
+    cvJson.id = generatedCvId;
+
+    console.log(cvJson.id);
+
     return NextResponse.json({
       success: true,
-      cv: cvJson ?? "No CV generated",
+      cvData: cvJson,
     });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message });
