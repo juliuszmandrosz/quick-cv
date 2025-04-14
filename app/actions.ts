@@ -206,9 +206,7 @@ export const signInWithAppleAction = async () => {
   return encodedRedirect("error", "/login", "Failed to initiate Apple sign in");
 };
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2023-08-16",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 const plans = {
   basic: { priceId: "price_1RDmnnGagz5xt87zdGOBSdAq", tokens: 5 },
