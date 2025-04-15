@@ -5,7 +5,7 @@ import { ArrowRight, FileText, FileUp } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useRouter } from "next/navigation";
 
-const Hero = () => {
+export const Hero = () => {
   const { t } = useLanguage();
   const router = useRouter();
 
@@ -83,5 +83,3 @@ const Hero = () => {
     </div>
   );
 };
-
-export default Hero;

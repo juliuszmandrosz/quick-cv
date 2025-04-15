@@ -1,6 +1,3 @@
-"use client";
-
-import Hero from "@/components/Hero";
 import Header from "@/components/Header";
 import ProblemSection from "@/components/ProblemSection";
 import SolutionSection from "@/components/SolutionSection";
@@ -9,6 +6,7 @@ import HowItWorks from "@/components/HowItWorks";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import TestimonialsSection from "@/components/TestimonialsSection";
+import { Hero } from "@/components/hero";
 
 export default function Home() {
   return (
