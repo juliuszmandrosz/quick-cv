@@ -1,3 +1,4 @@
+// @ts-ignore
 import pdf from "pdf-parse/lib/pdf-parse";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
@@ -184,9 +185,9 @@ export async function POST(request: Request) {
         email: extractedData.email,
         full_name: extractedData.full_name,
         phone: extractedData.phone,
-        city: null,
+        city: undefined,
         additional_skills: extractedData.additional_skills || [],
-        profile_photo_url: profilePhotoUrl || null,
+        profile_photo_url: profilePhotoUrl || undefined,
         language_list: extractedData.language_list || [],
         education_list: extractedData.education_list || [],
         experience_list: extractedData.experience_list || [],
@@ -255,47 +256,50 @@ export async function POST(request: Request) {
     console.log(jobOffer.requirements);
 
     const generationSystemPrompt = `
-      You are an assistant that writes professional CVs.
-      Generate a professional CV based on the user's provided details and job offer information.
-      Return the response ONLY AS A VALID JSON OBJECT that strictly adheres to the schema specified in the user prompt.
-      Do not include any commentary, explanations, apologies, or markdown formatting (like \`\`\`json ... \`\`\`) in your response. Output only the raw JSON object.
+      You are an assistant that generates world-class CVs for job applications.
+
+      Your CVs must:
+      - Pass Applicant Tracking Systems (ATS)
+      - Sound 100% human and natural
+      - Be ready to send immediately
+      - Feel honest and humble, but confident
+      - Highlight the candidate’s most relevant strengths for this specific job
+      
+      RULES:
+      - Do not invent fake work experience (company or position).
+      - It's allowed to slightly exaggerate skills/technologies IF the candidate could realistically handle them (soft-skill lying), especially if it's commonly used in the industry.
+      - The goal is not to copy the CV 1:1, but to rebuild it for this specific job offer.
+      - Adapt wording to the role — for developers it's technical & precise, for sales/marketing it's impact-focused & people-oriented.
+      
+      OUTPUT RULES:
+      - Output ONLY valid JSON without markdown/codeblock formatting.
+      - No explanations, no comments, no headings, no extra text.
+
     `;
 
     const generationUserPrompt = `
-      Your task is to generate a perfect, natural-sounding, ATS-optimized CV tailored strictly for the provided JOB OFFER.
-
+      TASK:
+      Generate a professional CV in perfect ${language}.
+      
       GOALS:
-      1. This CV must pass Applicant Tracking Systems (ATS) — include keywords from the job offer naturally.
-      2. It must sound like a real human — experienced candidate writing about themselves.
-      3. It must feel clean, modern, and ready to send without any edits.
-      4. You can slightly adjust and expand skills if they realistically fit the job offer — but do not invent fake experience or projects.
-      5. Style must be universal — works for Software Engineers, Product Managers, Sales, Marketing, Designers, etc.
+      1. Tailor this CV strictly to the provided job offer.
+      2. Optimize for ATS — inject relevant keywords naturally.
+      3. Write like a real human — not like AI.
+      4. Soft-enhance skills to match the offer — but do not fake experience.
       
       WRITING STYLE:
-      - Honest, confident, natural tone.
-      - Not robotic, not copy-paste AI vibes.
-      - Strong action verbs like: built, designed, improved, optimized, led, created, delivered.
-      - Small human touches like: "Together with the team...", "I focused on...", "In this project..."
-      - Summary = 3-5 sentences — engaging, humble, convincing.
-      - Responsibilities = specific, clear, value-driven bullet points.
-      - Vary sentence structure.
+      - Use a warm, humble but confident tone.
+      - Summary should feel personal, honest, natural (3-5 sentences).
+      - Bullet points in experience = practical, clear, strong verbs: built, led, improved, optimized.
+      - Vary sentence structure, avoid robotic repetition.
+      - Add little human touches like "Together with the team..." or "In this project I focused on..."
       
-      SKILLS SECTION:
-      - For the "additional_skills" array:
-        - Combine candidate's existing skills with the most relevant skills/keywords from the JOB OFFER.
-        - If a skill is required in the job offer, and the candidate's background allows it, include it.
-        - Prioritize relevance over completeness.
-        - Output 8-15 most important skills.
-        - No categories. Just a clean array of skills.
-      
-      RULES:
-      - NEVER include markdown or code formatting.
-      - Output ONLY a valid JSON matching the provided SCHEMA.
-      - All dates strictly in YYYY-MM-DD format. If only year/month is available, use the 1st day of that month.
-      - End date should be empty string "" if the experience is current.
-      - No empty arrays — if there is no data, just provide an empty array [].
-      
-      SCHEMA:
+      SKILLS RULE:
+      - Select 8-15 skills most relevant to the job.
+      - Mix candidate's existing skills + the job offer requirements.
+      - Soft-add skills if they fit naturally.
+      - Prioritize ATS keywords.
+      FINAL OUTPUT FORMAT (JSON):
       {
         "generated_personal_data": {
           "full_name": "",
@@ -393,12 +397,7 @@ export async function POST(request: Request) {
       }
       
       REMEMBER:
-      - This CV must feel like a real person wrote it for this exact job.
-      - Natural > robotic.
-      - Clarity > fluff.
-      - Human-first, but ATS-optimized.
-      - Don't be afraid to gently stretch skills if reasonable.
-      - Never add fake jobs or projects.
+      This CV must feel like a real person wrote it SPECIFICALLY for this job. Not AI-generated bullshit. Real vibe. Real story. Clear value.
     `;
 
     const generationCompletion = await openai.chat.completions.create({
