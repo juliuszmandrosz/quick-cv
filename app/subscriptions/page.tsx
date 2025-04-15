@@ -2,7 +2,6 @@
 
 import type React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Check,
   ChevronLeft,
@@ -20,6 +19,7 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { createCheckoutSession } from "@/app/actions";
+import { useSearchParams } from "next/navigation";
 
 interface SubscriptionPlanProps {
   title: string;
@@ -35,15 +35,28 @@ const SubscriptionPlan: React.FC<SubscriptionPlanProps> = ({
   isPopular = false,
 }) => {
   const { toast } = useToast();
-  const router = useRouter();
 
   const handleSubscribe = async () => {
+    const searchParams = useSearchParams();
+
+    const cvId = searchParams.get("cvId");
+    const lang = searchParams.get("lang");
+
+    if (!cvId) {
+      toast({
+        title: "Error",
+        description: "CV ID is missing. Please check the link.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     toast({
       title: "Subscription Selected",
       description: `You've selected the ${title} plan. Proceeding to checkout...`,
     });
 
-    await createCheckoutSession(title.toLowerCase());
+    await createCheckoutSession(title.toLowerCase(), cvId, lang ?? "en");
   };
 
   return (

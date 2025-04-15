@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { CVData } from "@/app/generate-cv/types/cv-data";
+import { CVData } from "@/app/create-cv/types/cv-data";
 import { format } from "date-fns";
 
 export default function CvTemplate({ cvData }: { cvData: CVData }) {

@@ -1,16 +1,12 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
 import { createClient } from "@/utils/supabase/server";
 import { CvUserDataFull } from "@/types/cv-user-data-full";
-import { CVData } from "@/app/generate-cv/types/cv-data";
+import { CVData } from "@/app/create-cv/types/cv-data";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(request: Request) {
   try {
     const { cvUserDataId, language } = await request.json();
-
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
 
     const supabase = await createClient();
 
@@ -170,32 +166,24 @@ export async function POST(request: Request) {
     }
   `;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: systemPrompt,
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.4,
-    });
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-    const cvResponse = completion.choices[0].message;
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    if (!cvResponse?.content) {
+    const fullPrompt = `${systemPrompt.trim()}\n\n${prompt.trim()}`;
+
+    const result = await model.generateContent(fullPrompt);
+    const response = result.response.text();
+
+    if (!response) {
       return NextResponse.json({ success: false, error: "No cv generated" });
     }
 
-    console.log(JSON.parse(cvResponse.content));
+    console.log(JSON.parse(response));
 
     console.log("aaaaaa");
 
-    let cvJson: CVData = JSON.parse(cvResponse.content);
+    let cvJson: CVData = JSON.parse(response);
 
     const {
       candidate_description,

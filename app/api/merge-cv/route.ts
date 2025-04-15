@@ -45,7 +45,6 @@ export async function POST(request: Request) {
     const supabase = await createClient();
 
     let profilePhotoUrl: string | null = null;
-    console.log(profilePhoto + "XDDDDD");
     if (profilePhoto && profilePhoto instanceof File && profilePhoto.size > 0) {
       const originalFileName = profilePhoto.name;
       const contentType = profilePhoto.type;
@@ -80,7 +79,7 @@ export async function POST(request: Request) {
       - email: string
       - full_name: string
       - phone: string
-      - additional_skills (optional): string
+      - additional_skills (optional): array of strings — Extract all relevant technical skills, programming languages, technologies, tools, and methodologies mentioned in the CV text. Each skill must be a separate item in the array. Do not invent skills.
       - profile_photo_url (optional): string
       - language_list (optional): an array of language_input objects
       - education_list (optional): an array of education_input objects
@@ -179,8 +178,6 @@ export async function POST(request: Request) {
       });
     }
 
-    console.log(extractedData);
-
     const { data: cvUserDataId, error: createError } = await supabase.rpc(
       "create_default_cv_user_data",
       {
@@ -196,6 +193,8 @@ export async function POST(request: Request) {
         job_offer_id: jobOfferId,
       } as Database["public"]["Functions"]["create_default_cv_user_data"]["Args"],
     );
+
+    console.log(extractedData.additional_skills);
 
     if (createError) {
       return NextResponse.json({
@@ -253,6 +252,8 @@ export async function POST(request: Request) {
       });
     }
 
+    console.log(jobOffer.requirements);
+
     const generationSystemPrompt = `
       You are an assistant that writes professional CVs.
       Generate a professional CV based on the user's provided details and job offer information.
@@ -261,39 +262,88 @@ export async function POST(request: Request) {
     `;
 
     const generationUserPrompt = `
-      Generate an ATS-optimized, professional CV tailored specifically for the target JOB OFFER, presented in JSON format in ${language || "en"}.
-      Use the candidate's PERSONAL DETAILS, EDUCATION, EXPERIENCE, and LANGUAGES as the factual basis, but significantly enhance and tailor the content (summary, skills, responsibilities) to maximize the candidate's perceived fit for the role and pass ATS screening.
+      Your task is to generate a perfect, natural-sounding, ATS-optimized CV tailored strictly for the provided JOB OFFER.
+
+      GOALS:
+      1. This CV must pass Applicant Tracking Systems (ATS) — include keywords from the job offer naturally.
+      2. It must sound like a real human — experienced candidate writing about themselves.
+      3. It must feel clean, modern, and ready to send without any edits.
+      4. You can slightly adjust and expand skills if they realistically fit the job offer — but do not invent fake experience or projects.
+      5. Style must be universal — works for Software Engineers, Product Managers, Sales, Marketing, Designers, etc.
       
-      **Core Task: Optimization and Tailoring**
+      WRITING STYLE:
+      - Honest, confident, natural tone.
+      - Not robotic, not copy-paste AI vibes.
+      - Strong action verbs like: built, designed, improved, optimized, led, created, delivered.
+      - Small human touches like: "Together with the team...", "I focused on...", "In this project..."
+      - Summary = 3-5 sentences — engaging, humble, convincing.
+      - Responsibilities = specific, clear, value-driven bullet points.
+      - Vary sentence structure.
       
-      **Instructions:**
-      1.  Deeply analyze the target JOB OFFER (Title, Description, Requirements, Tasks) to identify key skills, keywords, responsibilities, and desired candidate profile.
-      2.  Generate a compelling, ATS-friendly professional summary/description for the "candidate_description" field (around 3-5 sentences). This summary must directly address the JOB OFFER, using keywords from the requirements/tasks and highlighting how the candidate's most relevant qualifications and experience (including experience gained under their previous **positions**) make them a strong fit for the target role.
-      3.  Generate an optimized list of skills for the "additional_skills" array (aim for 8-15 skills). This list should **primarily** consist of skills explicitly mentioned or strongly implied in the JOB OFFER's Requirements, Tasks, and Description. **Integrate** relevant skills from the user's provided PERSONAL DETAILS ('Additional skills' input) where they align with the job offer, placing the most relevant skills first. Ensure the final list strongly reflects the target role.
-      4.  For **each** entry in the candidate's EXPERIENCE:
-          a.  Analyze the user's provided base details (**Position**, Company, Start/End Date, and original Responsibilities/Details input). Use the provided **Position** as the factual title for that role.
-          b.  Generate an array of 3-6 concise, action-oriented bullet points for the "responsibilities" field.
-          c.  These bullet points **must be tailored** to the target JOB OFFER. They should demonstrate how the experience gained in the candidate's listed **\`Position\`** at that \`Company\` is **directly relevant** to the requirements and tasks of the *target job*. Use strong action verbs and incorporate keywords from the JOB OFFER.
-          d.  The generated responsibilities should be plausible given the candidate's actual **\`Position\`** and \`Company\` for that experience entry.
-          e.  Use the candidate's original input Responsibilities/Details string as **inspiration or context**, but **prioritize rewriting or generating responsibilities** that demonstrate experience relevant to the *target job*. Do not simply copy the input.
-          f.  **(Optional Refinement - Use with Caution):** If the user's provided \`Position\` title is extremely informal or non-standard (e.g., "Web Ninja"), you may slightly adjust it to a more professional, standard equivalent (e.g., "Web Developer") IF AND ONLY IF it accurately reflects the generated responsibilities and context. Do NOT invent or significantly inflate titles (e.g., changing 'Junior' to 'Senior'). If unsure, use the original title provided by the user.
-      5.  Populate the generated_personal_data, generated_education, and generated_language fields accurately based on the provided input data.
-      6.  Format all dates ("start_date", "end_date") as strings strictly in 'YYYY-MM-DD' format. If only the year and month are available in the input for a date, use the first day of that month (e.g., output '2024-02-01' for '2024-02'). If an end date is null or empty in the input, represent it as an empty string "" in the output JSON.
+      SKILLS SECTION:
+      - For the "additional_skills" array:
+        - Combine candidate's existing skills with the most relevant skills/keywords from the JOB OFFER.
+        - If a skill is required in the job offer, and the candidate's background allows it, include it.
+        - Prioritize relevance over completeness.
+        - Output 8-15 most important skills.
+        - No categories. Just a clean array of skills.
       
-      **Input Data:**
+      RULES:
+      - NEVER include markdown or code formatting.
+      - Output ONLY a valid JSON matching the provided SCHEMA.
+      - All dates strictly in YYYY-MM-DD format. If only year/month is available, use the 1st day of that month.
+      - End date should be empty string "" if the experience is current.
+      - No empty arrays — if there is no data, just provide an empty array [].
+      
+      SCHEMA:
+      {
+        "generated_personal_data": {
+          "full_name": "",
+          "email": "",
+          "phone": "",
+          "city": "",
+          "additional_skills": []
+        },
+        "candidate_description": "",
+        "generated_education": [
+          {
+            "school_name": "",
+            "field_of_study": "",
+            "start_date": "",
+            "end_date": ""
+          }
+        ],
+        "generated_experience": [
+          {
+            "position": "",
+            "company_name": "",
+            "start_date": "",
+            "end_date": "",
+            "responsibilities": []
+          }
+        ],
+        "generated_language": [
+          {
+            "name": "",
+            "level": ""
+          }
+        ]
+      }
+      
+      INPUT DATA:
       
       PERSONAL DETAILS:
-      - Full name: ${fullCvData.full_name}
-      - Email: ${fullCvData.email}
-      - Phone: ${fullCvData.phone}
-      - City: ${fullCvData.city || ""}
-      - Additional skills: ${fullCvData.additional_skills || "N/A"} // Base skills provided by user (use as input/inspiration for optimized list)
+      Full name: ${fullCvData.full_name}
+      Email: ${fullCvData.email}
+      Phone: ${fullCvData.phone}
+      City: ${fullCvData.city || ""}
+      Additional skills: ${fullCvData.additional_skills || "N/A"}
       
-      JOB OFFER (CRITICAL context for optimization):
-      - Title: ${jobOffer.title || "N/A"}
-      - Description: ${jobOffer.description || "N/A"}
-      - Requirements: ${jobOffer.requirements ? jobOffer.requirements.join(", ") : "N/A"} // Key source for skills/keywords
-      - Tasks: ${jobOffer.tasks ? jobOffer.tasks.join(", ") : "N/A"} // Key source for responsibilities/keywords
+      JOB OFFER:
+      Title: ${jobOffer.title || "N/A"}
+      Description: ${jobOffer.description || "N/A"}
+      Requirements: ${jobOffer.requirements ? jobOffer.requirements.join(", ") : "N/A"}
+      Tasks: ${jobOffer.tasks ? jobOffer.tasks.join(", ") : "N/A"}
       
       EDUCATION:
       ${
@@ -302,12 +352,12 @@ export async function POST(request: Request) {
               .map(
                 (edu: any, index: number) => `
       ${index + 1}.
-        - School Name: ${edu.school_name || ""}
-        - Field of Study: ${edu.field_of_study || ""}
-        - Start Date: ${edu.start_date || ""} // Ensure AI outputs YYYY-MM-DD
-        - End Date: ${edu.end_date || ""}`, // Ensure AI outputs YYYY-MM-DD or ""
+      - School Name: ${edu.school_name || ""}
+      - Field of Study: ${edu.field_of_study || ""}
+      - Start Date: ${edu.start_date || ""}
+      - End Date: ${edu.end_date || ""}`,
               )
-              .join("\\n") // Use \\n for literal newline in JS template literal string
+              .join("\\n")
           : "N/A"
       }
       
@@ -318,12 +368,11 @@ export async function POST(request: Request) {
               .map(
                 (exp: any, index: number) => `
       ${index + 1}.
-        - Position: ${exp.position || ""} // User's original title - use as primary title & context
-        - Company: ${exp.company_name || ""}
-        - Start Date: ${exp.start_date || ""} // Ensure AI outputs YYYY-MM-DD
-        - End Date: ${exp.end_date || ""}     // Ensure AI outputs YYYY-MM-DD or ""
-        - Original Responsibilities/Details: ${exp.details || "N/A"} // Base details provided by user (use as input/inspiration for optimized list of responsibilities)`,
-                // Ensure fullCvData.experience objects have a 'details' field
+      - Position: ${exp.position || ""}
+      - Company: ${exp.company_name || ""}
+      - Start Date: ${exp.start_date || ""}
+      - End Date: ${exp.end_date || ""}
+      - Original Responsibilities/Details: ${exp.details || "N/A"}`,
               )
               .join("\\n")
           : "N/A"
@@ -336,50 +385,21 @@ export async function POST(request: Request) {
               .map(
                 (lang: any, index: number) => `
       ${index + 1}.
-        - Language: ${lang.name || ""}
-        - Level: ${lang.level || ""}`,
+      - Language: ${lang.name || ""}
+      - Level: ${lang.level || ""}`,
               )
-              .join("\\n") // Use \\n for literal newline in JS template literal string
+              .join("\\n")
           : "N/A"
       }
       
-      **Schema for the output JSON (Strictly adhere to this structure, do not include any extra fields):**
-      {
-        "generated_personal_data": {
-          "full_name": "", // String
-          "email": "", // String
-          "phone": "", // String
-          "city": "", // String
-          "additional_skills": [] // Array of strings expected (OPTIMIZED based on Job Offer + User Input)
-        },
-        "candidate_description": "", // String (Generated ATS-friendly professional summary, 3-5 sentences) expected
-        "generated_education": [
-          {
-            "school_name": "", // String
-            "field_of_study": "", // String
-            "start_date": "", // String 'YYYY-MM-DD' expected
-            "end_date": "" // String 'YYYY-MM-DD' or empty string "" expected
-          }
-        ],
-        "generated_experience": [
-          {
-            "position": "", // String (Based on user input, potentially slightly refined for professionalism)
-            "company_name": "", // String
-            "start_date": "", // String 'YYYY-MM-DD' expected
-            "end_date": "", // String 'YYYY-MM-DD' or empty string "" expected
-            "responsibilities": [] // Array of strings expected (OPTIMIZED & Tailored action-oriented bullet points relevant to target job)
-          }
-        ],
-        "generated_language": [
-          {
-            "name": "", // String
-            "level": "" // String
-          }
-        ]
-      }
+      REMEMBER:
+      - This CV must feel like a real person wrote it for this exact job.
+      - Natural > robotic.
+      - Clarity > fluff.
+      - Human-first, but ATS-optimized.
+      - Don't be afraid to gently stretch skills if reasonable.
+      - Never add fake jobs or projects.
     `;
-
-    console.log(generationUserPrompt);
 
     const generationCompletion = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -399,8 +419,6 @@ export async function POST(request: Request) {
       });
     }
 
-    console.log(generationResponse);
-
     let generatedCV;
     try {
       generatedCV = JSON.parse(generationResponse);
@@ -411,8 +429,6 @@ export async function POST(request: Request) {
         error: "Failed to parse generated CV response: " + generationResponse,
       });
     }
-
-    console.log(generatedCV);
 
     const { data: generatedCvId, error: saveError } = await supabase.rpc(
       "save_generated_cv",

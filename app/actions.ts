@@ -226,7 +226,13 @@ export const createCheckoutSession = async (
 
   if (!config) throw new Error("Invalid plan");
 
-  const { user } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return redirect("/login");
+  }
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],

@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
   try {
     event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
-  } catch (err) {
+  } catch (err: any) {
     return NextResponse.json({
       success: false,
       error: err.message,
@@ -25,13 +25,14 @@ export async function POST(req: Request) {
     const session = event.data.object as Stripe.Checkout.Session;
     const supabase = createClient();
 
-    const { user_id, plan, tokens } = session.metadata;
+    // const { user_id, plan, tokens } = session.metadata;
+    const metadata = session.metadata as any;
 
     (await supabase).from("subscriptions").insert({
-      user_id,
-      plan,
-      tokens_left: tokens,
-      total_tokens: tokens,
+      user_id: metadata.user_id,
+      plan: metadata.plan,
+      tokens_left: metadata.tokens,
+      total_tokens: metadata.tokens,
       stripe_checkout_id: session.id,
     });
   }

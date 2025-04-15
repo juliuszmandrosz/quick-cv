@@ -34,9 +34,9 @@ export async function POST(req: Request) {
   if (!cv) return new Response("CV not found", { status: 404 });
 
   if (!cv.token_consumed) {
-    const { data: sub } = (await supabase)
+    const { data: sub } = await supabase
       .from("subscriptions")
-      .select("tokens")
+      .select("*")
       .eq("user_id", user.id)
       .single();
 

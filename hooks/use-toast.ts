@@ -100,7 +100,7 @@ const dispatch = (action: Action) => {
 
 type Toast = Omit<ToasterToast, "id">;
 
-const toast = ({ ...props }: Toast) => {
+export const toast = ({ ...props }: Toast) => {
   const id = genId();
   const update = (props: ToasterToast) =>
     dispatch({ type: "UPDATE_TOAST", toast: { ...props, id } });

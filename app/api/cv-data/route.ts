@@ -44,7 +44,9 @@ export async function GET(request: Request) {
     });
   }
 
-  data.generated_personal_data = data.generated_personal_data[0];
+  data.generated_personal_data = Array.isArray(data.generated_personal_data)
+    ? (data.generated_personal_data[0] ?? null)
+    : null;
 
   return NextResponse.json({ success: true, data, status: 200 });
 }
