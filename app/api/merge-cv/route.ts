@@ -74,86 +74,35 @@ export async function POST(request: Request) {
       apiKey: process.env.OPENAI_API_KEY,
     });
 
+    const model = "gpt-4.1-mini";
+
     const extractionSystemPrompt = `
       You are an assistant that extracts CV details.
-      Extract and return the following fields in valid JSON format without any markdown formatting (no triple backticks, no code blocks):
-      - email: string
-      - full_name: string
-      - phone: string
-      - additional_skills (optional): array of strings — Extract all relevant technical skills, programming languages, technologies, tools, and methodologies mentioned in the CV text. Each skill must be a separate item in the array. Do not invent skills.
-      - profile_photo_url (optional): string
-      - language_list (optional): an array of language_input objects
-      - education_list (optional): an array of education_input objects
-      - experience_list (optional): an array of experience_input objects
+
+      Extract and return ONLY valid JSON in this exact structure:
       
-      Ensure all \`start_date\` and \`end_date\` values in the output JSON are valid date strings formatted as \`YYYY-MM-DD\`.
-      If the source CV text for a date provides only the year and month (e.g., 'October 2019', '2019-10'), 
-      infer the date as the **first day** of that month and format it accordingly (e.g., output \`'2019-10-01'\`). If a full date is provided, use it directly but ensure the \`YYYY-MM-DD\` format.
+      { "email": "", "full_name": "", "phone": "", "additional_skills": [], "language_list": [{ "name": "", "level": "" }], "education_list": [{ "school_name": "", "field_of_study": "", "start_date": "", "end_date": "" }], "experience_list": [{ "company_name": "", "position": "", "details": "", "start_date": "", "end_date": "" }] }
       
-      Where language_input is defined as:
-      {
-        "name": string,
-        "level": string
-      }
+      RULES:
       
-      Where education_input is defined as:
-      {
-        "school_name": string,
-        "field_of_study": string,
-        "start_date": string, // Must be YYYY-MM-DD format
-        "end_date": string or null // Must be YYYY-MM-DD format or null
-      }
+      Extract only what exists in the CV text.
       
-      Where experience_input is defined as:
-      {
-        "company_name": string,
-        "position": string,
-        "details": string or null,
-        "start_date": string, // Must be YYYY-MM-DD format
-        "end_date": string or null // Must be YYYY-MM-DD format or null
-      }
+      Dates must be in YYYY-MM-DD format; if only month and year are provided, assume day 01; if end_date is missing put null for end_date
       
-      Do not include any extra commentary.
-      Return your response strictly as a JSON object using the exact format example below:
+      Do not invent any skills or data.
       
-      {
-        "email": "john.doe@example.com",
-        "full_name": "John Doe",
-        "phone": "+48123456789",
-        "additional_skills": "Skill 1, Skill 2",
-        "language_list": [
-          { "name": "English", "level": "C2" },
-          { "name": "Polish", "level": "Native" }
-        ],
-        "education_list": [
-          {
-            "school_name": "XYZ University",
-            "field_of_study": "Bachelor in Computer Science",
-            "start_date": "2023-01-15",
-            "end_date": "2025-01-15"
-          }
-        ],
-        "experience_list": [
-          {
-            "company_name": "ABC Corp",
-            "position": "Developer",
-            "details": "Worked on various projects",
-            "start_date": "2023-01-15",
-            "end_date": "2025-01-15"
-          }
-        ]
-      }
+      STRICT JSON OUTPUT ONLY — No markdown, no commentary, no extra text. DO NOT use any markdown formatting or triple backticks.
     `;
 
-    const extractionUserPrompt = `Analyze the following CV text and extract the data as specified:\n\n${cvText}`;
+    const extractionUserPrompt = `Extract data from this CV text:${cvText}`;
 
     const extractionCompletion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4.1-nano",
       messages: [
         { role: "system", content: extractionSystemPrompt },
         { role: "user", content: extractionUserPrompt },
       ],
-      temperature: 0.4,
+      temperature: 0,
     });
 
     const extractionResponseText =
@@ -179,6 +128,8 @@ export async function POST(request: Request) {
       });
     }
 
+    console.log("EXTRACTED DATA", extractedData);
+
     const { data: cvUserDataId, error: createError } = await supabase.rpc(
       "create_default_cv_user_data",
       {
@@ -195,7 +146,7 @@ export async function POST(request: Request) {
       } as Database["public"]["Functions"]["create_default_cv_user_data"]["Args"],
     );
 
-    console.log(extractedData.additional_skills);
+    console.log("USER SKILLS" + extractedData.additional_skills);
 
     if (createError) {
       return NextResponse.json({
@@ -253,53 +204,115 @@ export async function POST(request: Request) {
       });
     }
 
-    console.log(jobOffer.requirements);
+    console.log("JOB SKILLS" + jobOffer.requirements);
 
-    const generationSystemPrompt = `
-      You are an assistant that generates world-class CVs for job applications.
-
-      Your CVs must:
-      - Pass Applicant Tracking Systems (ATS)
-      - Sound 100% human and natural
-      - Be ready to send immediately
-      - Feel honest and humble, but confident
-      - Highlight the candidate’s most relevant strengths for this specific job
-      
-      RULES:
-      - Do not invent fake work experience (company or position).
-      - It's allowed to slightly exaggerate skills/technologies IF the candidate could realistically handle them (soft-skill lying), especially if it's commonly used in the industry.
-      - The goal is not to copy the CV 1:1, but to rebuild it for this specific job offer.
-      - Adapt wording to the role — for developers it's technical & precise, for sales/marketing it's impact-focused & people-oriented.
-      
-      OUTPUT RULES:
-      - Output ONLY valid JSON without markdown/codeblock formatting.
-      - No explanations, no comments, no headings, no extra text.
-
+    const planSystemPrompt = `
+      You are a strategic CV and Talent Acquisition AI specialist.
+      Your primary mission is to analyze the provided candidate's comprehensive data against a specific job offer and generate a detailed JSON 'PROMPT PLAN'. 
+      This plan will serve as the blueprint for rewriting the candidate's CV to maximize its alignment and impact for the target role, significantly increasing the chances of 
+      passing Applicant Tracking Systems (ATS) and capturing the recruiter's attention.
+      Carefully evaluate both the candidate's profile (experience, skills, achievements) and the job description (requirements, responsibilities, desired qualifications, company context).
+      You must return ONLY a valid JSON object adhering strictly to the following structure. No other text, commentary, explanations, or markdown formatting should precede or follow the JSON output.
     `;
 
-    const generationUserPrompt = `
-      TASK:
-      Generate a professional CV in perfect ${language}.
+    const planUserPrompt = `
+      Generate a PROMPT PLAN in the following JSON format:
+      {
+        "highlight_skills": [], 
+        "optional_skills": [], 
+        "ats_keywords": [], 
+        "tone": "", 
+        "summary_focus": "", 
+        "experience_rewrite_instructions": {
+          "CompanyNameFromCandidateData1": "Instruction for rewriting responsibilities for this specific experience.",
+          "CompanyNameFromCandidateData2": "Instruction for rewriting responsibilities for this specific experience."
+        }
+      }
+      
+      INPUT DATA:
+      
+      CANDIDATE DATA:
+      ${JSON.stringify(fullCvData)}
+      
+      JOB OFFER:
+      ${JSON.stringify(jobOffer)}
+      
+      RULES AND GUIDELINES FOR GENERATING THE JSON PLAN:
+      
+      **highlight_skills:**
+      - Identify and list precisely 5 to 8 of the candidate's skills that are most critical and directly relevant to the core requirements and responsibilities listed in the job offer.
+      - Prioritize skills explicitly mentioned in the "Requirements" or "Must-Have" sections of the job description.
+      - Ensure these skills are genuinely possessed by the candidate according to their provided data.
+      - Output: Array of strings.
+      
+      **optional_skills:**
+      - Select 3 to 7 additional relevant skills from the candidate's data that, while perhaps not primary requirements, add significant value or align with "Nice-to-Have" qualifications mentioned in the job offer.
+      - These could include transferable skills, specific tools, or secondary competencies that differentiate the candidate.
+      - Output: Array of strings.
+      
+      **ats_keywords:**
+      - Extract the most impactful keywords and specific terminology directly from the job offer text. Focus on nouns, technical terms, methodologies, and qualifications frequently mentioned or emphasized.
+      - These keywords are crucial for ATS compatibility. Include variations if appropriate.
+      - Output: Array of strings.
+      
+      **tone:**
+      - Analyze the language, context, and potential company culture implied by the job offer.
+      - Choose exactly one of the following: ["professional", "technical", "salesy"].
+      
+      **summary_focus:**
+      - Based on the job offer’s core requirements and the candidate’s strongest matching qualifications, formulate a concise, single-sentence directive outlining the central theme or key selling point for the candidate's professional summary.
+      
+      **experience_rewrite_instructions:**
+      - Iterate through every work experience entry from the candidate's data, maintaining chronological order.
+      - For each experience, provide specific, actionable instructions for rewriting responsibilities/achievements.
+      - Do NOT alter company names, titles, or dates.
+      - Focus on:
+        - Alignment with job offer
+        - Transferable skills
+        - Quantifiable results
+        - Impactful action verbs
+        - Incorporation of ATS keywords
+        - Use of the selected tone
+      
+      CRITICAL OUTPUT REQUIREMENT:
+      Your entire response must be only the valid JSON object defined above. No introductory phrases, no concluding remarks, no explanations, no markdown code fences, just the raw JSON.
+    `;
+
+    const planCompletion = await openai.chat.completions.create({
+      model: model,
+      messages: [
+        { role: "system", content: planSystemPrompt },
+        { role: "user", content: planUserPrompt },
+      ],
+      temperature: 1.0,
+    });
+
+    const promptPlan = JSON.parse(
+      planCompletion.choices[0].message?.content || "{}",
+    );
+
+    console.log("PROMPT PLAN", promptPlan);
+
+    const generationSystemPrompt = `
+      You are an expert CV writing assistant and career strategist specializing in optimizing resumes for Applicant Tracking Systems (ATS) and human recruiters. Your expertise lies in strategically aligning candidate experience with specific job requirements.
       
       GOALS:
-      1. Tailor this CV strictly to the provided job offer.
-      2. Optimize for ATS — inject relevant keywords naturally.
-      3. Write like a real human — not like AI.
-      4. Soft-enhance skills to match the offer — but do not fake experience.
       
-      WRITING STYLE:
-      - Use a warm, humble but confident tone.
-      - Summary should feel personal, honest, natural (3-5 sentences).
-      - Bullet points in experience = practical, clear, strong verbs: built, led, improved, optimized.
-      - Vary sentence structure, avoid robotic repetition.
-      - Add little human touches like "Together with the team..." or "In this project I focused on..."
+      Generate a highly effective, ATS-optimized CV, meticulously tailored to the target job description, while remaining 100% authentic to the candidate's history and natural in tone. The final output must be perceived as entirely human-written.
       
-      SKILLS RULE:
-      - Select 8-15 skills most relevant to the job.
-      - Mix candidate's existing skills + the job offer requirements.
-      - Soft-add skills if they fit naturally.
-      - Prioritize ATS keywords.
-      FINAL OUTPUT FORMAT (JSON):
+      Preserve all original work experiences provided by the candidate, maintaining their exact chronological order. Do not add, remove, or reorder any distinct job entries.
+      
+      Strategically rewrite ONLY the responsibilities/details within each preserved experience to maximize relevance to the job offer, quantifying achievements where possible and highlighting impact using strong action verbs. Base these modifications strictly on the provided candidate data and specific rewriting instructions. *Crucially, do not invent experiences, skills, or exaggerate claims beyond verifiable facts derived from the original CV.* Focus solely on rephrasing and highlighting existing information effectively.
+      
+      Consolidate and refine the skills section, limiting the 'additional_skills' list to a strategic selection of 8–15 key technical and soft skills most pertinent to the job description. Prioritize skills explicitly mentioned or implied in the job offer and candidate data.
+      
+      Generate a concise, compelling personal summary (candidate_description) that immediately highlights the candidate's most relevant qualifications, key strengths, and unique value proposition specifically for this role, integrating keywords from the job offer naturally.
+      
+      Employ sophisticated, high-impact action verbs (e.g., Spearheaded, Architected, Transformed, Quantified, Optimized, Mentored, Negotiated) and strategically chosen adjectives to convey competence and achievement. Frame accomplishments positively, focusing on the results and positive impact of the candidate's actions. Incorporate subtle humanizing phrases naturally where appropriate (e.g., 'Collaborated closely with cross-functional teams to achieve X...', 'Successfully navigated complex challenges by implementing Y...', 'Played a key role in improving Z...').
+      
+      STRICT JSON OUTPUT ONLY — Adhere rigidly to the specified JSON structure. Output only the JSON object. Do not include any explanatory text, markdown formatting (like \\\`), comments, or any characters outside the final JSON structure. Ensure correct JSON syntax, including proper quoting of keys and string values.
+      
+      OUTPUT STRUCTURE: 
       {
         "generated_personal_data": {
           "full_name": "",
@@ -333,80 +346,40 @@ export async function POST(request: Request) {
           }
         ]
       }
+    `;
+
+    const generationUserPrompt = `
+      TASK: Generate a professional CV in perfect ${language}.
       
-      INPUT DATA:
+      CANDIDATE DATA: 
+      ${JSON.stringify(fullCvData)}
       
-      PERSONAL DETAILS:
-      Full name: ${fullCvData.full_name}
-      Email: ${fullCvData.email}
-      Phone: ${fullCvData.phone}
-      City: ${fullCvData.city || ""}
-      Additional skills: ${fullCvData.additional_skills || "N/A"}
+      JOB OFFER: 
+      ${JSON.stringify(jobOffer)}
       
-      JOB OFFER:
-      Title: ${jobOffer.title || "N/A"}
-      Description: ${jobOffer.description || "N/A"}
-      Requirements: ${jobOffer.requirements ? jobOffer.requirements.join(", ") : "N/A"}
-      Tasks: ${jobOffer.tasks ? jobOffer.tasks.join(", ") : "N/A"}
+      PROMPT PLAN STRATEGY:
       
-      EDUCATION:
-      ${
-        fullCvData.education && fullCvData.education.length > 0
-          ? fullCvData.education
-              .map(
-                (edu: any, index: number) => `
-      ${index + 1}.
-      - School Name: ${edu.school_name || ""}
-      - Field of Study: ${edu.field_of_study || ""}
-      - Start Date: ${edu.start_date || ""}
-      - End Date: ${edu.end_date || ""}`,
-              )
-              .join("\\n")
-          : "N/A"
-      }
+      Highlight these skills: ${promptPlan.highlight_skills.join(", ")}
       
-      EXPERIENCE:
-      ${
-        fullCvData.experience && fullCvData.experience.length > 0
-          ? fullCvData.experience
-              .map(
-                (exp: any, index: number) => `
-      ${index + 1}.
-      - Position: ${exp.position || ""}
-      - Company: ${exp.company_name || ""}
-      - Start Date: ${exp.start_date || ""}
-      - End Date: ${exp.end_date || ""}
-      - Original Responsibilities/Details: ${exp.details || "N/A"}`,
-              )
-              .join("\\n")
-          : "N/A"
-      }
+      Optional skills: ${promptPlan.optional_skills.join(", ")}
       
-      LANGUAGES:
-      ${
-        fullCvData.languages && fullCvData.languages.length > 0
-          ? fullCvData.languages
-              .map(
-                (lang: any, index: number) => `
-      ${index + 1}.
-      - Language: ${lang.name || ""}
-      - Level: ${lang.level || ""}`,
-              )
-              .join("\\n")
-          : "N/A"
-      }
+      ATS keywords to inject: ${promptPlan.ats_keywords.join(", ")}
       
-      REMEMBER:
-      This CV must feel like a real person wrote it SPECIFICALLY for this job. Not AI-generated bullshit. Real vibe. Real story. Clear value.
+      Writing tone: ${promptPlan.tone}
+      
+      Focus in summary: ${promptPlan.summary_focus}
+      
+      For each experience, follow these rewriting instructions to modify the responsibilities (do not remove any experience or change the company/position): 
+      ${JSON.stringify(promptPlan.experience_rewrite_instructions)}
     `;
 
     const generationCompletion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: model,
       messages: [
         { role: "system", content: generationSystemPrompt },
         { role: "user", content: generationUserPrompt },
       ],
-      temperature: 0.4,
+      temperature: 1.0,
     });
 
     const generationResponse = generationCompletion.choices[0].message?.content;
@@ -428,6 +401,8 @@ export async function POST(request: Request) {
         error: "Failed to parse generated CV response: " + generationResponse,
       });
     }
+
+    console.log("GENERATED CV", generatedCV);
 
     const { data: generatedCvId, error: saveError } = await supabase.rpc(
       "save_generated_cv",
