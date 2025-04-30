@@ -87,7 +87,7 @@ export default function CreateCvClientPage() {
         return;
       }
       toast({
-        title: "Processing CV",
+        title: "Processing CV. Un momento amigo",
         description: "Analyzing CV and extracting data...",
       });
       try {
