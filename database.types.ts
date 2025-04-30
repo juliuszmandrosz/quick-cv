@@ -239,6 +239,35 @@ export type Database = {
           },
         ];
       };
+      generated_experience_rewrite_instruction: {
+        Row: {
+          company_name: string;
+          generated_prompt_plan_id: string;
+          id: string;
+          instruction: string;
+        };
+        Insert: {
+          company_name: string;
+          generated_prompt_plan_id?: string;
+          id?: string;
+          instruction: string;
+        };
+        Update: {
+          company_name?: string;
+          generated_prompt_plan_id?: string;
+          id?: string;
+          instruction?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "generated_experience_rewrite_inst_generated_prompt_plan_id_fkey";
+            columns: ["generated_prompt_plan_id"];
+            isOneToOne: false;
+            referencedRelation: "generated_prompt_plan";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       generated_language: {
         Row: {
           generated_cv_id: string;
@@ -305,6 +334,39 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      generated_prompt_plan: {
+        Row: {
+          ats_keywords: string[];
+          created_at: string;
+          highlight_skills: string[];
+          id: string;
+          optional_skills: string[];
+          summary_focus: string;
+          tone: string;
+          user_id: string | null;
+        };
+        Insert: {
+          ats_keywords: string[];
+          created_at?: string;
+          highlight_skills: string[];
+          id?: string;
+          optional_skills: string[];
+          summary_focus: string;
+          tone: string;
+          user_id?: string | null;
+        };
+        Update: {
+          ats_keywords?: string[];
+          created_at?: string;
+          highlight_skills?: string[];
+          id?: string;
+          optional_skills?: string[];
+          summary_focus?: string;
+          tone?: string;
+          user_id?: string | null;
+        };
+        Relationships: [];
       };
       job_offers: {
         Row: {

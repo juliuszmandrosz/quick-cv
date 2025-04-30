@@ -1,253 +1,238 @@
+// @ts-ignore
+import pdf from "pdf-parse/lib/pdf-parse";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { CvUserDataFull } from "@/types/cv-user-data-full";
-import { CVData } from "@/app/create-cv/types/cv-data";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
 export async function POST(request: Request) {
   try {
-    const { cvUserDataId, language } = await request.json();
+    const { language, cvUserDataId } = await request.json();
 
     const supabase = await createClient();
 
-    const { data, error } = await supabase
+    const { data: fullCvData, error: selectError } = await supabase
       .from("cv_user_data")
       .select(
         `
-    *,
-    job_offers(*),
-    education(*),
-    experience(*),
-    languages(*)
-  `,
+        *,
+        job_offers(*),
+        education(*),
+        experience(*),
+        languages(*),
+        generated_prompt_plan(
+          *,
+          generated_experience_rewrite_instruction(*)
+        )
+      `,
       )
       .eq("id", cvUserDataId)
-      .single<CvUserDataFull>();
+      .single();
 
-    if (error) {
-      throw new Error(`Supabase error: ${error.message}`);
-    }
-
-    if (!data) {
+    if (selectError) {
       return NextResponse.json({
         success: false,
-        error: "User data not found",
+        error: selectError.message,
+        status: 500,
+      });
+    }
+    if (!fullCvData) {
+      return NextResponse.json({
+        success: false,
+        error: "CV user data not found",
+        status: 404,
       });
     }
 
-    const jobOffer = data.job_offers[0];
-
+    const jobOffer = Array.isArray(fullCvData.job_offers)
+      ? fullCvData.job_offers[0]
+      : fullCvData.job_offers;
     if (!jobOffer) {
       return NextResponse.json({
         success: false,
         error: "Job offer not found",
+        status: 404,
       });
     }
 
+    const promptPlan = fullCvData.generated_prompt_plan;
+    if (!promptPlan) {
+      return NextResponse.json({
+        success: false,
+        error: "Prompt plan not found for this user",
+        status: 404,
+      });
+    }
+
+    const experienceInstructions: Record<string, string> = {};
+    for (const item of promptPlan.generated_experience_rewrite_instruction ||
+      []) {
+      experienceInstructions[item.company_name] = item.instruction;
+    }
+
     const systemPrompt = `
-      Jesteś asystentem do pisania CV. 
-      Zwróć odpowiedź TYLKO jako poprawny JSON – bez dodatkowych opisów, bez bloków kodu i bez markdown. 
-      Upewnij się, że klucze w JSON mają dokładnie takie nazwy, jak w podanym schemacie.
+      You are an expert CV writing assistant and career strategist specializing in optimizing resumes for Applicant Tracking Systems (ATS) and human recruiters. Your expertise lies in strategically aligning candidate experience with specific job requirements.
+      
+      GOALS:
+      
+      Generate a highly effective, ATS-optimized CV, meticulously tailored to the target job description, while remaining 100% authentic to the candidate's history and natural in tone. The final output must be perceived as entirely human-written.
+      
+      Preserve all original work experiences provided by the candidate, maintaining their exact chronological order. Do not add, remove, or reorder any distinct job entries.
+      
+      Strategically rewrite ONLY the responsibilities/details within each preserved experience to maximize relevance to the job offer, quantifying achievements where possible and highlighting impact using strong action verbs. Base these modifications strictly on the provided candidate data and specific rewriting instructions. *Crucially, do not invent experiences, skills, or exaggerate claims beyond verifiable facts derived from the original CV.* Focus solely on rephrasing and highlighting existing information effectively.
+      
+      Consolidate and refine the skills section, limiting the 'additional_skills' list to a strategic selection of 8–15 key technical and soft skills most pertinent to the job description. Prioritize skills explicitly mentioned or implied in the job offer and candidate data.
+      
+      Generate a concise, compelling personal summary (candidate_description) that immediately highlights the candidate's most relevant qualifications, key strengths, and unique value proposition specifically for this role, integrating keywords from the job offer naturally.
+      
+      Employ sophisticated, high-impact action verbs (e.g., Spearheaded, Architected, Transformed, Quantified, Optimized, Mentored, Negotiated) and strategically chosen adjectives to convey competence and achievement. Frame accomplishments positively, focusing on the results and positive impact of the candidate's actions. Incorporate subtle humanizing phrases naturally where appropriate (e.g., 'Collaborated closely with cross-functional teams to achieve X...', 'Successfully navigated complex challenges by implementing Y...', 'Played a key role in improving Z...').
+      
+      STRICT JSON OUTPUT ONLY — Adhere rigidly to the specified JSON structure. Output only the JSON object. Do not include any explanatory text, markdown formatting (like \\\`), comments, or any characters outside the final JSON structure. Ensure correct JSON syntax, including proper quoting of keys and string values.
+      
+      OUTPUT STRUCTURE: 
+      {
+        "generated_personal_data": {
+          "full_name": "",
+          "email": "",
+          "phone": "",
+          "city": "",
+          "additional_skills": []
+        },
+        "candidate_description": "",
+        "generated_education": [
+          {
+            "school_name": "",
+            "field_of_study": "",
+            "start_date": "",
+            "end_date": ""
+          }
+        ],
+        "generated_experience": [
+          {
+            "position": "",
+            "company_name": "",
+            "start_date": "",
+            "end_date": "",
+            "responsibilities": []
+          }
+        ],
+        "generated_language": [
+          {
+            "name": "",
+            "level": ""
+          }
+        ]
+      }
     `;
 
-    const prompt = `
-      Napisz zwięzłe, profesjonalne CV w formacie JSON w języku ${language ?? "en"} na podstawie poniższych danych użytkownika. 
-      Skup się na podkreśleniu umiejętności kandydata oraz jego doświadczenia zawodowego, 
-      a także dopasowaniu do wymagań stanowiska. Nie kopiuj dosłownie opisu oferty pracy. 
-      Zamiast tego, opracuj spersonalizowany profil zawodowy, który podkreśli kluczowe kompetencje kandydata w kontekście oferty pracy.
-      Jeśli czegoś brakuje w danych kandydata, uzupełnij na podstawie wymagań oferty.
+    const userPrompt = `
+      TASK: Generate a professional CV in perfect ${language}.
+
+      CANDIDATE DATA:
+      ${JSON.stringify(fullCvData)}
       
-      DANE OSOBOWE
-      - Imię i nazwisko: ${data.full_name}
-      - Dodatkowe umiejętności (dodatkowe od uytkownika, dodaj równiez niezbedne na podstawie oferty pracy): 
-        ${data.additional_skills ?? "Uzupełnij na podstawie oferty pracy"}
-      - Miasto: ${data.city ?? "zostaw puste"}
-      - Email: ${data.email}
-      - Numer telefonu: ${data.phone}
-      
-      OFERTA PRACY (przetłumacz nagłówek w zależności od języka ${language})
-      - Stanowisko: ${jobOffer.title ?? "brak danych"}
-      - Opis: ${jobOffer.description ?? "brak danych"}
-      - Wymagania: ${jobOffer.requirements?.join(", ") || "brak danych"}
-      - Zakres obowiązków: ${jobOffer.tasks?.join(", ") || "brak danych"}
-      
-      WYKSZTAŁCENIE
-      ${
-        data.education?.length
-          ? data.education
-              .map(
-                (edu, index) => `\
-      ${index + 1}.
-        - Nazwa szkoły: ${edu.school_name}
-        - Kierunek: ${edu.field_of_study}
-        - Data rozpoczęcia (rok): ${edu.start_date}
-        - Data zakończenia (rok): ${edu.end_date}\
-      `,
-              )
-              .join("\n")
-          : "Brak danych o wykształceniu, zostaw puste"
-      }
-      
-      DOŚWIADCZENIE ZAWODOWE
-      ${
-        data.experience?.length
-          ? data.experience
-              .map(
-                (exp, index) => `\
-      ${index + 1}.
-        - Stanowisko: ${exp.position ?? "brak danych"}
-        - Firma: ${exp.company_name ?? "brak danych"}
-        - Data rozpoczęcia (rok i miesiąc): ${exp.start_date ?? "brak danych"}
-        - Data zakończenia (rok i miesiąc): ${exp.end_date}
-        - Zakres obowiązków (to jest dodatkowe, na podstawie tego dopasuj to do oferty pracy): 
-        ${exp.details ?? "uzupełnij na podstawie oferty pracy"}\
-      `,
-              )
-              .join("\n")
-          : "Brak danych o doświadczeniu, wymyśl na podstawie oferty pracy"
-      }
-      
-      JĘZYKI OBCE
-      ${
-        data.languages?.length
-          ? data.languages
-              .map(
-                (lang, index) => `\
-      ${index + 1}.
-        - Język: ${lang.name ?? "brak danych"}
-        - Poziom: ${lang.level ?? "brak danych"}\
-      `,
-              )
-              .join("\n")
-          : "zostaw puste"
-      }
-      
-      Zadanie: 
-      Użyj powyższych informacji do stworzenia profesjonalnego CV w formacie JSON, w języku ${language ?? "en"}, 
-      które będzie wyglądało atrakcyjnie dla pracodawcy. 
-      Uwzględnij wymagania oferty pracy, ale nie kopiuj ich dosłownie. Zamiast tego podkreśl mocne strony kandydata i jego zdolności do sprostania obowiązkom. 
-      Do kazdego doswiadczenia wygeneruj conajmniej 4 obowiazki.
-      
-      Nie używaj polskich znaków w kluczach JSON. Nie dodawaj żadnych dodatkowych pól.
-      Nie dodawaj code blocków, markdown itp. Po prostu zwróć czysty JSON.
-      Zwróć response w dokładnie takim formacie json jak ponizej:
-      {
-      "generated_personal_data": {
-        "full_name": "",
-        "email": "",
-        "phone": "",
-        "city": "",
-        "additional_skills": []
-      },
-      "candidate_description": "",
-      "generated_education": [
-        {
-          "school_name": "",
-          "field_of_study": "",
-          "start_date": "",
-          "end_date": ""
-        }
+      JOB OFFER:
+      ${JSON.stringify(jobOffer)}
+
+      PROMPT PLAN STRATEGY:
+
+      Highlight these skills: ${promptPlan.highlight_skills.join(", ")}
+      Optional skills: ${promptPlan.optional_skills.join(", ")}
+      ATS keywords to inject: ${promptPlan.ats_keywords.join(", ")}
+      Writing tone: ${promptPlan.tone}
+      Focus in summary: ${promptPlan.summary_focus}
+
+      Experience rewrite instructions:
+      ${JSON.stringify(experienceInstructions)}
+    `;
+
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
+    const generationCompletion = await openai.chat.completions.create({
+      model: "gpt-4.1-mini",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
       ],
-      "generated_experience": [
-        {
-          "position": "",
-          "company_name": "",
-          "start_date": "",
-          "end_date": "",
-          "responsibilities": []
-        }
-      ],
-      "generated_language": [
-        {
-          "name": "",
-          "level": ""
-        }
-      ]
-    }
-  `;
+      temperature: 1.0,
+    });
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-    const fullPrompt = `${systemPrompt.trim()}\n\n${prompt.trim()}`;
-
-    const result = await model.generateContent(fullPrompt);
-    const response = result.response.text();
-
-    if (!response) {
-      return NextResponse.json({ success: false, error: "No cv generated" });
+    const generationResponse = generationCompletion.choices[0].message?.content;
+    if (!generationResponse) {
+      return NextResponse.json({
+        success: false,
+        error: "No generated CV content",
+        status: 500,
+      });
     }
 
-    console.log(JSON.parse(response));
+    let generatedCV;
+    try {
+      generatedCV = JSON.parse(generationResponse);
+    } catch (jsonError: any) {
+      console.error("Error parsing generated CV JSON:", jsonError);
+      return NextResponse.json({
+        success: false,
+        error: "Failed to parse generated CV response: " + generationResponse,
+      });
+    }
 
-    console.log("aaaaaa");
+    console.log("GENERATED CV", generatedCV);
 
-    let cvJson: CVData = JSON.parse(response);
-
-    const {
-      candidate_description,
-      generated_personal_data,
-      generated_education,
-      generated_experience,
-      generated_language,
-    } = cvJson;
-
-    console.log(cvJson);
-
-    const { data: generatedCvId, error: transactionError } = await supabase.rpc(
+    const { data: generatedCvId, error: saveError } = await supabase.rpc(
       "save_generated_cv",
       {
         cv_user_data_id: cvUserDataId,
         job_offer_id: jobOffer.id,
-        candidate_description,
+        candidate_description: generatedCV.candidate_description,
+        profile_photo_url: fullCvData.profile_photo_url || null,
         personal_data: {
-          full_name: generated_personal_data.full_name,
-          email: generated_personal_data.email,
-          phone: generated_personal_data.phone,
-          city: generated_personal_data.city,
-          additional_skills: generated_personal_data.additional_skills,
+          full_name: generatedCV.generated_personal_data.full_name,
+          email: generatedCV.generated_personal_data.email,
+          phone: generatedCV.generated_personal_data.phone,
+          city: generatedCV.generated_personal_data.city,
+          additional_skills:
+            generatedCV.generated_personal_data.additional_skills,
         },
-        education_list: generated_education.map((edu) => ({
+        education_list: generatedCV.generated_education.map((edu: any) => ({
           school_name: edu.school_name,
           field_of_study: edu.field_of_study,
           start_date: edu.start_date,
           end_date: edu.end_date,
         })),
-        experience_list: generated_experience.map((exp) => ({
+        experience_list: generatedCV.generated_experience.map((exp: any) => ({
           position: exp.position,
           company_name: exp.company_name,
           start_date: exp.start_date,
           end_date: exp.end_date,
           responsibilities: exp.responsibilities,
         })),
-        language_list: generated_language.map((lang) => ({
+        language_list: generatedCV.generated_language.map((lang: any) => ({
           name: lang.name,
           level: lang.level,
         })),
       },
     );
 
-    if (transactionError) {
+    if (saveError) {
       return NextResponse.json({
         success: false,
-        error: transactionError.message,
+        error: saveError.message,
+        status: 500,
       });
     }
 
-    if (!cvJson) {
-      return NextResponse.json({ success: false, error: "No CV generated" });
-    }
-
-    cvJson.id = generatedCvId;
-
-    console.log(cvJson.id);
-
     return NextResponse.json({
       success: true,
-      cvData: cvJson,
+      cvId: generatedCvId,
     });
   } catch (err: any) {
-    return NextResponse.json({ success: false, error: err.message });
+    console.error("Merged endpoint error:", err);
+    return NextResponse.json({
+      success: false,
+      error: err.message,
+      status: 500,
+    });
   }
 }

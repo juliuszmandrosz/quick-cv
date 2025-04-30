@@ -101,24 +101,69 @@ export default function CreateCvClientPage() {
         if (uploadedPhoto) {
           formData.append("profile_photo", uploadedPhoto || undefined);
         }
-        const res = await fetch("/api/merge-cv", {
+        const extractCvResponse = await fetch("/api/extract-cv", {
           method: "POST",
           body: formData,
         } as RequestInit);
-        const result = await res.json();
-        if (!result.success) {
+        const extractCvResult = await extractCvResponse.json();
+        if (!extractCvResult.success) {
           toast({
             title: "Error",
-            description: result.error || "Error creating CV",
+            description: extractCvResult.error || "Error creating CV",
             variant: "destructive",
           });
           return;
         }
+        const generatePromptPlanResponse = await fetch(
+          "/api/generate-prompt-plan",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              cvUserDataId: extractCvResult.cvUserDataId,
+            }),
+          },
+        );
+
+        const generatePromptPlanResult =
+          await generatePromptPlanResponse.json();
+
+        if (!generatePromptPlanResult.success) {
+          toast({
+            title: "Error",
+            description: generatePromptPlanResult.error || "Error creating CV",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        const generateCvResponse = await fetch("/api/generate-cv", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cvUserDataId: extractCvResult.cvUserDataId,
+            language: cvLanguage,
+          }),
+        });
+
+        const generateCvResult = await generateCvResponse.json();
+
+        if (!generateCvResult.success) {
+          toast({
+            title: "Error",
+            description: generateCvResult.error || "Error creating CV",
+            variant: "destructive",
+          });
+          return;
+        }
+
         toast({
           title: "CV Generated",
           description: "Your tailored CV has been created.",
         });
-        router.push("/cv-preview?cvId=" + result.cvId + "&lang=" + cvLanguage);
+        router.push(
+          "/cv-preview?cvId=" + generateCvResult.cvId + "&lang=" + cvLanguage,
+        );
       } catch (error: any) {
         toast({
           title: "Error",
