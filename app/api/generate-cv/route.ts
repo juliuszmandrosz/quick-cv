@@ -54,7 +54,9 @@ export async function POST(request: Request) {
       });
     }
 
-    const promptPlan = fullCvData.generated_prompt_plan;
+    const promptPlan = Array.isArray(fullCvData.generated_prompt_plan)
+      ? fullCvData.generated_prompt_plan[0]
+      : fullCvData.generated_prompt_plan;
     if (!promptPlan) {
       return NextResponse.json({
         success: false,
@@ -123,6 +125,8 @@ export async function POST(request: Request) {
         ]
       }
     `;
+
+    console.log(promptPlan);
 
     const userPrompt = `
       TASK: Generate a professional CV in perfect ${language}.

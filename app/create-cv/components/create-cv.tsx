@@ -101,6 +101,7 @@ export default function CreateCvClientPage() {
         if (uploadedPhoto) {
           formData.append("profile_photo", uploadedPhoto || undefined);
         }
+        console.log(formData);
         const extractCvResponse = await fetch("/api/extract-cv", {
           method: "POST",
           body: formData,
