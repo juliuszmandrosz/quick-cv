@@ -160,6 +160,8 @@ export const signInWithGoogleAction = async () => {
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
 
+  console.log(origin);
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
@@ -173,7 +175,7 @@ export const signInWithGoogleAction = async () => {
   }
 
   if (data?.url) {
-    return redirect(data.url);
+    return redirect("/dashboard");
   }
 
   return encodedRedirect(
