@@ -1,13 +1,41 @@
 "use client";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, FileText, FileUp } from "lucide-react";
+import { ArrowRight, FileText, FileUp, Pause, Play } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 
 export const Hero = () => {
   const { t } = useLanguage();
   const router = useRouter();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [audioUrl, setAudioUrl] = useState("");
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    const { data } = supabase.storage
+      .from("podcasts")
+      .getPublicUrl("learn_more.wav");
+    setAudioUrl(data.publicUrl);
+  }, []);
+
+  const handleToggleAudio = () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current?.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current?.play();
+      setIsPlaying(true);
+    }
+  };
+
+  const handleAudioEnded = () => {
+    setIsPlaying(false);
+  };
 
   return (
     <div className="hero-gradient section-padding pt-32 pb-16">
@@ -25,18 +53,33 @@ export const Hero = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 className="bg-nicecv-purple hover:bg-nicecv-dark-purple text-white text-lg px-8 py-6"
-                onClick={() => {
-                  router.push("/create-cv");
-                }}
+                onClick={() => router.push("/create-cv")}
               >
                 {t("hero.cta")}
               </Button>
               <Button
                 variant="outline"
-                className="text-nicecv-dark-purple border-nicecv-purple hover:bg-nicecv-soft-gray text-lg px-8 py-6"
+                className="text-nicecv-dark-purple border-nicecv-purple hover:bg-nicecv-soft-gray text-lg px-8 py-6 flex items-center gap-2"
+                onClick={handleToggleAudio}
               >
-                {t("hero.learnMore")}
+                {isPlaying ? (
+                  <>
+                    <Pause className="w-5 h-5" /> {t("hero.pause")}
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-5 h-5" /> {t("hero.learnMore")}
+                  </>
+                )}
               </Button>
+              {audioUrl && (
+                <audio
+                  ref={audioRef}
+                  src={audioUrl}
+                  preload="auto"
+                  onEnded={handleAudioEnded}
+                />
+              )}
             </div>
           </div>
 

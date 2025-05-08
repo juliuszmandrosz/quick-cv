@@ -26,6 +26,7 @@ export const translations = {
       "Upload your CV and the job description link. Our AI crafts a perfectly optimized resume in seconds, helping you beat the ATS and land more interviews.",
     "hero.cta": "Create Your Perfect CV",
     "hero.learnMore": "Learn More",
+    "hero.pause": "Stop audio",
 
     // Problem Section
     "problem.title": "The Job Hunt ",
@@ -134,6 +135,7 @@ export const translations = {
       "Wrzuć swoje CV i link do oferty pracy. Nasze AI w kilka sekund przygotuje idealnie dopasowane CV, które przejdzie ATS i pomoże Ci zdobyć więcej zaproszeń na rozmowy.",
     "hero.cta": "Stwórz swoje idealne CV",
     "hero.learnMore": "Dowiedz się więcej",
+    "hero.pause": "Zatrzymaj audio",
 
     // Problem Section
     "problem.title": "Szukanie pracy ",
