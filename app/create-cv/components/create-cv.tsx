@@ -176,6 +176,9 @@ export default function CreateCvClientPage() {
   };
 
   const handleBack = () => {
+    if (step === 1) {
+      router.push("/");
+    }
     if (step > 1) {
       setStep(step - 1);
     }
@@ -397,11 +400,7 @@ export default function CreateCvClientPage() {
                 </>
               )}
               <div className="flex justify-between mt-8">
-                <Button
-                  variant="outline"
-                  onClick={handleBack}
-                  disabled={step === 1}
-                >
+                <Button variant="outline" onClick={handleBack}>
                   <ChevronLeft className="mr-2 h-4 w-4" /> Back
                 </Button>
                 <Button
