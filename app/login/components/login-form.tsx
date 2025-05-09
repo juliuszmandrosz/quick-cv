@@ -555,7 +555,7 @@ export default function LoginForm() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 px-6 pb-6">
+            <div className="flex justify-center px-6 pb-6">
               <Button
                 variant="outline"
                 onClick={() => handleSocialLogin("google")}
@@ -585,24 +585,24 @@ export default function LoginForm() {
                 </svg>
                 Google
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => handleSocialLogin("apple")}
-                className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="mr-2"
-                >
-                  <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.913 1.183-4.962 3.007-2.115 3.667-.539 9.103 1.519 12.11 1 1.427 2.19 3.027 3.754 2.973 1.513-.061 2.082-.974 3.912-.974 1.82 0 2.333.974 3.918.947 1.616-.027 2.646-1.47 3.634-2.897 1.142-1.667 1.616-3.293 1.642-3.38-.035-.027-3.154-1.214-3.18-4.812-.027-3.007 2.454-4.45 2.568-4.523-1.411-2.063-3.595-2.3-4.361-2.347-1.948-.147-3.615 1.06-4.483 1.06z" />
-                  <path d="M12.084 3.667c.828-1.004 1.378-2.38 1.227-3.768-1.183.048-2.615.794-3.46 1.798-.76.877-1.423 2.285-1.244 3.634 1.323.103 2.674-.683 3.477-1.664z" />
-                </svg>
-                Apple
-              </Button>
+              {/*<Button*/}
+              {/*  variant="outline"*/}
+              {/*  onClick={() => handleSocialLogin("apple")}*/}
+              {/*  className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"*/}
+              {/*>*/}
+              {/*  <svg*/}
+              {/*    xmlns="http://www.w3.org/2000/svg"*/}
+              {/*    width="20"*/}
+              {/*    height="20"*/}
+              {/*    viewBox="0 0 24 24"*/}
+              {/*    fill="currentColor"*/}
+              {/*    className="mr-2"*/}
+              {/*  >*/}
+              {/*    <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.913 1.183-4.962 3.007-2.115 3.667-.539 9.103 1.519 12.11 1 1.427 2.19 3.027 3.754 2.973 1.513-.061 2.082-.974 3.912-.974 1.82 0 2.333.974 3.918.947 1.616-.027 2.646-1.47 3.634-2.897 1.142-1.667 1.616-3.293 1.642-3.38-.035-.027-3.154-1.214-3.18-4.812-.027-3.007 2.454-4.45 2.568-4.523-1.411-2.063-3.595-2.3-4.361-2.347-1.948-.147-3.615 1.06-4.483 1.06z" />*/}
+              {/*    <path d="M12.084 3.667c.828-1.004 1.378-2.38 1.227-3.768-1.183.048-2.615.794-3.46 1.798-.76.877-1.423 2.285-1.244 3.634 1.323.103 2.674-.683 3.477-1.664z" />*/}
+              {/*  </svg>*/}
+              {/*  Apple*/}
+              {/*</Button>*/}
             </div>
 
             <CardFooter className="text-center pt-0 pb-6">

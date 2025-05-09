@@ -2,7 +2,6 @@
 import pdf from "pdf-parse/lib/pdf-parse";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { Database } from "@/database.types";
 import OpenAI from "openai";
 
 export async function POST(request: Request) {
@@ -11,9 +10,6 @@ export async function POST(request: Request) {
     const cvFile = formData.get("cv") as File | null;
     const jobOfferId = formData.get("job_offer_id") as string | null;
     const profilePhoto = formData.get("profile_photo") as File | null;
-    const additionalDetails = formData.get("additional_details") as
-      | string
-      | null;
 
     if (!cvFile) {
       return NextResponse.json({
@@ -78,11 +74,13 @@ export async function POST(request: Request) {
 
       Extract and return ONLY valid JSON in this exact structure:
       
-      { "email": "", "full_name": "", "phone": "", "additional_skills": [], "language_list": [{ "name": "", "level": "" }], "education_list": [{ "school_name": "", "field_of_study": "", "start_date": "", "end_date": "" }], "experience_list": [{ "company_name": "", "position": "", "details": "", "start_date": "", "end_date": "" }] }
+      { "email": "", "full_name": "", "phone": "", "skills": [], "title": "", "language_list": [{ "name": "", "level": "" }], "education_list": [{ "school_name": "", "field_of_study": "", "start_date": "", "end_date": "" }], "experience_list": [{ "company_name": "", "position": "", "details": "", "start_date": "", "end_date": "" }] }
       
       RULES:
       
       Extract only what exists in the CV text.
+      
+      Select most appropriate title based on the CV content.
       
       Dates must be in YYYY-MM-DD format; if only month and year are provided, assume day 01; if end_date is missing put null for end_date
       
@@ -130,22 +128,26 @@ export async function POST(request: Request) {
     const { data: cvUserDataId, error: createError } = await supabase.rpc(
       "create_default_cv_user_data",
       {
+        job_offer_id: jobOfferId,
         email: extractedData.email,
         full_name: extractedData.full_name,
         phone: extractedData.phone,
-        city: undefined,
-        additional_skills: extractedData.additional_skills || [],
-        profile_photo_url: profilePhotoUrl || undefined,
+        skills: extractedData.skills || [],
+        title: extractedData.title,
+        profile_photo_url: profilePhotoUrl ?? null,
         language_list: extractedData.language_list || [],
         education_list: extractedData.education_list || [],
         experience_list: extractedData.experience_list || [],
-        job_offer_id: jobOfferId,
-      } as Database["public"]["Functions"]["create_default_cv_user_data"]["Args"],
+      },
     );
 
-    console.log("USER SKILLS" + extractedData.additional_skills);
-
     if (createError) {
+      console.log(
+        "Create error:",
+        createError.message,
+        createError.code,
+        createError.details,
+      );
       return NextResponse.json({
         success: false,
         error: createError.message,

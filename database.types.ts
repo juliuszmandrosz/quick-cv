@@ -11,39 +11,36 @@ export type Database = {
     Tables: {
       cv_user_data: {
         Row: {
-          additional_skills: string | null;
-          city: string | null;
           created_at: string;
           email: string;
           full_name: string;
           id: string;
           phone: string;
-          profile_name: string;
           profile_photo_url: string | null;
+          skills: string[];
+          title: string;
           user_id: string | null;
         };
         Insert: {
-          additional_skills?: string | null;
-          city?: string | null;
           created_at?: string;
           email: string;
           full_name: string;
           id?: string;
           phone: string;
-          profile_name: string;
           profile_photo_url?: string | null;
+          skills: string[];
+          title: string;
           user_id?: string | null;
         };
         Update: {
-          additional_skills?: string | null;
-          city?: string | null;
           created_at?: string;
           email?: string;
           full_name?: string;
           id?: string;
           phone?: string;
-          profile_name?: string;
           profile_photo_url?: string | null;
+          skills?: string[];
+          title?: string;
           user_id?: string | null;
         };
         Relationships: [];
@@ -339,6 +336,7 @@ export type Database = {
         Row: {
           ats_keywords: string[];
           created_at: string;
+          cv_user_data_id: string;
           highlight_skills: string[];
           id: string;
           optional_skills: string[];
@@ -349,6 +347,7 @@ export type Database = {
         Insert: {
           ats_keywords: string[];
           created_at?: string;
+          cv_user_data_id?: string;
           highlight_skills: string[];
           id?: string;
           optional_skills: string[];
@@ -359,6 +358,7 @@ export type Database = {
         Update: {
           ats_keywords?: string[];
           created_at?: string;
+          cv_user_data_id?: string;
           highlight_skills?: string[];
           id?: string;
           optional_skills?: string[];
@@ -366,7 +366,15 @@ export type Database = {
           tone?: string;
           user_id?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "generated_prompt_plan_cv_user_data_id_fkey";
+            columns: ["cv_user_data_id"];
+            isOneToOne: false;
+            referencedRelation: "cv_user_data";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       job_offers: {
         Row: {
@@ -485,13 +493,34 @@ export type Database = {
           email: string;
           full_name: string;
           phone: string;
-          city?: string;
-          additional_skills?: string;
-          profile_photo_url?: string;
-          language_list?: Database["public"]["CompositeTypes"]["language_input"][];
-          education_list?: Database["public"]["CompositeTypes"]["education_input"][];
-          experience_list?: Database["public"]["CompositeTypes"]["experience_input"][];
+          skills: string[];
+          title: string;
+          profile_photo_url: string;
+          language_list: Database["public"]["CompositeTypes"]["language_input"][];
+          education_list: Database["public"]["CompositeTypes"]["education_input"][];
+          experience_list: Database["public"]["CompositeTypes"]["experience_input"][];
         };
+        Returns: string;
+      };
+      insert_prompt_plan_with_instructions: {
+        Args:
+          | {
+              highlight_skills: string[];
+              optional_skills: string[];
+              ats_keywords: string[];
+              tone: string;
+              summary_focus: string;
+              instructions: Database["public"]["CompositeTypes"]["instructions_input"][];
+            }
+          | {
+              highlight_skills: string[];
+              optional_skills: string[];
+              ats_keywords: string[];
+              tone: string;
+              summary_focus: string;
+              instructions: Database["public"]["CompositeTypes"]["instructions_input"][];
+              cv_user_data_id: string;
+            };
         Returns: string;
       };
       save_generated_cv: {
@@ -524,6 +553,10 @@ export type Database = {
         details: string | null;
         start_date: string | null;
         end_date: string | null;
+      };
+      instructions_input: {
+        company_name: string | null;
+        instruction: string | null;
       };
       language_input: {
         name: string | null;

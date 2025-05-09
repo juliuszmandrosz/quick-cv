@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-import Link from "next/link";
 import {
   Check,
   ChevronLeft,
@@ -115,21 +114,22 @@ const SubscriptionPlan: React.FC<SubscriptionPlanProps> = ({
 };
 
 export default function Subscription() {
+  function navigateToHome() {}
+
   return (
     <div className="min-h-screen p-4 md:p-8 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-[#9B87F5]/10 to-[#5B2EFF]/10 dark:from-[#9B87F5]/20 dark:to-[#5B2EFF]/20 -z-10"></div>
 
       <div className="absolute top-4 left-4 md:top-8 md:left-8">
-        <Link href="/">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors flex items-center"
-          >
-            <ChevronLeft className="mr-1 h-4 w-4" />
-            Back to home
-          </Button>
-        </Link>
+        <Button
+          onClick={navigateToHome}
+          variant="ghost"
+          size="sm"
+          className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors flex items-center"
+        >
+          <ChevronLeft className="mr-1 h-4 w-4" />
+          Back to home
+        </Button>
       </div>
 
       <div className="max-w-7xl mx-auto pt-16 md:pt-20 opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]">

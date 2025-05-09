@@ -15,6 +15,7 @@ export async function POST(request: Request) {
     }
 
     const parsedData = await scrapeJobOffer(jobUrl);
+
     const supabase = await createClient();
 
     const { data, error } = await supabase
@@ -24,9 +25,6 @@ export async function POST(request: Request) {
         job_url: jobUrl,
       })
       .select("id");
-
-    console.log(parsedData);
-    console.log(data);
 
     if (error) {
       return NextResponse.json({ success: false, error: error.message });

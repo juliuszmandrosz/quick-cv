@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,7 +14,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import {
   ChevronLeft,
@@ -23,6 +22,7 @@ import {
   LinkIcon,
   Upload,
 } from "lucide-react";
+import LoadingScreen from "@/app/create-cv/components/loading-screen";
 
 export default function CreateCvClientPage() {
   const [step, setStep] = useState<number>(1);
@@ -31,12 +31,10 @@ export default function CreateCvClientPage() {
   const [uploadedPhoto, setUploadedPhoto] = useState<File | null>(null);
   const [jobOfferId, setJobOfferId] = useState<string | null>(null);
   const [cvLanguage, setCvLanguage] = useState<string>("en");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const { toast } = useToast();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const cvId = searchParams.get("cvId");
-  const lang = searchParams.get("lang");
 
   const handleNext = async () => {
     if (step === 1) {
@@ -50,6 +48,10 @@ export default function CreateCvClientPage() {
       }
 
       try {
+        toast({
+          title: "Processing job offer",
+          description: "Analyzing job offer and extracting data...",
+        });
         const res = await fetch("/api/job-offers", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -86,10 +88,7 @@ export default function CreateCvClientPage() {
         });
         return;
       }
-      toast({
-        title: "Processing CV. Un momento amigo",
-        description: "Analyzing CV and extracting data...",
-      });
+      setIsGenerating(true);
       try {
         const formData = new FormData();
         formData.append("cv", uploadedCV);
@@ -97,7 +96,6 @@ export default function CreateCvClientPage() {
         if (jobOfferId) {
           formData.append("job_offer_id", jobOfferId);
         }
-        formData.append("additional_details", "");
         if (uploadedPhoto) {
           formData.append("profile_photo", uploadedPhoto || undefined);
         }
@@ -108,6 +106,7 @@ export default function CreateCvClientPage() {
         } as RequestInit);
         const extractCvResult = await extractCvResponse.json();
         if (!extractCvResult.success) {
+          setIsGenerating(false);
           toast({
             title: "Error",
             description: extractCvResult.error || "Error creating CV",
@@ -130,6 +129,7 @@ export default function CreateCvClientPage() {
           await generatePromptPlanResponse.json();
 
         if (!generatePromptPlanResult.success) {
+          setIsGenerating(false);
           toast({
             title: "Error",
             description: generatePromptPlanResult.error || "Error creating CV",
@@ -150,6 +150,7 @@ export default function CreateCvClientPage() {
         const generateCvResult = await generateCvResponse.json();
 
         if (!generateCvResult.success) {
+          setIsGenerating(false);
           toast({
             title: "Error",
             description: generateCvResult.error || "Error creating CV",
@@ -158,6 +159,7 @@ export default function CreateCvClientPage() {
           return;
         }
 
+        setIsGenerating(false);
         toast({
           title: "CV Generated",
           description: "Your tailored CV has been created.",
@@ -166,6 +168,7 @@ export default function CreateCvClientPage() {
           "/cv-preview?cvId=" + generateCvResult.cvId + "&lang=" + cvLanguage,
         );
       } catch (error: any) {
+        setIsGenerating(false);
         toast({
           title: "Error",
           description: error.message || "Error processing CV",
@@ -197,6 +200,10 @@ export default function CreateCvClientPage() {
       setUploadedPhoto(file);
     }
   };
+
+  if (isGenerating) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="max-w-3xl mx-auto p-4">
@@ -236,17 +243,8 @@ export default function CreateCvClientPage() {
                     </div>
                     <p className="text-sm text-muted-foreground">
                       Paste the URL of the job description you're applying for
+                      (allowed websites: justjoin.it, nofluffjobs.com)
                     </p>
-                  </div>
-                  <div className="space-y-2 mt-6">
-                    <Label htmlFor="notes">
-                      Additional Information (Optional)
-                    </Label>
-                    <Textarea
-                      id="notes"
-                      placeholder="Add any specific details about the job or your application"
-                      className="min-h-[100px] dark:glass-dark glass neumorphic"
-                    />
                   </div>
                 </>
               ) : (

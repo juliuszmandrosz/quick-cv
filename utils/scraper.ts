@@ -1,5 +1,6 @@
 import { scrapeNoFluffJobs } from "@/utils/scrapers/no-fluff-jobs-scrapper";
 import { Tables } from "@/database.types";
+import { scrapeJustJoinIt } from "@/utils/scrapers/just-join-it-scrapper";
 
 export default async function scrapeJobOffer(
   url: string,
@@ -8,6 +9,8 @@ export default async function scrapeJobOffer(
 
   if (domain.includes("nofluffjobs.com")) {
     return await scrapeNoFluffJobs(url);
+  } else if (domain.includes("justjoin.it")) {
+    return await scrapeJustJoinIt(url);
   } else {
     throw new Error("Nieobsługiwana domena: " + domain);
   }
