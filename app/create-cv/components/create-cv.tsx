@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import LoadingScreen from "@/app/create-cv/components/loading-screen";
 import { useCurrentUser } from "@/hooks/use-auth";
+import { CV } from "@/app/create-cv/types/cv";
 
 export default function CreateCvClientPage() {
   const [step, setStep] = useState<number>(1);
@@ -33,10 +34,14 @@ export default function CreateCvClientPage() {
   const [jobOfferId, setJobOfferId] = useState<string | null>(null);
   const [cvLanguage, setCvLanguage] = useState<string>("en");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [cvs, setCvs] = useState<CV[]>([]);
+  const [selectedCv, setSelectedCv] = useState<CV | null>(null);
 
   const { toast } = useToast();
   const router = useRouter();
   const user = useCurrentUser();
+
+  console.log(user);
 
   const handleNext = async () => {
     if (step === 1) {
@@ -82,47 +87,56 @@ export default function CreateCvClientPage() {
         });
       }
     } else if (step === 2) {
-      if (!uploadedCV) {
+      if (!uploadedCV && !selectedCv) {
+        const message = user.user
+          ? "Please upload your CV or select an existing one"
+          : "Please upload your CV";
         toast({
           title: "Missing Information",
-          description: "Please upload your CV",
+          description: message,
           variant: "destructive",
         });
         return;
       }
       setIsGenerating(true);
+      let cvUserDataId: string | null = null;
       try {
-        const formData = new FormData();
-        formData.append("cv", uploadedCV);
-        formData.append("language", cvLanguage || "en");
-        if (jobOfferId) {
-          formData.append("job_offer_id", jobOfferId);
+        if (uploadedCV && !selectedCv) {
+          const formData = new FormData();
+          formData.append("cv", uploadedCV);
+          formData.append("language", cvLanguage || "en");
+          if (jobOfferId) {
+            formData.append("job_offer_id", jobOfferId);
+          }
+          if (uploadedPhoto) {
+            formData.append("profile_photo", uploadedPhoto || undefined);
+          }
+          const extractCvResponse = await fetch("/api/extract-cv", {
+            method: "POST",
+            body: formData,
+          } as RequestInit);
+          const extractCvResult = await extractCvResponse.json();
+          if (!extractCvResult.success) {
+            setIsGenerating(false);
+            toast({
+              title: "Error",
+              description: extractCvResult.error || "Error creating CV",
+              variant: "destructive",
+            });
+            return;
+          }
+          cvUserDataId = extractCvResult.cvUserDataId;
+        } else {
+          cvUserDataId = selectedCv!.id;
         }
-        if (uploadedPhoto) {
-          formData.append("profile_photo", uploadedPhoto || undefined);
-        }
-        console.log(formData);
-        const extractCvResponse = await fetch("/api/extract-cv", {
-          method: "POST",
-          body: formData,
-        } as RequestInit);
-        const extractCvResult = await extractCvResponse.json();
-        if (!extractCvResult.success) {
-          setIsGenerating(false);
-          toast({
-            title: "Error",
-            description: extractCvResult.error || "Error creating CV",
-            variant: "destructive",
-          });
-          return;
-        }
+
         const generatePromptPlanResponse = await fetch(
           "/api/generate-prompt-plan",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              cvUserDataId: extractCvResult.cvUserDataId,
+              cvUserDataId: cvUserDataId,
             }),
           },
         );
@@ -144,7 +158,7 @@ export default function CreateCvClientPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            cvUserDataId: extractCvResult.cvUserDataId,
+            cvUserDataId: cvUserDataId,
             language: cvLanguage,
           }),
         });
@@ -180,6 +194,20 @@ export default function CreateCvClientPage() {
     }
   };
 
+  useEffect(() => {
+    if (!user.user?.id) return;
+
+    const fetchCvs = async () => {
+      try {
+        const res = await fetch("/api/cvs");
+        const json = await res.json();
+        setCvs(json.data);
+      } catch (error) {}
+    };
+
+    fetchCvs();
+  }, [user.user?.id]);
+
   const handleBack = () => {
     if (step === 1) {
       router.push("/");
@@ -193,6 +221,7 @@ export default function CreateCvClientPage() {
     const file = e.target.files?.[0];
     if (file) {
       setUploadedCV(file);
+      setSelectedCv(null);
     }
   };
 
@@ -301,26 +330,35 @@ export default function CreateCvClientPage() {
                         <p className="text-sm text-muted-foreground mb-4">
                           Select an existing CV from your repository
                         </p>
-                        {[1, 2, 3].map((i) => (
+                        {cvs.map((cv) => (
                           <div
-                            key={i}
+                            key={cv.id}
                             className="flex items-center justify-between p-3 rounded-md bg-background/50 border border-border/50 hover:bg-primary/5 transition-colors cursor-pointer"
                             onClick={() => {
-                              setUploadedCV(new File([""], `CV-${i}.pdf`));
-                              toast({
-                                title: "CV Selected",
-                                description: `Selected CV #${i} from your repository`,
-                              });
+                              setSelectedCv(cv);
+                              setUploadedCV(null);
                             }}
                           >
-                            <div className="flex items-center">
+                            <div
+                              className={`flex items-center ${selectedCv?.id === cv.id ? "bg-primary/10 p-2 rounded-md border border-primary/20" : ""}`}
+                            >
                               <FileText className="h-5 w-5 mr-2 text-muted-foreground" />
                               <div>
                                 <p className="text-sm font-medium">
-                                  Software Developer CV #{i}
+                                  {cv.title}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
-                                  Last updated {i} day{i > 1 ? "s" : ""} ago
+                                  Created at{" "}
+                                  {new Date(cv.created_at).toLocaleString(
+                                    undefined,
+                                    {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    },
+                                  )}
                                 </p>
                               </div>
                             </div>
