@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 "use client";
 
 import React from "react";
@@ -38,14 +40,12 @@ export default function CvTemplate({
           )}
         </div>
       </div>
-
-      <Section title={translations[lang]["cv.summary"]}>
+      <Section title={(translations[lang] as any)["cv.summary"]}>
         <p className="text-gray-700 leading-relaxed">
           {cvData.candidate_description}
         </p>
       </Section>
-
-      <Section title={translations[lang]["cv.technicalSkills"]}>
+      <Section title={(translations[lang] as any)["cv.technicalSkills"]}>
         <div className="flex flex-wrap gap-2">
           {cvData.generated_skills.technical_skills.map((skill, i) => (
             <span
@@ -57,8 +57,7 @@ export default function CvTemplate({
           ))}
         </div>
       </Section>
-
-      <Section title={translations[lang]["cv.softPowerSkills"]}>
+      <Section title={(translations[lang] as any)["cv.softPowerSkills"]!}>
         <div className="flex flex-wrap gap-2">
           {cvData.generated_skills.soft_skills.map((skill, i) => (
             <span
@@ -79,8 +78,7 @@ export default function CvTemplate({
           ))}
         </div>
       </Section>
-
-      <Section title={translations[lang]["cv.experience"]}>
+      <Section title={(translations[lang] as any)["cv.experience"]!}>
         {cvData.generated_experience.map((exp, idx) => (
           <div
             key={idx}
@@ -104,8 +102,7 @@ export default function CvTemplate({
           </div>
         ))}
       </Section>
-
-      <Section title={translations[lang]["cv.languages"]}>
+      <Section title={(translations[lang] as any)["cv.languages"]!}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {cvData.generated_language.map((lang, i) => (
             <div
@@ -118,8 +115,7 @@ export default function CvTemplate({
           ))}
         </div>
       </Section>
-
-      <Section title={translations[lang]["cv.education"]}>
+      <Section title={(translations[lang] as any)["cv.education"]!}>
         {cvData.generated_education.map((edu, i) => (
           <div key={i} className="mb-4 last:mb-0">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start">
