@@ -21,25 +21,26 @@ export default function LoadingScreen() {
   ];
 
   useEffect(() => {
+    const totalDuration = 70; // czas trwania w sekundach
+    const increment = 100 / totalDuration;
+
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(progressInterval);
           return 100;
         }
-        return prev + 100 / 60;
+        return prev + increment;
       });
     }, 1000);
 
-    // Message changer - every 10 seconds
     const messageInterval = setInterval(() => {
       setMessageIndex((prev) => (prev + 1) % messages.length);
     }, 10000);
 
-    // Hide after 30 seconds
     const hideTimer = setTimeout(() => {
       setVisible(false);
-    }, 60000);
+    }, totalDuration * 1000); // 70 sekund
 
     return () => {
       clearInterval(progressInterval);

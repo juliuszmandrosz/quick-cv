@@ -127,9 +127,7 @@ export const CvPreviewClient = () => {
             Your tailored CV is ready for download
           </p>
           <p className="text-muted-foreground mt-2">
-            <a href="https://nofluffjobs.com/pl/job/mid-net-developer-connectis--remote">
-              Link do oferty
-            </a>
+            <a href={cvData.job_url}>Job offer</a>
           </p>
         </div>
 

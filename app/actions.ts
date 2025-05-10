@@ -69,8 +69,6 @@ export const signInAction = async (formData: FormData) => {
     password,
   });
 
-  console.log(error);
-
   if (error) {
     return encodedRedirect("error", "/login", error.message);
   }
@@ -80,6 +78,36 @@ export const signInAction = async (formData: FormData) => {
   } else {
     return redirect("/dashboard");
   }
+};
+
+export const signInWithGoogleAction = async (formData: FormData) => {
+  const cvId = formData.get("cvId") as string;
+  const lang = formData.get("lang") as string;
+  const supabase = await createClient();
+  const origin = process.env.NEXT_PUBLIC_BASE_URL!;
+
+  const redirectPath =
+    cvId && lang ? `/cv-preview?cvId=${cvId}&lang=${lang}` : `/dashboard`;
+
+  const redirectUrl = encodeURIComponent(redirectPath);
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${origin}/auth/callback?redirect_to=${redirectUrl}`,
+    },
+  });
+
+  if (error) {
+    console.error(error.message);
+    return encodedRedirect("error", "/login", error.message);
+  }
+
+  if (!data.url) {
+    return encodedRedirect("error", "/login", "No URL returned from Supabase");
+  }
+
+  return redirect(data.url);
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {
@@ -154,58 +182,6 @@ export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
   return redirect("/login");
-};
-
-export const signInWithGoogleAction = async () => {
-  const supabase = await createClient();
-  const origin = (await headers()).get("origin");
-
-  console.log(origin);
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: `${origin}/auth/callback`,
-    },
-  });
-
-  if (error) {
-    console.error(error.message);
-    return encodedRedirect("error", "/login", error.message);
-  }
-
-  if (data?.url) {
-    return redirect("/dashboard");
-  }
-
-  return encodedRedirect(
-    "error",
-    "/login",
-    "Failed to initiate Google sign in",
-  );
-};
-
-export const signInWithAppleAction = async () => {
-  const supabase = await createClient();
-  const origin = (await headers()).get("origin");
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "apple",
-    options: {
-      redirectTo: `${origin}/auth/callback`,
-    },
-  });
-
-  if (error) {
-    console.error(error.message);
-    return encodedRedirect("error", "/login", error.message);
-  }
-
-  if (data?.url) {
-    return redirect(data.url);
-  }
-
-  return encodedRedirect("error", "/login", "Failed to initiate Apple sign in");
 };
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);

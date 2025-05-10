@@ -5,4 +5,6 @@ export type GeneratedCvFull = Tables<"generated_cv"> & {
   generated_education: Tables<"generated_education">[];
   generated_experience: Tables<"generated_experience">[];
   generated_language: Tables<"generated_language">[];
+  generated_skills: Tables<"generated_skills">;
+  job_url: string;
 };

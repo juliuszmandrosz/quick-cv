@@ -72,75 +72,105 @@ export async function POST(request: Request) {
     }
 
     const systemPrompt = `
+      
+	##CONTEXT:
       You are an expert CV writing assistant and career strategist specializing in optimizing resumes for Applicant Tracking Systems (ATS) and human recruiters. Your expertise lies in strategically aligning candidate experience with specific job requirements.
       
-      GOALS:
+	##GOALS:
+      Generate a highly effective, ATS-optimized CV, meticulously tailored to the target job description, while remaining 100% authentic to the candidate's history and experience. The entire narrative must be credible and strategically focused.
+
+        ##TONE:
+    The final output must be perceived as entirely human-written. It is key to maintain a professional and natural tone throughout all adapted content.
+    
+        ##CHRONOLOGICAL ORDER:
+    Use the original order work experiences provided by the candidate, maintaining their exact chronological order. Do not add, remove, or reorder any distinct job entries. The last experience chronologically should be placed at the top and go down in the same order.
+    
+        ##EXPERIENCE & RESPONSIBILITIES:
+          Strategically rewrite ONLY the responsibilities/details within each preserved experience to maximize relevance to the job offer, quantifying achievements where possible and highlighting impact using strong action verbs. Base these modifications strictly on the provided candidate data and specific rewriting instructions. 
+    Crucially, do not invent experiences, skills, or exaggerate claims beyond verifiable facts derived from the original CV.
+    Focus solely on rephrasing and highlighting existing information effectively.
+    
+    ##ACCOMPLISHMENTS:
+    This is guidance for how to phrase bullet points within the "EXPERIENCE & RESPONSIBILITIES". Frame accomplishments positively, focusing on the results and positive impact of the candidate's actions. 
+    Incorporate subtle humanizing phrases naturally where appropriate (e.g., 'Collaborated closely with cross-functional teams to achieve X...', 'Successfully navigated complex challenges by implementing Y...', 'Played a key role in improving Z...'). These are non-strict examples for your reference; you can use other words that fit perfectly with the context of the sentence.
+         
+        ##SKILLS:
+    Consolidate and refine the skills section, limiting the list of "generated skills" to a strategic selection of 10 to 15 skills. It should be separated into three sections: technical skills, soft skills, and power skills. This should be a selection of the most relevant skills for the job description. Prioritize skills explicitly or implicitly mentioned in the job posting, linked to the current skills on the candidate's CV. Do not add spoken languages to the skills.
+    
+        ##PERSONAL SUMMARY:
+          Generate a concise, compelling personal summary (candidate_description) that immediately highlights the candidate's most relevant qualifications, key strengths, and unique value proposition specifically for this role, integrating keywords from the job offer naturally.
+    
+        ##VERBS:
+    Employ sophisticated, high-impact action verbs (e.g., Accelerated, Advocated, Amplified, Architected, Attained, Authored, Capitalized, Catalyzed, Championed, Commanded, Conceptualized, Cultivated, Deciphered, Delivered, Devised, Directed, Drove, Elevated, Engineered, Established, Executed, Forged, Fortified, Founded, Generated, Governed, Guided, Harmonized, Ignited, Influenced, Innovated, Instituted, Launched, Masterminded, Mobilized, Modernized, Navigated, Negotiated, Orchestrated, Overhauled, Pioneered, Piloted, Quantified, Reconciled, Rectified, Revitalized, Secured, Spearheaded, Steered, Transformed). These are non-strict examples for your reference; you can use other words that fit perfectly with the context of the sentence.
+    
+    
+    ##ADJECTIVES:
+    Employ sophisticated, high-impact and strategically chosen adjectives to convey competence and achievement (e.g., Adaptable, Analytical, Articulate, Assertive, Astute, Attentive, Authentic, Client-Focused, Collaborative, Compelling, Comprehensive, Conscientious, Constructive, Creative, Data-Driven, Decisive, Dedicated, Determined, Diligent, Diplomatic, Disciplined, Dynamic, Effective, Efficient, Empathetic, Enterprising, Exceptional, Forward-Thinking, Impactful, Incisive, Influential, Ingenious, Innovative, Inquisitive, Insightful, Integrative, Methodical, Meticulous, Perceptive, Persuasive, Pioneering, Pragmatic, Proactive, Proficient, Resilient, Resourceful, Results-Oriented, Rigorous, Strategic, Transformative). These are non-strict examples for your reference; you can use other words that fit perfectly with the context of the sentence.
+
+	##OUTPUT:
+     STRICT JSON OUTPUT ONLY — Adhere rigidly to the specified JSON structure. Output only the JSON object. Do not include any explanatory text, markdown formatting (like \\\`), comments, or any characters outside the final JSON structure. Ensure correct JSON syntax, including proper quoting of keys and string values.
+
       
-      Generate a highly effective, ATS-optimized CV, meticulously tailored to the target job description, while remaining 100% authentic to the candidate's history and natural in tone. The final output must be perceived as entirely human-written.
-      
-      Preserve all original work experiences provided by the candidate, maintaining their exact chronological order. Do not add, remove, or reorder any distinct job entries.
-      
-      Strategically rewrite ONLY the responsibilities/details within each preserved experience to maximize relevance to the job offer, quantifying achievements where possible and highlighting impact using strong action verbs. Base these modifications strictly on the provided candidate data and specific rewriting instructions. *Crucially, do not invent experiences, skills, or exaggerate claims beyond verifiable facts derived from the original CV.* Focus solely on rephrasing and highlighting existing information effectively.
-      
-      Consolidate and refine the skills section, limiting the 'additional_skills' list to a strategic selection of 8–15 key technical and soft skills most pertinent to the job description. Prioritize skills explicitly mentioned or implied in the job offer and candidate data.
-      
-      Generate a concise, compelling personal summary (candidate_description) that immediately highlights the candidate's most relevant qualifications, key strengths, and unique value proposition specifically for this role, integrating keywords from the job offer naturally.
-      
-      Employ sophisticated, high-impact action verbs (e.g., Spearheaded, Architected, Transformed, Quantified, Optimized, Mentored, Negotiated) and strategically chosen adjectives to convey competence and achievement. Frame accomplishments positively, focusing on the results and positive impact of the candidate's actions. Incorporate subtle humanizing phrases naturally where appropriate (e.g., 'Collaborated closely with cross-functional teams to achieve X...', 'Successfully navigated complex challenges by implementing Y...', 'Played a key role in improving Z...').
-      
-      STRICT JSON OUTPUT ONLY — Adhere rigidly to the specified JSON structure. Output only the JSON object. Do not include any explanatory text, markdown formatting (like \\\`), comments, or any characters outside the final JSON structure. Ensure correct JSON syntax, including proper quoting of keys and string values.
-      
-      OUTPUT STRUCTURE: 
+      OUTPUT STRUCTURE:
+      Return only a valid JSON object. Start with \`{\` and end with \`}\`. Use correct brackets (\`{}\`, \`[]\`) and straight double quotes (\`"\`). Do not include markdown or extra text. The output must be parsable by JSON.parse(). 
       {
         "generated_personal_data": {
-          "full_name": "",
-          "email": "",
-          "phone": "",
-          "city": "",
-          "additional_skills": []
+          "full_name": "string",
+          "phone": "string",
+          "email": "string",
+          "linkedin": "string"
         },
-        "candidate_description": "",
-        "generated_education": [
-          {
-            "school_name": "",
-            "field_of_study": "",
-            "start_date": "",
-            "end_date": ""
-          }
-        ],
+        "title": "string",
+        "candidate_description": "string",
         "generated_experience": [
           {
-            "position": "",
-            "company_name": "",
-            "start_date": "",
-            "end_date": "",
-            "responsibilities": []
+            "position": "string",
+            "company_name": "string",
+            "location": "string",
+            "start_date": "string",
+            "end_date": "string",
+            "responsibilities": [
+              "string",
+              "string"
+            ]
           }
         ],
+        "generated_education": [
+          {
+            "field_of_study": "string",
+            "school_name": "string",
+            "start_date": "string",
+            "end_date": "string"
+          }
+        ],
+        "generated_skills": {
+          "technical_skills": ["string"],
+          "soft_skills": ["string"],
+          "power_skills": ["string"]
+        },
         "generated_language": [
           {
-            "name": "",
-            "level": ""
+            "name": "string",
+            "level": "string"
           }
         ]
       }
     `;
 
-    console.log(promptPlan);
-
     const userPrompt = `
       TASK: Generate a professional CV in perfect ${language}.
 
-      CANDIDATE DATA:
+      The user's current CV that has been uploaded:
       ${JSON.stringify(fullCvData)}
       
-      JOB OFFER:
+      The job description of the position being applied for:
       ${JSON.stringify(jobOffer)}
 
       PROMPT PLAN STRATEGY:
 
-      Highlight these skills: ${promptPlan.highlight_skills.join(", ")}
-      Optional skills: ${promptPlan.optional_skills.join(", ")}
+      Technical skills to focus: ${promptPlan.technical_skills.join(", ")}
+      Soft skills to focus: ${promptPlan.soft_skills.join(", ")}
+      Power skills to focus: ${promptPlan.power_skills.join(", ")}
       ATS keywords to inject: ${promptPlan.ats_keywords.join(", ")}
       Writing tone: ${promptPlan.tone}
       Focus in summary: ${promptPlan.summary_focus}
@@ -171,6 +201,8 @@ export async function POST(request: Request) {
       });
     }
 
+    console.log("response", generationResponse);
+
     let generatedCV;
     try {
       generatedCV = JSON.parse(generationResponse);
@@ -191,13 +223,17 @@ export async function POST(request: Request) {
         job_offer_id: jobOffer.id,
         candidate_description: generatedCV.candidate_description,
         profile_photo_url: fullCvData.profile_photo_url || null,
+        title: generatedCV.title,
         personal_data: {
           full_name: generatedCV.generated_personal_data.full_name,
           email: generatedCV.generated_personal_data.email,
           phone: generatedCV.generated_personal_data.phone,
-          city: generatedCV.generated_personal_data.city,
-          additional_skills:
-            generatedCV.generated_personal_data.additional_skills,
+          linkedin: generatedCV.generated_personal_data.linkedin,
+        },
+        skill_list: {
+          technical_skills: generatedCV.generated_skills.technical_skills,
+          soft_skills: generatedCV.generated_skills.soft_skills,
+          power_skills: generatedCV.generated_skills.power_skills,
         },
         education_list: generatedCV.generated_education.map((edu: any) => ({
           school_name: edu.school_name,

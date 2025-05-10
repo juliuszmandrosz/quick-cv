@@ -3,12 +3,18 @@ export type CVData = {
   candidate_description: string;
   profile_photo_url: string;
   cv_user_data_id: string;
+  title: string;
+  job_url: string;
+  generated_skills: {
+    soft_skills: string[];
+    technical_skills: string[];
+    power_skills: string[];
+  };
   generated_personal_data: {
     full_name: string;
     email: string;
     phone: string;
-    city: string;
-    additional_skills: string[];
+    linkedin?: string | null;
   };
   generated_education: {
     school_name: string;

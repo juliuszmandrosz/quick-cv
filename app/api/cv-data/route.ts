@@ -6,6 +6,8 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const cvId = searchParams.get("cvId");
 
+  console.log(cvId);
+
   if (!cvId) {
     return NextResponse.json({
       success: false,
@@ -23,7 +25,8 @@ export async function GET(request: Request) {
       generated_education(*),
       generated_experience(*),
       generated_language(*),
-      generated_personal_data(*)
+      generated_personal_data(*),
+      generated_skills(*)
     `,
     )
     .eq("id", cvId)
@@ -44,9 +47,29 @@ export async function GET(request: Request) {
     });
   }
 
+  const { data: jobOffer, error: jobError } = await supabase
+    .from("job_offers")
+    .select("job_url")
+    .eq("cv_user_data_id", data.cv_user_data_id)
+    .single();
+
+  if (jobError) {
+    return NextResponse.json({
+      success: false,
+      error: "Failed to fetch job offer",
+      status: 500,
+    });
+  }
+
   data.generated_personal_data = Array.isArray(data.generated_personal_data)
     ? (data.generated_personal_data[0] ?? null)
     : null;
+
+  data.generated_skills = Array.isArray(data.generated_skills)
+    ? (data.generated_skills[0] ?? null)
+    : null;
+
+  data.job_url = jobOffer.job_url;
 
   return NextResponse.json({ success: true, data, status: 200 });
 }

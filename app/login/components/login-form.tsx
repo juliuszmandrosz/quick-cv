@@ -16,11 +16,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-// Import serwerowych akcji
 import {
   forgotPasswordAction,
   signInAction,
-  signInWithAppleAction,
   signInWithGoogleAction,
   signUpAction,
 } from "@/app/actions";
@@ -139,10 +137,13 @@ export default function LoginForm() {
   const handleSocialLogin = async (provider: "google" | "apple") => {
     try {
       startTransition(async () => {
+        const formData = new FormData();
+        const cvId = searchParams.get("cvId");
+        const lang = searchParams.get("lang");
+        if (cvId) formData.append("cvId", cvId);
+        if (lang) formData.append("lang", lang);
         if (provider === "google") {
-          await signInWithGoogleAction();
-        } else if (provider === "apple") {
-          await signInWithAppleAction();
+          await signInWithGoogleAction(formData);
         }
       });
     } catch (error: any) {

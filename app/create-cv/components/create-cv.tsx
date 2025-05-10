@@ -23,6 +23,7 @@ import {
   Upload,
 } from "lucide-react";
 import LoadingScreen from "@/app/create-cv/components/loading-screen";
+import { useCurrentUser } from "@/hooks/use-auth";
 
 export default function CreateCvClientPage() {
   const [step, setStep] = useState<number>(1);
@@ -35,6 +36,7 @@ export default function CreateCvClientPage() {
 
   const { toast } = useToast();
   const router = useRouter();
+  const user = useCurrentUser();
 
   const handleNext = async () => {
     if (step === 1) {
@@ -250,12 +252,15 @@ export default function CreateCvClientPage() {
               ) : (
                 <>
                   <Tabs defaultValue="upload">
-                    <TabsList className="dark:glass-dark glass neumorphic mb-4">
-                      <TabsTrigger value="upload">Upload CV</TabsTrigger>
-                      <TabsTrigger value="existing">
-                        Use Existing CV
-                      </TabsTrigger>
-                    </TabsList>
+                    {user.user && (
+                      <TabsList className="dark:glass-dark glass neumorphic mb-4">
+                        <TabsTrigger value="upload">Upload CV</TabsTrigger>
+                        <TabsTrigger value="existing">
+                          Use Existing CV
+                        </TabsTrigger>
+                      </TabsList>
+                    )}
+
                     <TabsContent value="upload">
                       <div className="space-y-4">
                         <div className="border-2 border-dashed border-primary/40 rounded-lg p-6 text-center cursor-pointer hover:border-primary/60 transition-colors">
@@ -278,7 +283,7 @@ export default function CreateCvClientPage() {
                                 Drop your CV here or click to browse
                               </p>
                               <p className="text-xs text-muted-foreground">
-                                Supported formats: PDF, DOC, DOCX, TXT
+                                Supported formats: PDF
                               </p>
                             </div>
                           </label>
@@ -324,54 +329,60 @@ export default function CreateCvClientPage() {
                       </div>
                     </TabsContent>
                   </Tabs>
-                  <div className="mt-6">
-                    <Label htmlFor="photo-upload" className="mb-2">
-                      Upload Profile Photo (Optional)
-                    </Label>
-                    <div className="border-2 border-dashed border-primary/40 rounded-lg p-4 text-center cursor-pointer hover:border-primary/60 transition-colors">
-                      <input
-                        id="photo-upload"
-                        type="file"
-                        className="hidden"
-                        onChange={handlePhotoChange}
-                        accept="image/*"
-                      />
-                      <label htmlFor="photo-upload" className="cursor-pointer">
-                        <div className="space-y-2">
-                          <div className="mx-auto bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center">
-                            <Upload className="h-6 w-6 text-primary" />
-                          </div>
-                          <div className="text-lg font-medium">
-                            Upload your photo
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            Drop your photo here or click to browse
-                          </p>
-                        </div>
-                      </label>
-                    </div>
-                    {uploadedPhoto && (
-                      <div className="mt-2 flex items-center p-3 rounded-md bg-primary/10">
-                        {uploadedPhoto && (
-                          <div className="flex items-center gap-2">
-                            <div className="h-10 w-10 rounded-full overflow-hidden bg-muted">
-                              <img
-                                src={
-                                  URL.createObjectURL(uploadedPhoto) ||
-                                  "/placeholder.svg"
-                                }
-                                alt="Profile preview"
-                                className="h-full w-full object-cover"
-                              />
+                  {step === 1 && (
+                    <div className="mt-6">
+                      <Label htmlFor="photo-upload" className="mb-2">
+                        Upload Profile Photo (Optional)
+                      </Label>
+                      <div className="border-2 border-dashed border-primary/40 rounded-lg p-4 text-center cursor-pointer hover:border-primary/60 transition-colors">
+                        <input
+                          id="photo-upload"
+                          type="file"
+                          className="hidden"
+                          onChange={handlePhotoChange}
+                          accept="image/*"
+                        />
+                        <label
+                          htmlFor="photo-upload"
+                          className="cursor-pointer"
+                        >
+                          <div className="space-y-2">
+                            <div className="mx-auto bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center">
+                              <Upload className="h-6 w-6 text-primary" />
                             </div>
-                            <span className="text-sm">
-                              {uploadedPhoto.name}
-                            </span>
+                            <div className="text-lg font-medium">
+                              Upload your photo
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              Drop your photo here or click to browse
+                            </p>
                           </div>
-                        )}
+                        </label>
                       </div>
-                    )}
-                  </div>
+                      {uploadedPhoto && (
+                        <div className="mt-2 flex items-center p-3 rounded-md bg-primary/10">
+                          {uploadedPhoto && (
+                            <div className="flex items-center gap-2">
+                              <div className="h-10 w-10 rounded-full overflow-hidden bg-muted">
+                                <img
+                                  src={
+                                    URL.createObjectURL(uploadedPhoto) ||
+                                    "/placeholder.svg"
+                                  }
+                                  alt="Profile preview"
+                                  className="h-full w-full object-cover"
+                                />
+                              </div>
+                              <span className="text-sm">
+                                {uploadedPhoto.name}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   <div className="mt-6">
                     <Label htmlFor="cv-language" className="mb-2">
                       CV Language

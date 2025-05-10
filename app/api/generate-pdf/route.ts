@@ -74,8 +74,8 @@ export async function POST(req: Request) {
       format: "A4",
       printBackground: true,
       margin: { top: "0mm", bottom: "0mm", left: "0mm", right: "0mm" },
-      scale: 1.0,
-      preferCSSPageSize: true,
+      scale: 0.8,
+      preferCSSPageSize: false,
     });
 
     await browser.close();

@@ -10,23 +10,25 @@ export default function CvTemplate({ cvData }: { cvData: CVData }) {
     date ? format(new Date(date), "yyyy.MM") : "";
 
   return (
-    <Card className="p-8 bg-white shadow-md border-gray-200">
-      <div className="text-center mb-10">
-        <h2 className="text-3xl font-bold text-gray-800 mb-1">
+    <Card className="ps-8 pe-8 pt-4 pb-4 bg-white shadow-md border-gray-200">
+      <div className="text-center mb-4">
+        <h2 className="text-2xl font-bold text-gray-800 mb-1">
           {cvData.generated_personal_data.full_name}
         </h2>
-        <p className="text-gray-600 text-lg mb-3">Software Engineer</p>
+        <p className="text-gray-600 text-lg mb-1">{cvData.title}</p>
         <div className="text-sm text-gray-600">
-          <p>
-            {cvData.generated_personal_data.email} |{" "}
-            {cvData.generated_personal_data.phone}
-          </p>
-          {cvData.generated_personal_data.city && (
-            <p className="mt-1">{cvData.generated_personal_data.city}</p>
+          {cvData.generated_personal_data.linkedin ? (
+            <p>
+              {cvData.generated_personal_data.email} |{" "}
+              {cvData.generated_personal_data.phone} |{" "}
+              {cvData.generated_personal_data.linkedin}
+            </p>
+          ) : (
+            <p>
+              {cvData.generated_personal_data.email} |{" "}
+              {cvData.generated_personal_data.phone}
+            </p>
           )}
-          {/*{cvData.generated_personal_data.linkedin && (*/}
-          {/*  <p className="mt-1">{cvData.generated_personal_data.linkedin}</p>*/}
-          {/*)}*/}
         </div>
       </div>
 
@@ -36,9 +38,31 @@ export default function CvTemplate({ cvData }: { cvData: CVData }) {
         </p>
       </Section>
 
-      <Section title="Skills">
+      <Section title="Technical Skills">
         <div className="flex flex-wrap gap-2">
-          {cvData.generated_personal_data.additional_skills.map((skill, i) => (
+          {cvData.generated_skills.technical_skills.map((skill, i) => (
+            <span
+              key={i}
+              className="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800 border border-gray-200"
+            >
+              {skill}
+            </span>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="Soft & Power Skills">
+        <div className="flex flex-wrap gap-2">
+          {cvData.generated_skills.soft_skills.map((skill, i) => (
+            <span
+              key={i}
+              className="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800 border border-gray-200"
+            >
+              {skill}
+            </span>
+          ))}
+
+          {cvData.generated_skills.power_skills.map((skill, i) => (
             <span
               key={i}
               className="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800 border border-gray-200"
@@ -56,9 +80,7 @@ export default function CvTemplate({ cvData }: { cvData: CVData }) {
             className={`mb-6 last:mb-0 ${idx > 0 && false ? "blur-sm opacity-70 pointer-events-none" : ""}`}
           >
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
-              <h4 className="font-bold text-gray-800 text-lg">
-                {exp.position}
-              </h4>
+              <h5 className="font-bold text-gray-800">{exp.position}</h5>
               <span className="text-gray-600 text-sm mt-1 sm:mt-0">
                 {formatDate(exp.start_date)} -{" "}
                 {exp.end_date ? formatDate(exp.end_date) : "Present"}
@@ -118,8 +140,8 @@ const Section = ({
   children: React.ReactNode;
   title: string;
 }) => (
-  <div className="mb-8 last:mb-0">
-    <h3 className="text-xl font-bold text-gray-800 border-b border-gray-200 pb-2 mb-4">
+  <div className="mb-6 last:mb-0">
+    <h3 className="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2 mb-2">
       {title}
     </h3>
     {children}

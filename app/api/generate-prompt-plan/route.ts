@@ -75,8 +75,9 @@ export async function POST(request: Request) {
     const planUserPrompt = `
       Generate a PROMPT PLAN in the following JSON format:
       {
-        "highlight_skills": [], 
-        "optional_skills": [], 
+        "technical_skills": [], 
+        "soft_skills": [], 
+        "power_skills": [], 
         "ats_keywords": [], 
         "tone": "", 
         "summary_focus": "", 
@@ -96,15 +97,20 @@ export async function POST(request: Request) {
       
       RULES AND GUIDELINES FOR GENERATING THE JSON PLAN:
       
-      **highlight_skills:**
-      - Identify and list precisely 5 to 8 of the candidate's skills that are most critical and directly relevant to the core requirements and responsibilities listed in the job offer.
+      **technical_skills:**
+      - Identify and list precisely 5 to 6 of the candidate's technical skills that are most critical and directly relevant to the core requirements and responsibilities listed in the job offer.
       - Prioritize skills explicitly mentioned in the "Requirements" or "Must-Have" sections of the job description.
       - Ensure these skills are genuinely possessed by the candidate according to their provided data.
       - Output: Array of strings.
       
-      **optional_skills:**
-      - Select 3 to 7 additional relevant skills from the candidate's data that, while perhaps not primary requirements, add significant value or align with "Nice-to-Have" qualifications mentioned in the job offer.
-      - These could include transferable skills, specific tools, or secondary competencies that differentiate the candidate.
+      **soft_skills:**
+      - Select 3 to 4 of the candidate's soft skills that are most critical and directly relevant to the core requirements and responsibilities listed in the job offer.
+      - Examples: Clear Communication, Active Listening, Empathy, Collaboration, Teamwork, Interpersonal Networking, Foundational Negotiation, Everyday Problem-Solving, Creativity, Adaptability, Flexibility, Resilience, Stress Management, Growth Mindset, Curiosity, Time Management, Organizational Skills, Work Ethic, Dependability, Integrity, Inclusive Behavior, Attention to Detail, Self-Awareness, Customer Focus, Openness to Feedback, Presentation Delivery, Public Engagement
+      - Output: Array of strings.
+      
+      **power_skills:**
+      - Select 3 to 4 of the candidate's power skills that are most critical and directly relevant to the core requirements and responsibilities listed in the job offer.
+      - Examples: Strategic Communication, Emotional Intelligence, Critical & Analytical Thinking, Complex Problem-Solving, Strategic Vision & Execution, Visionary Leadership, Talent Development, Influence & Persuasion, Advanced Negotiation, Dealmaking, Conflict Transformation, Change Catalysis, Strategic Prioritization & Execution, Learning Agility & Innovation Mindset, Cross-Cultural Competence, Inclusive & Empowering Leadership, Strategic Alliance Building, Driving Innovation, Data-Informed Decision-Making
       - Output: Array of strings.
       
       **ats_keywords:**
@@ -144,6 +150,8 @@ export async function POST(request: Request) {
       temperature: 0.4,
     });
 
+    console.log("PLAN COMPLETION", planCompletion.choices[0].message?.content); // Log the raw response for debugging
+
     const promptPlan = JSON.parse(
       planCompletion.choices[0].message?.content || "{}",
     );
@@ -160,8 +168,9 @@ export async function POST(request: Request) {
     const { data: promptPlanId, error: insertError } = await supabase.rpc(
       "insert_prompt_plan_with_instructions",
       {
-        highlight_skills: promptPlan.highlight_skills,
-        optional_skills: promptPlan.optional_skills,
+        technical_skills: promptPlan.technical_skills,
+        soft_skills: promptPlan.soft_skills,
+        power_skills: promptPlan.power_skills,
         ats_keywords: promptPlan.ats_keywords,
         tone: promptPlan.tone,
         summary_focus: promptPlan.summary_focus,
