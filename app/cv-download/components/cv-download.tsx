@@ -13,19 +13,14 @@ export default function CvDownload() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log("siema");
     if (!cvId) return;
 
     const fetchData = async () => {
       try {
-        console.log("siema2");
         const res = await fetch(`/api/cv-data?cvId=${cvId}`, {
           cache: "no-store",
         });
-        console.log("siema3");
         const json = await res.json();
-        console.log("siema4");
-        console.log(json);
         if (json.success) {
           setCvData(json.data);
         }

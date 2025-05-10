@@ -6,8 +6,6 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const cvId = searchParams.get("cvId");
 
-  console.log(cvId);
-
   if (!cvId) {
     return NextResponse.json({
       success: false,
@@ -50,7 +48,7 @@ export async function GET(request: Request) {
   const { data: jobOffer, error: jobError } = await supabase
     .from("job_offers")
     .select("job_url")
-    .eq("cv_user_data_id", data.cv_user_data_id)
+    .eq("id", data.job_offer_id)
     .single();
 
   if (jobError) {

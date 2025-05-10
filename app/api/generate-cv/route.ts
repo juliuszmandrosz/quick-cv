@@ -6,7 +6,8 @@ import OpenAI from "openai";
 
 export async function POST(request: Request) {
   try {
-    const { language, cvUserDataId } = await request.json();
+    const { language, cvUserDataId, jobOfferId, promptPlanId } =
+      await request.json();
 
     const supabase = await createClient();
 
@@ -15,14 +16,9 @@ export async function POST(request: Request) {
       .select(
         `
         *,
-        job_offers(*),
         education(*),
         experience(*),
-        languages(*),
-        generated_prompt_plan(
-          *,
-          generated_experience_rewrite_instruction(*)
-        )
+        languages(*)
       `,
       )
       .eq("id", cvUserDataId)
@@ -43,9 +39,20 @@ export async function POST(request: Request) {
       });
     }
 
-    const jobOffer = Array.isArray(fullCvData.job_offers)
-      ? fullCvData.job_offers[0]
-      : fullCvData.job_offers;
+    const { data: jobOffer, error: jobError } = await supabase
+      .from("job_offers")
+      .select("*")
+      .eq("id", jobOfferId)
+      .single();
+
+    if (jobError) {
+      return NextResponse.json({
+        success: false,
+        error: "Failed to fetch job offer",
+        status: 500,
+      });
+    }
+
     if (!jobOffer) {
       return NextResponse.json({
         success: false,
@@ -54,9 +61,25 @@ export async function POST(request: Request) {
       });
     }
 
-    const promptPlan = Array.isArray(fullCvData.generated_prompt_plan)
-      ? fullCvData.generated_prompt_plan[0]
-      : fullCvData.generated_prompt_plan;
+    const { data: promptPlan, error: promptPlanError } = await supabase
+      .from("generated_prompt_plan")
+      .select(
+        `
+      *,
+      generated_experience_rewrite_instruction(*)
+    `,
+      )
+      .eq("id", promptPlanId)
+      .single();
+
+    if (promptPlanError) {
+      return NextResponse.json({
+        success: false,
+        error: promptPlanError.message,
+        status: 500,
+      });
+    }
+
     if (!promptPlan) {
       return NextResponse.json({
         success: false,
@@ -201,8 +224,6 @@ export async function POST(request: Request) {
       });
     }
 
-    console.log("response", generationResponse);
-
     let generatedCV;
     try {
       generatedCV = JSON.parse(generationResponse);
@@ -213,8 +234,6 @@ export async function POST(request: Request) {
         error: "Failed to parse generated CV response: " + generationResponse,
       });
     }
-
-    console.log("GENERATED CV", generatedCV);
 
     const { data: generatedCvId, error: saveError } = await supabase.rpc(
       "save_generated_cv",
@@ -268,7 +287,7 @@ export async function POST(request: Request) {
       cvId: generatedCvId,
     });
   } catch (err: any) {
-    console.error("Merged endpoint error:", err);
+    console.error("Generate cv error:", err);
     return NextResponse.json({
       success: false,
       error: err.message,

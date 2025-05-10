@@ -6,12 +6,19 @@ import OpenAI from "openai";
 
 export async function POST(request: Request) {
   try {
-    const { cvUserDataId } = await request.json();
+    const { cvUserDataId, jobOfferId } = await request.json();
 
     if (!cvUserDataId) {
       return NextResponse.json({
         success: false,
         error: "CvDataId is required",
+      });
+    }
+
+    if (!jobOfferId) {
+      return NextResponse.json({
+        success: false,
+        error: "jobOfferId is required",
       });
     }
 
@@ -21,12 +28,11 @@ export async function POST(request: Request) {
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    const { data: fullCvData, error: selectError } = await supabase
+    const { data: fullCvData, error: selectUserDataError } = await supabase
       .from("cv_user_data")
       .select(
         `
         *,
-        job_offers(*),
         education(*),
         experience(*),
         languages(*)
@@ -35,10 +41,10 @@ export async function POST(request: Request) {
       .eq("id", cvUserDataId)
       .single();
 
-    if (selectError) {
+    if (selectUserDataError) {
       return NextResponse.json({
         success: false,
-        error: selectError.message,
+        error: selectUserDataError.message,
         status: 500,
       });
     }
@@ -50,9 +56,20 @@ export async function POST(request: Request) {
       });
     }
 
-    const jobOffer = Array.isArray(fullCvData.job_offers)
-      ? fullCvData.job_offers[0]
-      : fullCvData.job_offers;
+    const { data: jobOffer, error: jobOfferError } = await supabase
+      .from("job_offers")
+      .select("*")
+      .eq("id", jobOfferId)
+      .single();
+
+    if (jobOfferError) {
+      return NextResponse.json({
+        success: false,
+        error: jobOfferError.message,
+        status: 500,
+      });
+    }
+
     if (!jobOffer) {
       return NextResponse.json({
         success: false,
@@ -60,8 +77,6 @@ export async function POST(request: Request) {
         status: 404,
       });
     }
-
-    console.log("JOB SKILLS" + jobOffer.requirements);
 
     const planSystemPrompt = `
       You are a strategic CV and Talent Acquisition AI specialist.
@@ -150,13 +165,9 @@ export async function POST(request: Request) {
       temperature: 0.4,
     });
 
-    console.log("PLAN COMPLETION", planCompletion.choices[0].message?.content); // Log the raw response for debugging
-
     const promptPlan = JSON.parse(
       planCompletion.choices[0].message?.content || "{}",
     );
-
-    console.log(promptPlan);
 
     const instructionsArray = Object.entries(
       promptPlan.experience_rewrite_instructions || {},
@@ -192,7 +203,7 @@ export async function POST(request: Request) {
       promptPlanId,
     });
   } catch (err: any) {
-    console.error("Merged endpoint error:", err);
+    console.error("Generate prompt plan error:", err);
     return NextResponse.json({
       success: false,
       error: err.message,

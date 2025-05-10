@@ -123,8 +123,6 @@ export async function POST(request: Request) {
       });
     }
 
-    console.log("EXTRACTED DATA", extractedData);
-
     const { data: cvUserDataId, error: createError } = await supabase.rpc(
       "create_default_cv_user_data",
       {
@@ -142,7 +140,7 @@ export async function POST(request: Request) {
     );
 
     if (createError) {
-      console.log(
+      console.error(
         "Create error:",
         createError.message,
         createError.code,
@@ -168,7 +166,7 @@ export async function POST(request: Request) {
       cvUserDataId,
     });
   } catch (err: any) {
-    console.error("Merged endpoint error:", err);
+    console.error("Extract cv error:", err);
     return NextResponse.json({
       success: false,
       error: err.message,

@@ -16,8 +16,6 @@ export async function POST(req: Request) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log(user);
-
   if (!user) {
     return new Response(null, {
       status: 401,
@@ -39,8 +37,6 @@ export async function POST(req: Request) {
       .select("*")
       .eq("user_id", user.id)
       .single();
-
-    console.log(sub);
 
     if (!sub || sub.tokens <= 0) {
       return new Response("Insufficient tokens", { status: 402 });

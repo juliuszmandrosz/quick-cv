@@ -41,8 +41,6 @@ export default function CreateCvClientPage() {
   const router = useRouter();
   const user = useCurrentUser();
 
-  console.log(user);
-
   const handleNext = async () => {
     if (step === 1) {
       if (!jobUrl) {
@@ -128,6 +126,26 @@ export default function CreateCvClientPage() {
           cvUserDataId = extractCvResult.cvUserDataId;
         } else {
           cvUserDataId = selectedCv!.id;
+          const updateJobOfferResponse = await fetch("/api/job-offers", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              jobOfferId: jobOfferId,
+              cvUserDataId: cvUserDataId,
+            }),
+          });
+
+          const updateJobOfferResult = await updateJobOfferResponse.json();
+
+          if (!updateJobOfferResult.success) {
+            setIsGenerating(false);
+            toast({
+              title: "Error",
+              description: updateJobOfferResult.error || "Error creating CV",
+              variant: "destructive",
+            });
+            return;
+          }
         }
 
         const generatePromptPlanResponse = await fetch(
@@ -137,6 +155,7 @@ export default function CreateCvClientPage() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               cvUserDataId: cvUserDataId,
+              jobOfferId: jobOfferId,
             }),
           },
         );
@@ -160,6 +179,8 @@ export default function CreateCvClientPage() {
           body: JSON.stringify({
             cvUserDataId: cvUserDataId,
             language: cvLanguage,
+            jobOfferId: jobOfferId,
+            promptPlanId: generatePromptPlanResult.promptPlanId,
           }),
         });
 

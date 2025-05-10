@@ -47,8 +47,6 @@ export default function LoginForm() {
   useEffect(() => {
     const status = searchParams.get("status");
     const message = searchParams.get("message");
-    console.log(message);
-    console.log(status);
     if (status && message) {
       toast({
         description: message,

@@ -36,3 +36,38 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: error.message });
   }
 }
+
+export async function PATCH(req: Request) {
+  const body = await req.json();
+  const { jobOfferId, cvUserDataId } = body;
+
+  if (!cvUserDataId) {
+    return NextResponse.json({
+      success: false,
+      error: "CvDataId is required",
+    });
+  }
+
+  if (!jobOfferId) {
+    return NextResponse.json({
+      success: false,
+      error: "JobOfferId is required",
+    });
+  }
+
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("job_offers")
+    .update({ cv_user_data_id: cvUserDataId })
+    .eq("id", jobOfferId);
+
+  if (error) {
+    return NextResponse.json({
+      success: false,
+      message: "Error updating job offer",
+    });
+  }
+
+  return NextResponse.json({ success: true });
+}
