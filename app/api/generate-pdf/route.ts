@@ -32,13 +32,16 @@ export async function POST(req: Request) {
   if (!cv) return new Response("CV not found", { status: 404 });
 
   if (!cv.token_consumed) {
-    const { data: sub } = await supabase
+    const { data: sub, error } = await supabase
       .from("subscriptions")
       .select("*")
       .eq("user_id", user.id)
-      .single();
+      .gt("tokens_left", 0)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-    if (!sub || sub.tokens <= 0) {
+    if (!sub) {
       return new Response("Insufficient tokens", { status: 402 });
     }
 
