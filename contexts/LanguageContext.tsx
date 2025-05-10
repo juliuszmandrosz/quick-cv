@@ -119,6 +119,17 @@ export const translations = {
     "cta.feature3": "Land More Interviews",
     "cta.button": "Create Your Perfect CV",
     "cta.free": "No credit card required. Free to get started.",
+
+    // CV template section
+    "cv.ready": "Your tailored CV is ready for download",
+    "cv.jobOffer": "Job Offer Link",
+    "cv.downloadBtn": "Download CV",
+    "cv.summary": "Summary",
+    "cv.technicalSkills": "Technical Skills",
+    "cv.softPowerSkills": "Soft & Power Skills",
+    "cv.experience": "Experience",
+    "cv.languages": "Languages",
+    "cv.education": "Education",
   },
   pl: {
     // Header
@@ -218,6 +229,17 @@ export const translations = {
     "cta.feature3": "Zdobywasz więcej rozmów",
     "cta.button": "Stwórz swoje idealne CV",
     "cta.free": "Karta kredytowa nie jest wymagana. Za darmo na start.",
+
+    // CV template section
+    "cv.ready": "Twoje idealnie dopasowane CV jest gotowe do pobrania",
+    "cv.jobOffer": "Link do oferty pracy",
+    "cv.downloadBtn": "Pobierz CV",
+    "cv.summary": "Podsumowanie zawodowe",
+    "cv.technicalSkills": "Umiejętności techniczne",
+    "cv.softPowerSkills": "Kluczowe kompetencje miękkie i strategiczne",
+    "cv.experience": "Doświadczenie zawodowe",
+    "cv.languages": "Języki obce",
+    "cv.education": "Edukacja",
   },
 };
 

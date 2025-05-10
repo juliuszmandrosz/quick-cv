@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 export default function CvDownload() {
   const searchParams = useSearchParams();
   const cvId = searchParams.get("cvId");
+  const lang = searchParams.get("lang");
 
   const [cvData, setCvData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,7 +57,7 @@ export default function CvDownload() {
 
   return (
     <div>
-      <CvTemplate cvData={cvData} />
+      <CvTemplate cvData={cvData} lang={lang ?? "en"} />
     </div>
   );
 }

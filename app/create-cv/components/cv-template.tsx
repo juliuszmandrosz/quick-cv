@@ -4,8 +4,15 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { CVData } from "@/app/create-cv/types/cv-data";
 import { format } from "date-fns";
+import { translations } from "@/contexts/LanguageContext";
 
-export default function CvTemplate({ cvData }: { cvData: CVData }) {
+export default function CvTemplate({
+  cvData,
+  lang,
+}: {
+  cvData: CVData;
+  lang: string;
+}) {
   const formatDate = (date: string | undefined | null) =>
     date ? format(new Date(date), "yyyy.MM") : "";
 
@@ -32,13 +39,13 @@ export default function CvTemplate({ cvData }: { cvData: CVData }) {
         </div>
       </div>
 
-      <Section title="Summary">
+      <Section title={translations[lang]["cv.summary"]}>
         <p className="text-gray-700 leading-relaxed">
           {cvData.candidate_description}
         </p>
       </Section>
 
-      <Section title="Technical Skills">
+      <Section title={translations[lang]["cv.technicalSkills"]}>
         <div className="flex flex-wrap gap-2">
           {cvData.generated_skills.technical_skills.map((skill, i) => (
             <span
@@ -51,7 +58,7 @@ export default function CvTemplate({ cvData }: { cvData: CVData }) {
         </div>
       </Section>
 
-      <Section title="Soft & Power Skills">
+      <Section title={translations[lang]["cv.softPowerSkills"]}>
         <div className="flex flex-wrap gap-2">
           {cvData.generated_skills.soft_skills.map((skill, i) => (
             <span
@@ -73,7 +80,7 @@ export default function CvTemplate({ cvData }: { cvData: CVData }) {
         </div>
       </Section>
 
-      <Section title="Experience">
+      <Section title={translations[lang]["cv.experience"]}>
         {cvData.generated_experience.map((exp, idx) => (
           <div
             key={idx}
@@ -98,7 +105,7 @@ export default function CvTemplate({ cvData }: { cvData: CVData }) {
         ))}
       </Section>
 
-      <Section title="Languages">
+      <Section title={translations[lang]["cv.languages"]}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {cvData.generated_language.map((lang, i) => (
             <div
@@ -112,7 +119,7 @@ export default function CvTemplate({ cvData }: { cvData: CVData }) {
         </div>
       </Section>
 
-      <Section title="Education">
+      <Section title={translations[lang]["cv.education"]}>
         {cvData.generated_education.map((edu, i) => (
           <div key={i} className="mb-4 last:mb-0">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start">

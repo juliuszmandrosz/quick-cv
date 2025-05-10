@@ -7,8 +7,10 @@ import { useToast } from "@/hooks/use-toast";
 import { Download, Loader2 } from "lucide-react";
 import type { CVData } from "@/app/create-cv/types/cv-data";
 import CvTemplate from "@/app/create-cv/components/cv-template";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const CvPreviewClient = () => {
+  const { t } = useLanguage();
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -123,20 +125,18 @@ export const CvPreviewClient = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">CV Preview</h1>
+          <p className="text-muted-foreground mt-2">{t("cv.ready")}</p>
           <p className="text-muted-foreground mt-2">
-            Your tailored CV is ready for download
-          </p>
-          <p className="text-muted-foreground mt-2">
-            <a href={cvData.job_url}>Job offer</a>
+            <a href={cvData.job_url}>{t("cv.jobOffer")}</a>
           </p>
         </div>
 
         <Button onClick={handleDownload} className="shadow-sm">
-          <Download className="mr-2 h-4 w-4" /> Download CV
+          <Download className="mr-2 h-4 w-4" /> {t("cv.downloadBtn")}
         </Button>
       </div>
 
-      <CvTemplate cvData={cvData} />
+      <CvTemplate cvData={cvData} lang={lang ?? "en"} />
     </div>
   );
 };
