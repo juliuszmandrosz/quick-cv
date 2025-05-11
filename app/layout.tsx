@@ -6,8 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
-  title: "Twoja apka",
-  description: "Opis",
+  title: "NICE CV",
+  description: "Create the perfect CV for the job you want",
 };
 
 // const queryClient = new QueryClient();

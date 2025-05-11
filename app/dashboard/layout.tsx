@@ -1,11 +1,11 @@
 import type React from "react";
+
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { signOutAction } from "@/app/actions";
-import { DashboardSidebar } from "@/components/DashboardSidebar";
+import { AppSidebar } from "@/app/dashboard/components/app-sidebar";
 
 export default function DashboardLayout({
   children,
@@ -13,17 +13,15 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen">
-      <SidebarProvider>
-        <DashboardSidebar signOutAction={signOutAction} />
-        <SidebarInset>
-          <div className="flex items-center h-16 px-4 border-b">
-            <SidebarTrigger />
-            <div className="ml-auto"></div>
-          </div>
-          <div className="container py-6 px-4 md:px-6">{children}</div>
-        </SidebarInset>
-      </SidebarProvider>
-    </div>
+    <SidebarProvider defaultOpen={true}>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 items-center border-b px-4">
+          <SidebarTrigger className="mr-2" />
+          <h1 className="text-lg font-medium">Dashboard</h1>
+        </header>
+        <main className="flex-1 overflow-auto">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

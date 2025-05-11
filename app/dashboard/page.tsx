@@ -1,124 +1,185 @@
 "use client";
+
 import Link from "next/link";
-import { ArrowRight, Award, FileText } from "lucide-react";
+import { ChevronRight, Clock, FileText, Plus, Zap } from "lucide-react";
+
+import { useCurrentUser } from "@/hooks/use-auth";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useCurrentUser } from "@/hooks/use-auth";
+import { Progress } from "@/components/ui/progress";
+import { StatCard } from "@/app/dashboard/components/stat-card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useEffect, useState } from "react";
 
-const DashboardStats = () => {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
-      <Card className="dark:glass-dark glass neumorphic">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            Total CVs Created
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center">
-            <FileText className="h-5 w-5 md:h-6 md:w-6 mr-2 text-primary" />
-            <span className="text-xl md:text-2xl font-bold">12</span>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="dark:glass-dark glass neumorphic">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            Credits Remaining
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center">
-            <Award className="h-5 w-5 md:h-6 md:w-6 mr-2 text-secondary" />
-            <span className="text-xl md:text-2xl font-bold">5</span>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+type RecentCV = {
+  id: string;
+  lang?: string | null;
+  title: string;
+  created_at: string;
 };
 
 const Dashboard = () => {
   const user = useCurrentUser();
+  const isMobile = useIsMobile();
+  const [recentCVs, setRecentCVs] = useState<RecentCV[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCVs = async () => {
+      try {
+        const res = await fetch("/api/recent-generated-cvs");
+        const data = await res.json();
+        setRecentCVs(data.data || []);
+        console.log("Fetched recent CVs:", data); // Debugging line to check the fetched data
+      } catch (error) {
+        console.error("Failed to fetch recent CVs", error);
+        setRecentCVs([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCVs();
+  }, []);
+
   return (
-    <div className="space-y-6 md:space-y-8">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-          Dashboard
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Welcome back, {user.user?.email}
-        </p>
+    <div className="container mx-auto max-w-6xl space-y-6 p-4 md:py-8 md:space-y-8">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold md:text-3xl">
+            Welcome back, {user?.user?.email || "User"}
+          </h1>
+          <p className="mt-1 text-muted-foreground">
+            Manage your CVs and create new ones
+          </p>
+        </div>
+        <Link href="/create-cv">
+          <Button className="w-full shadow-md transition-all hover:shadow-lg md:w-auto">
+            <Plus className="mr-2 h-4 w-4" />
+            New CV
+          </Button>
+        </Link>
       </div>
 
-      <DashboardStats />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
+        <StatCard
+          title="Total CVs Created"
+          value="12"
+          icon={<FileText className="h-5 w-5 text-primary" />}
+        />
+        <Card className="shadow-sm transition-all hover:shadow-md">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Remaining Credits
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-2 flex items-center justify-between">
+              <div className="text-2xl font-bold">8/15</div>
+              <Badge variant="outline" className="bg-primary/10 text-primary">
+                <Zap className="mr-1 h-3 w-3" />
+                Premium
+              </Badge>
+            </div>
+            <Progress value={53} className="h-2" />
+          </CardContent>
+        </Card>
+        <StatCard
+          title="Interview Preparation Sessions"
+          value="0"
+          description="Available soon!"
+        />
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-        <Card className="col-span-1 lg:col-span-2 dark:glass-dark glass neumorphic">
+      <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-3">
+        <Card className="shadow-sm transition-all hover:shadow-md lg:col-span-2">
           <CardHeader>
-            <CardTitle>Create Your Next CV</CardTitle>
+            <CardTitle>Recent CVs</CardTitle>
             <CardDescription>
-              Paste a job offer link and generate a ready-to-send CV.
+              Your recently created or edited CVs
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 sm:p-6 rounded-lg bg-primary/5 border border-primary/20">
-              <div className="mb-4 sm:mb-0">
-                <h3 className="text-lg md:text-xl font-semibold">
-                  Get started now
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                  It takes less than a minute.
-                </p>
+            {loading ? (
+              <div className="space-y-3">
+                <Skeleton className="h-14 rounded-md" />
+                <Skeleton className="h-14 rounded-md" />
+                <Skeleton className="h-14 rounded-md" />
               </div>
-              <Link href="/create-cv">
-                <Button
-                  variant="default"
-                  className="neumorphic-button w-full sm:w-auto"
-                >
-                  Generate CV <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
+            ) : recentCVs?.length === 0 ? (
+              <div className="text-center text-muted-foreground py-24">
+                <p>You haven’t created any CVs yet.</p>
+              </div>
+            ) : (
+              <div className="space-y-3 md:space-y-4">
+                {recentCVs.map((cv) => (
+                  <div
+                    key={cv.id}
+                    className="flex items-center justify-between rounded-lg bg-muted/50 p-3 transition-colors hover:bg-muted"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-md bg-primary/10 p-2">
+                        <FileText className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium">{cv.title}</h3>
+                        <p className="flex items-center text-xs text-muted-foreground">
+                          <Clock className="mr-1 h-3 w-3" />
+                          {new Date(cv.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                    <Link
+                      href={`/cv-preview?cvId=${cv.id}&lang=${cv.lang ?? "en"}`}
+                    >
+                      <Button variant="ghost" size={isMobile ? "icon" : "sm"}>
+                        {!isMobile && <span className="mr-1">View</span>}
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
+          {recentCVs?.length === 0 ? null : (
+            <CardFooter className="border-t pt-4 flex justify-center">
+              <Link href="/my-cvs">
+                <Button variant="outline">View All CVs</Button>
+              </Link>
+            </CardFooter>
+          )}
         </Card>
 
-        <Card className="dark:glass-dark glass neumorphic">
+        <Card className="shadow-sm transition-all hover:shadow-md">
           <CardHeader>
-            <CardTitle>Recent CVs</CardTitle>
-            <CardDescription>Your latest CVs</CardDescription>
+            <CardTitle>Create a New CV</CardTitle>
+            <CardDescription>
+              Start from scratch or use a template
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between p-3 rounded-md bg-background/50 border border-border/50 hover:bg-primary/5 transition-colors cursor-pointer"
-              >
-                <div className="flex items-center">
-                  <FileText className="h-5 w-5 mr-2 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium">Software Developer CV</p>
-                    <p className="text-xs text-muted-foreground">
-                      Updated {i} day{i > 1 ? "s" : ""}
-                    </p>
-                  </div>
-                </div>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-
-            <Link href="/cv-repository">
-              <Button variant="outline" className="w-full neumorphic-button">
-                View All CVs
+          <CardContent className="flex flex-col items-center pt-4 pb-6 text-center">
+            <div className="mb-4 rounded-full bg-primary/10 p-4">
+              <FileText className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="mb-2 text-lg font-medium">Ready to stand out?</h3>
+            <p className="mb-6 text-sm text-muted-foreground">
+              Our AI-powered CV creator will help you craft the perfect CV
+              tailored to your target job.
+            </p>
+            <Link href="/create-cv" className="w-full">
+              <Button className="w-full shadow-sm">
+                <Plus className="mr-2 h-4 w-4" />
+                Start Creating
               </Button>
             </Link>
           </CardContent>

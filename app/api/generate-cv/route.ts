@@ -239,6 +239,7 @@ export async function POST(request: Request) {
       "save_generated_cv",
       {
         cv_user_data_id: cvUserDataId,
+        lang: language,
         job_offer_id: jobOffer.id,
         candidate_description: generatedCV.candidate_description,
         profile_photo_url: fullCvData.profile_photo_url || null,

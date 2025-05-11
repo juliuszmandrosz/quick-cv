@@ -8,11 +8,14 @@ import { Download, Loader2 } from "lucide-react";
 import type { CVData } from "@/app/create-cv/types/cv-data";
 import CvTemplate from "@/app/create-cv/components/cv-template";
 import { useLanguage } from "@/contexts/LanguageContext";
+import Link from "next/link";
+import { useCurrentUser } from "@/hooks/use-auth";
 
 export const CvPreviewClient = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
   const searchParams = useSearchParams();
+  const user = useCurrentUser();
   const router = useRouter();
   const cvId = searchParams.get("cvId");
   const lang = searchParams.get("lang");
@@ -144,18 +147,41 @@ export const CvPreviewClient = () => {
           </p>
         </div>
 
-        <Button
-          onClick={handleDownload}
-          className="shadow-sm"
-          disabled={isDownloading}
-        >
-          {isDownloading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Download className="mr-2 h-4 w-4" />
-          )}
-          {t("cv.downloadBtn")}
-        </Button>
+        {user.user?.id ? (
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <Button
+              onClick={handleDownload}
+              className="shadow-sm w-full sm:w-auto"
+              disabled={isDownloading}
+            >
+              {isDownloading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="mr-2 h-4 w-4" />
+              )}
+              {t("cv.downloadBtn")}
+            </Button>
+
+            <Link href="/">
+              <Button variant="outline" className="shadow-sm w-full sm:w-auto">
+                Go to Dashboard
+              </Button>
+            </Link>
+          </div>
+        ) : (
+          <Button
+            onClick={handleDownload}
+            className="shadow-sm w-full sm:w-auto"
+            disabled={isDownloading}
+          >
+            {isDownloading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="mr-2 h-4 w-4" />
+            )}
+            {t("cv.downloadBtn")}
+          </Button>
+        )}
       </div>
 
       <CvTemplate cvData={cvData} lang={lang ?? "en"} />
