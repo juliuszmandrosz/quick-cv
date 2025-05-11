@@ -47,8 +47,8 @@ export async function POST(req: Request) {
 
     await supabase
       .from("subscriptions")
-      .update({ tokens: sub.tokens - 1 })
-      .eq("user_id", user.id);
+      .update({ tokens_left: sub.tokens_left - 1 })
+      .eq("id", sub.id);
 
     await supabase
       .from("generated_cv")

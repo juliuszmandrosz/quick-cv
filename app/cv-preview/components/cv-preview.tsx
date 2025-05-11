@@ -20,6 +20,7 @@ export const CvPreviewClient = () => {
 
   const [cvData, setCvData] = useState<CVData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     if (!cvId) return;
@@ -69,23 +70,26 @@ export const CvPreviewClient = () => {
 
   const handleDownload = async () => {
     try {
+      setIsDownloading(true);
       const response = await fetch("/api/generate-pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           cvId: cvData?.id,
           cvDataId: cvData?.cv_user_data_id,
-          language: "en",
+          language: lang ?? "en",
         }),
       });
 
       if (!response.ok) {
         if (response.status === 401) {
           router.push("/login?cvId=" + cvData?.id + "&lang=en");
+          setIsDownloading(false);
           return;
         }
         if (response.status === 402) {
           router.push("/subscriptions?cvId=" + cvData?.id + "&lang=en");
+          setIsDownloading(false);
           return;
         }
       } else {
@@ -98,9 +102,16 @@ export const CvPreviewClient = () => {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+        toast({
+          title: "Download Successful",
+          description: "Your CV has been downloaded.",
+          variant: "default",
+        });
+        setIsDownloading(false);
       }
     } catch (error) {
       console.error("Download error:", error);
+      setIsDownloading(false);
     }
   };
 
@@ -131,8 +142,17 @@ export const CvPreviewClient = () => {
           </p>
         </div>
 
-        <Button onClick={handleDownload} className="shadow-sm">
-          <Download className="mr-2 h-4 w-4" /> {t("cv.downloadBtn")}
+        <Button
+          onClick={handleDownload}
+          className="shadow-sm"
+          disabled={isDownloading}
+        >
+          {isDownloading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="mr-2 h-4 w-4" />
+          )}
+          {t("cv.downloadBtn")}
         </Button>
       </div>
 
