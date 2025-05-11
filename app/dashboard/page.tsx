@@ -153,7 +153,7 @@ const Dashboard = () => {
           </CardContent>
           {recentCVs?.length === 0 ? null : (
             <CardFooter className="border-t pt-4 flex justify-center">
-              <Link href="/my-cvs">
+              <Link href="/created-cvs">
                 <Button variant="outline">View All CVs</Button>
               </Link>
             </CardFooter>
