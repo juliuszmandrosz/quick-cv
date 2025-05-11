@@ -17,8 +17,10 @@ const encodedRedirect = (
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
-  const supabase = await createClient();
+  const cvId = formData.get("cvId")?.toString();
+  const lang = formData.get("lang")?.toString();
   const origin = (await headers()).get("origin");
+  const supabase = await createClient();
 
   if (!email || !password) {
     return encodedRedirect(
@@ -28,7 +30,6 @@ export const signUpAction = async (formData: FormData) => {
     );
   }
 
-  // Możesz dodać też walidację długości hasła tutaj, jeśli chcesz
   if (password.length < 8) {
     return encodedRedirect(
       "error",
@@ -37,46 +38,53 @@ export const signUpAction = async (formData: FormData) => {
     );
   }
 
+  const redirectPath =
+    cvId && lang ? `/cv-preview?cvId=${cvId}&lang=${lang}` : "/dashboard";
+
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${origin}/auth/callback`,
+      emailRedirectTo: `${origin}/auth/callback?redirect_to=${encodeURIComponent(redirectPath)}`,
     },
   });
 
   if (error) {
     return encodedRedirect("error", "/login", error.message);
-  } else {
-    return encodedRedirect(
-      "success",
-      "/login",
-      "Thanks for signing up! Please check your email for a verification link.",
-    );
   }
+
+  return encodedRedirect(
+    "success",
+    "/login",
+    "Check your email to confirm your account.",
+  );
 };
 
 export const signInAction = async (formData: FormData) => {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const cvId = formData.get("cvId") as string;
-  const lang = formData.get("lang") as string;
+  const email = formData.get("email")?.toString();
+  const password = formData.get("password")?.toString();
+  const cvId = formData.get("cvId")?.toString();
+  const lang = formData.get("lang")?.toString();
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  if (!email || !password) {
+    return encodedRedirect(
+      "error",
+      "/login",
+      "Email and password are required",
+    );
+  }
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
     return encodedRedirect("error", "/login", error.message);
   }
 
-  if (cvId && lang) {
-    return redirect("/cv-preview?cvId=" + cvId + "&lang=" + lang);
-  } else {
-    return redirect("/dashboard");
-  }
+  const redirectTo =
+    cvId && lang ? `/cv-preview?cvId=${cvId}&lang=${lang}` : "/dashboard";
+
+  return redirect(redirectTo);
 };
 
 export const signInWithGoogleAction = async (formData: FormData) => {
@@ -111,71 +119,92 @@ export const signInWithGoogleAction = async (formData: FormData) => {
 
 export const forgotPasswordAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
-  const supabase = await createClient();
+  const cvId = formData.get("cvId")?.toString();
+  const lang = formData.get("lang")?.toString();
   const origin = (await headers()).get("origin");
-  const callbackUrl = formData.get("callbackUrl")?.toString();
+  const supabase = await createClient();
 
   if (!email) {
     return encodedRedirect("error", "/login", "Email is required");
   }
 
+  const resetPath = `/protected/reset-password${cvId && lang ? `?cvId=${cvId}&lang=${lang}` : ""}`;
+  const redirectTo = `${origin}/auth/callback?type=recovery&redirect_to=${encodeURIComponent(resetPath)}`;
+
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/auth/callback?redirect_to=/login`,
+    redirectTo,
   });
 
   if (error) {
-    console.error(error.message);
-    return encodedRedirect("error", "/login", "Could not reset password");
-  }
-
-  if (callbackUrl) {
-    return redirect(callbackUrl);
+    console.error(error);
+    return encodedRedirect(
+      "error",
+      "/login",
+      "Password reset failed. Try again.",
+    );
   }
 
   return encodedRedirect(
     "success",
     "/login",
-    "Check your email for a link to reset your password.",
+    "Check your email for a reset link.",
   );
 };
 
-export const resetPasswordAction = async (formData: FormData) => {
-  const supabase = await createClient();
+export async function resetPasswordAction(formData: FormData) {
+  const password = formData.get("password")?.toString();
+  const confirmPassword = formData.get("confirmPassword")?.toString();
+  const cvId = formData.get("cvId")?.toString() || "";
+  const lang = formData.get("lang")?.toString() || "";
 
-  const password = formData.get("password") as string;
-  const confirmPassword = formData.get("confirmPassword") as string;
+  const basePath = `/protected/reset-password${cvId && lang ? `?cvId=${cvId}&lang=${lang}` : ""}`;
+  const successPath =
+    cvId && lang ? `/cv-preview?cvId=${cvId}&lang=${lang}` : "/login";
 
   if (!password || !confirmPassword) {
-    return encodedRedirect(
-      "error",
-      "/login",
-      "Password and confirm password are required",
+    return redirect(
+      buildRedirectUrl(
+        basePath,
+        "error",
+        "Password and confirmation are required",
+      ),
     );
   }
-
   if (password !== confirmPassword) {
-    return encodedRedirect("error", "/login", "Passwords do not match");
+    return redirect(
+      buildRedirectUrl(basePath, "error", "Passwords do not match"),
+    );
   }
-
-  // Tutaj możesz dodać dodatkową walidację hasła (np. min. 8 znaków)
   if (password.length < 8) {
-    return encodedRedirect(
-      "error",
-      "/login",
-      "Password must be at least 8 characters",
+    return redirect(
+      buildRedirectUrl(
+        basePath,
+        "error",
+        "Password must be at least 8 characters",
+      ),
     );
   }
 
-  const { error } = await supabase.auth.updateUser({
-    password: password,
-  });
-
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ password });
   if (error) {
-    return encodedRedirect("error", "/login", "Password update failed");
+    return redirect(
+      buildRedirectUrl(
+        basePath,
+        "error",
+        error.message || "Password update failed",
+      ),
+    );
   }
 
-  return encodedRedirect("success", "/login", "Password updated");
-};
+  return redirect(
+    buildRedirectUrl(
+      successPath,
+      "success",
+      "Password updated successfully. You can now log in.",
+    ),
+  );
+}
 
 export const signOutAction = async () => {
   const supabase = await createClient();
@@ -226,3 +255,12 @@ export const createCheckoutSession = async (
 
   redirect(session.url!);
 };
+
+function buildRedirectUrl(path: string, status: string, message: string) {
+  const delim = path.includes("?") ? "&" : "?";
+  const params = new URLSearchParams({
+    status,
+    message,
+  }).toString();
+  return `${path}${delim}${params}`;
+}

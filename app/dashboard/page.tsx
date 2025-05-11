@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useCurrentUser } from "@/hooks/use-auth";
 
 const DashboardStats = () => {
   return (
@@ -45,13 +46,16 @@ const DashboardStats = () => {
 };
 
 const Dashboard = () => {
+  const user = useCurrentUser();
   return (
     <div className="space-y-6 md:space-y-8">
       <div>
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
           Dashboard
         </h1>
-        <p className="text-muted-foreground mt-2">Welcome back, User!</p>
+        <p className="text-muted-foreground mt-2">
+          Welcome back, {user.user?.email}
+        </p>
       </div>
 
       <DashboardStats />

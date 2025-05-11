@@ -10,7 +10,7 @@ export default async function ProtectedPage() {
 
   if (!user) {
     return redirect("/login");
-  } else {
-    return redirect("/dashboard");
   }
+
+  return redirect("/dashboard");
 }

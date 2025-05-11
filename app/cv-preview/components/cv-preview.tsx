@@ -26,6 +26,7 @@ export const CvPreviewClient = () => {
     if (!cvId) return;
 
     const fetchCV = async () => {
+      console.log(lang);
       try {
         const res = await fetch(`/api/cv-data?cvId=${cvId}`);
         const data = await res.json();
