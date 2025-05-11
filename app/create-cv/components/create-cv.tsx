@@ -20,6 +20,7 @@ import {
   ChevronRight,
   FileText,
   LinkIcon,
+  Loader2,
   Upload,
 } from "lucide-react";
 import LoadingScreen from "@/app/create-cv/components/loading-screen";
@@ -36,6 +37,7 @@ export default function CreateCvClientPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [cvs, setCvs] = useState<CV[]>([]);
   const [selectedCv, setSelectedCv] = useState<CV | null>(null);
+  const [isProcessingJobOffer, setIsProcessingJobOffer] = useState(false);
 
   const { toast } = useToast();
   const router = useRouter();
@@ -53,6 +55,7 @@ export default function CreateCvClientPage() {
       }
 
       try {
+        setIsProcessingJobOffer(true);
         toast({
           title: "Processing job offer",
           description: "Analyzing job offer and extracting data...",
@@ -64,13 +67,16 @@ export default function CreateCvClientPage() {
         });
         const result = await res.json();
         if (!result.success) {
+          setIsProcessingJobOffer(false);
           toast({
             title: "Error",
             description: result.error || "Error processing job URL",
             variant: "destructive",
           });
+
           return;
         }
+        setIsProcessingJobOffer(false);
         setJobOfferId(result.data[0]?.id);
         toast({
           title: "Job Offer Processed",
@@ -474,9 +480,14 @@ export default function CreateCvClientPage() {
                 <Button
                   onClick={handleNext}
                   className="neumorphic-button bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] hover:from-[#8A76E4] hover:to-[#4A1DEE] text-white"
+                  disabled={isProcessingJobOffer}
                 >
                   {step === 2 ? "Generate CV" : "Next"}{" "}
-                  <ChevronRight className="ml-2 h-4 w-4" />
+                  {isProcessingJobOffer ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <ChevronRight className="mr-2 h-4 w-4" />
+                  )}
                 </Button>
               </div>
             </div>
