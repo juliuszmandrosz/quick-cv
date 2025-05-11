@@ -96,10 +96,16 @@ export async function POST(request: Request) {
         "ats_keywords": [], 
         "tone": "", 
         "summary_focus": "", 
-        "experience_rewrite_instructions": {
-          "CompanyNameFromCandidateData1": "Instruction for rewriting responsibilities for this specific experience.",
-          "CompanyNameFromCandidateData2": "Instruction for rewriting responsibilities for this specific experience."
-        }
+        "experience_rewrite_instructions": [
+          {
+            "company_name": "BELLTECH S.A. (CHILE)",
+            "instruction": "Skoncentruj się na sprzedaży rozwiązań samoobsługowych i zarządzaniu kontraktami"
+          },
+          {
+            "company_name": "LATAM AIRLINES (CHILE)",
+            "instruction": "Podkreśl kompetencje projektowe i znajomość środowiska lotniczego"
+          }     
+        ]
       }
       
       INPUT DATA:
@@ -169,12 +175,11 @@ export async function POST(request: Request) {
       planCompletion.choices[0].message?.content || "{}",
     );
 
-    const instructionsArray = Object.entries(
-      promptPlan.experience_rewrite_instructions || {},
-    ).map(([company_name, instruction]) => ({
-      company_name,
-      instruction,
-    }));
+    const instructionsArray = Array.isArray(
+      promptPlan.experience_rewrite_instructions,
+    )
+      ? promptPlan.experience_rewrite_instructions
+      : [];
 
     const { data: promptPlanId, error: insertError } = await supabase.rpc(
       "insert_prompt_plan_with_instructions",
