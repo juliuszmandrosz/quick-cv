@@ -6,6 +6,8 @@ interface StatCardProps {
   title: string;
   value: string;
   icon?: ReactNode;
+  change?: string;
+  trend?: "up" | "down";
   description?: string;
   total?: string;
 }
