@@ -157,6 +157,11 @@ export async function resetPasswordAction(formData: FormData) {
   const cvId = formData.get("cvId")?.toString() || "";
   const lang = formData.get("lang")?.toString() || "";
 
+  console.log("cvId", cvId);
+  console.log("lang", lang);
+  console.log("password", password);
+  console.log("confirm password", confirmPassword);
+
   const basePath = `/protected/reset-password${cvId && lang ? `?cvId=${cvId}&lang=${lang}` : ""}`;
   const successPath =
     cvId && lang ? `/cv-preview?cvId=${cvId}&lang=${lang}` : "/login";
