@@ -66,6 +66,7 @@ export async function POST(req: Request) {
     const browser = await chromium.launch({ headless: true });
     const context = await browser.newContext();
     const page = await context.newPage();
+    await page.emulateMedia({ media: "print" });
     await page.goto(url, { waitUntil: "networkidle", timeout: 30000 });
     await page.waitForTimeout(1000);
 
@@ -74,7 +75,7 @@ export async function POST(req: Request) {
       printBackground: true,
       margin: { top: "0mm", bottom: "0mm", left: "0mm", right: "0mm" },
       scale: 0.8,
-      preferCSSPageSize: false,
+      preferCSSPageSize: true,
     });
 
     await browser.close();

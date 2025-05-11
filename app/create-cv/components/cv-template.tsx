@@ -19,7 +19,14 @@ export default function CvTemplate({
     date ? format(new Date(date), "yyyy.MM") : "";
 
   return (
-    <Card className="ps-8 pe-8 pt-4 pb-4 bg-white shadow-md border-gray-200">
+    <Card
+      className="
+        ps-8 pe-8 pt-4 pb-4 bg-white
+        print:border-none
+        print:shadow-none
+        print:rounded-none
+      "
+    >
       <div className="text-center mb-4">
         <h2 className="text-2xl font-bold text-gray-800 mb-1">
           {cvData.generated_personal_data.full_name}
@@ -82,7 +89,7 @@ export default function CvTemplate({
         {cvData.generated_experience.map((exp, idx) => (
           <div
             key={idx}
-            className={`mb-6 last:mb-0 ${idx > 0 && false ? "blur-sm opacity-70 pointer-events-none" : ""}`}
+            className={`mb-6 last:mb-0 experience-item ${idx > 0 && false ? "blur-sm opacity-70 pointer-events-none" : ""}`}
           >
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
               <h5 className="font-bold text-gray-800">{exp.position}</h5>
@@ -109,7 +116,7 @@ export default function CvTemplate({
               key={i}
               className="flex justify-between items-center border border-gray-100 px-3 py-1 rounded-md bg-gray-50"
             >
-              <span className="font-medium text-gray-800">{lang.name}</span>
+              <span className="text-gray-600 text-sm">{lang.name}</span>
               <span className="text-gray-600 text-sm">{lang.level}</span>
             </div>
           ))}
@@ -120,9 +127,9 @@ export default function CvTemplate({
           <div key={i} className="mb-4 last:mb-0">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start">
               <div>
-                <h4 className="font-bold text-gray-800 text-lg">
+                <h5 className="font-bold text-gray-800">
                   {edu.field_of_study}
-                </h4>
+                </h5>
                 <p className="text-gray-700">{edu.school_name}</p>
               </div>
               <span className="text-gray-600 text-sm mt-1 sm:mt-0">
