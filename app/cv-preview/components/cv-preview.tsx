@@ -108,6 +108,7 @@ export const CvPreviewClient = () => {
           variant: "default",
         });
         setIsDownloading(false);
+        router.push("/dashboard");
       }
     } catch (error) {
       console.error("Download error:", error);
