@@ -63,6 +63,7 @@ export async function POST(req: Request) {
 
   try {
     const url = `${process.env.NEXT_PUBLIC_BASE_URL}/cv-download?cvId=${cvId}&language=${language}`;
+    console.log(url, "URL for PDF generation");
     const browser = await chromium.launch({ headless: true });
     const context = await browser.newContext();
     const page = await context.newPage();
