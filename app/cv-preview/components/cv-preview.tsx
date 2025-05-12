@@ -19,6 +19,7 @@ export const CvPreviewClient = () => {
   const router = useRouter();
   const cvId = searchParams.get("cvId");
   const lang = searchParams.get("lang");
+  const path = searchParams.get("path");
   const paymentPending = searchParams.get("paymentPending");
 
   const [cvData, setCvData] = useState<CVData | null>(null);
@@ -162,7 +163,7 @@ export const CvPreviewClient = () => {
               {t("cv.downloadBtn")}
             </Button>
 
-            <Link href="/">
+            <Link href={`/${path}`}>
               <Button variant="outline" className="shadow-sm w-full sm:w-auto">
                 Go to Dashboard
               </Button>

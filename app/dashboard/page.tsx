@@ -53,6 +53,7 @@ const Dashboard = () => {
       try {
         const res = await fetch("/api/recent-generated-cvs");
         const data = await res.json();
+        console.log(data);
         setRecentCVs(data.data || []);
       } catch (error) {
         console.error("Failed to fetch recent CVs", error);
@@ -204,7 +205,7 @@ const Dashboard = () => {
                       </div>
                     </div>
                     <Link
-                      href={`/cv-preview?cvId=${cv.id}&lang=${cv.lang ?? "en"}`}
+                      href={`/cv-preview?cvId=${cv.id}&lang=${cv.lang ?? "en"}&path=dashboard`}
                     >
                       <Button variant="ghost" size={isMobile ? "icon" : "sm"}>
                         {!isMobile && <span className="mr-1">View</span>}

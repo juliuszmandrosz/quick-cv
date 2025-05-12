@@ -95,7 +95,9 @@ export default function CvTemplate({
               <h5 className="font-bold text-gray-800">{exp.position}</h5>
               <span className="text-gray-600 text-sm mt-1 sm:mt-0">
                 {formatDate(exp.start_date)} -{" "}
-                {exp.end_date ? formatDate(exp.end_date) : "Present"}
+                {exp.end_date
+                  ? formatDate(exp.end_date)
+                  : (translations[lang] as any)["cv.present"]!}
               </span>
             </div>
             <p className="text-gray-700 font-medium mb-2">{exp.company_name}</p>

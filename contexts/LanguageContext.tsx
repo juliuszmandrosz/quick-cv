@@ -25,7 +25,7 @@ export const translations = {
     "hero.subtitle":
       "Upload your CV and the job description link. Our AI crafts a perfectly optimized resume in seconds, helping you beat the ATS and land more interviews.",
     "hero.cta": "Create Your Perfect CV",
-    "hero.learnMore": "Learn More",
+    "hero.learnMore": "Listen More",
     "hero.pause": "Stop audio",
 
     // Problem Section
@@ -130,6 +130,7 @@ export const translations = {
     "cv.experience": "Experience",
     "cv.languages": "Languages",
     "cv.education": "Education",
+    "cv.present": "Present",
   },
   pl: {
     // Header
@@ -240,6 +241,7 @@ export const translations = {
     "cv.experience": "Doświadczenie zawodowe",
     "cv.languages": "Języki obce",
     "cv.education": "Edukacja",
+    "cv.present": "Obecnie",
   },
 };
 

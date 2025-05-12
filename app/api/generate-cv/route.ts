@@ -117,15 +117,14 @@ export async function POST(request: Request) {
       This is guidance for how to phrase bullet points within the "EXPERIENCE & RESPONSIBILITIES". Frame accomplishments positively, focusing on the results and positive impact of the candidate's actions. 
       Incorporate subtle humanizing phrases naturally where appropriate (e.g., 'Collaborated closely with cross-functional teams to achieve X...', 'Successfully navigated complex challenges by implementing Y...', 'Played a key role in improving Z...'). These are non-strict examples for your reference; you can use other words that fit perfectly with the context of the sentence.
     
-    #FILE NAME
+    ##FILE NAME
       The filename should be the candidate's name, followed by the job title and the date in YYYY-MM-DD format. For example: "John_Doe_Software_Engineer_2023-10-01.pdf".
          
     ##SKILLS
       Consolidate and refine the skills section, limiting the list of "generated skills" to a strategic selection of 10 to 15 skills. It should be separated into three sections: technical skills, soft skills, and power skills. This should be a selection of the most relevant skills for the job description. Prioritize skills explicitly or implicitly mentioned in the job posting, linked to the current skills on the candidate's CV. Do not add spoken languages to the skills.
     
-    #TITLE:
-        The title should mix of the title 
-    
+    ##TITLE:
+        Craft a high-impact, concise CV title in ${language} that accurately reflects the candidate's core strengths and aligns seamlessly with the provided Job Description. The title must consist of no more than 5 words and effectively capture the candidate's professional identity
     
     ##PERSONAL SUMMARY:
       Generate a concise, compelling personal summary (candidate_description) that immediately highlights the candidate's most relevant qualifications, key strengths, and unique value proposition specifically for this role, integrating keywords from the job offer naturally.
@@ -242,11 +241,13 @@ export async function POST(request: Request) {
       });
     }
 
+    console.log(language, "LANGUAGE");
+
     const { data: generatedCvId, error: saveError } = await supabase.rpc(
       "save_generated_cv",
       {
         cv_user_data_id: cvUserDataId,
-        lang: language,
+        cv_lang: language.trim(),
         job_offer_id: jobOffer.id,
         candidate_description: generatedCV.candidate_description,
         profile_photo_url: fullCvData.profile_photo_url || null,

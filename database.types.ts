@@ -123,31 +123,40 @@ export type Database = {
           candidate_description: string
           created_at: string
           cv_user_data_id: string
+          file_name: string | null
           id: string
           job_offer_id: string
+          lang: string | null
           profile_photo_url: string | null
           title: string
           token_consumed: boolean
+          user_id: string | null
         }
         Insert: {
           candidate_description: string
           created_at?: string
           cv_user_data_id: string
+          file_name?: string | null
           id?: string
           job_offer_id: string
+          lang?: string | null
           profile_photo_url?: string | null
           title: string
           token_consumed?: boolean
+          user_id?: string | null
         }
         Update: {
           candidate_description?: string
           created_at?: string
           cv_user_data_id?: string
+          file_name?: string | null
           id?: string
           job_offer_id?: string
+          lang?: string | null
           profile_photo_url?: string | null
           title?: string
           token_consumed?: boolean
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -556,9 +565,11 @@ export type Database = {
       save_generated_cv: {
         Args: {
           cv_user_data_id: string
+          cv_lang: string
           job_offer_id: string
           candidate_description: string
           title: string
+          file_name: string
           personal_data: Json
           education_list: Json[]
           experience_list: Json[]

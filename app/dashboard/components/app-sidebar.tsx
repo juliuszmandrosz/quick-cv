@@ -31,17 +31,21 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive>
+                <SidebarMenuButton
+                  asChild
+                  isActive
+                  className="h-10 text-base py-2.5"
+                >
                   <Link href="/dashboard">
-                    <LayoutDashboard className="h-5 w-5" />
+                    <LayoutDashboard className="h-6 w-6" />
                     <span>Dashboard</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton asChild className="h-10 text-base py-2.5">
                   <Link href="/created-cvs">
-                    <FileText className="h-5 w-5" />
+                    <FileText className="h-6 w-6" />
                     <span>Created CVs</span>
                   </Link>
                 </SidebarMenuButton>
