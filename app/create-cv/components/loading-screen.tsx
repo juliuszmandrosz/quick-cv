@@ -69,7 +69,7 @@ export default function LoadingScreen() {
         </div>
 
         <h2 className={`mb-4 font-bold ${isMobile ? "text-2xl" : "text-4xl"}`}>
-          CV Magic in Progress
+          NICE CV Magic in Progress
         </h2>
 
         <div className="mb-8 min-h-16 flex items-center justify-center">

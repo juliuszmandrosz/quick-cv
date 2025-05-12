@@ -101,7 +101,7 @@ export const CvPreviewClient = () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "cv.pdf";
+        a.download = cvData?.file_name ?? "cv.pdf";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

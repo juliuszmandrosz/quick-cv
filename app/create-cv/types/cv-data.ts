@@ -4,6 +4,7 @@ export type CVData = {
   profile_photo_url: string;
   cv_user_data_id: string;
   title: string;
+  file_name: string;
   job_url: string;
   generated_skills: {
     soft_skills: string[];

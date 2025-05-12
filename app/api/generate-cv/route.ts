@@ -251,6 +251,7 @@ export async function POST(request: Request) {
         candidate_description: generatedCV.candidate_description,
         profile_photo_url: fullCvData.profile_photo_url || null,
         title: generatedCV.title,
+        file_name: generatedCV.file_name,
         personal_data: {
           full_name: generatedCV.generated_personal_data.full_name,
           email: generatedCV.generated_personal_data.email,
