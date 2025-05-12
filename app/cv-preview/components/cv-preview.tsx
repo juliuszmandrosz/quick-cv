@@ -163,7 +163,7 @@ export const CvPreviewClient = () => {
               {t("cv.downloadBtn")}
             </Button>
 
-            <Link href={`/${path}`}>
+            <Link href={`/${path ?? ""}`}>
               <Button variant="outline" className="shadow-sm w-full sm:w-auto">
                 Go to Dashboard
               </Button>
