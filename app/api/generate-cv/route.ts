@@ -106,7 +106,7 @@ export async function POST(request: Request) {
       The final output must be perceived as entirely human-written. It is key to maintain a professional and natural tone throughout all adapted content.
     
     ##CHRONOLOGICAL ORDER:
-      Use the original order work experiences provided by the candidate, maintaining their exact chronological order. Do not add, remove, or reorder any distinct job entries. The last experience chronologically should be placed at the top and go down in the same order.
+      Use the original order work experiences provided by the candidate, maintaining their exact chronological order date descending. Do not add, remove, or reorder any distinct job entries. The last experience chronologically should be placed at the top and go down in the same order.
     
     ##EXPERIENCE & RESPONSIBILITIES:
       Strategically rewrite ONLY the responsibilities/details within each preserved experience to maximize relevance to the job offer, quantifying achievements where possible and highlighting impact using strong action verbs. Base these modifications strictly on the provided candidate data and specific rewriting instructions. 
