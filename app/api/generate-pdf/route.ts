@@ -64,7 +64,10 @@ export async function POST(req: Request) {
   try {
     const url = `${process.env.NEXT_PUBLIC_BASE_URL}/cv-download?cvId=${cvId}&language=${language}`;
     console.log(url, "URL for PDF generation");
-    const browser = await chromium.launch({ headless: true });
+    const apiKey = process.env.BROWSERLESS_API_KEY;
+    const browser = await chromium.connectOverCDP(
+      `wss://chrome.browserless.io?token=${apiKey}`,
+    );
     const context = await browser.newContext();
     const page = await context.newPage();
     await page.emulateMedia({ media: "print" });
