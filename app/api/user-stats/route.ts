@@ -14,7 +14,7 @@ export async function GET() {
     });
   }
 
-  const { data: sub, subError } = await supabase
+  const { data: sub, error: subError } = await supabase
     .from("subscriptions")
     .select("*")
     .eq("user_id", user.id)
@@ -31,7 +31,7 @@ export async function GET() {
     });
   }
 
-  const { count, cvsError } = await supabase
+  const { count, error: cvsError } = await supabase
     .from("generated_cv")
     .select("id", { count: "exact", head: true })
     .eq("user_id", user.id);
