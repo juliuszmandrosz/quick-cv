@@ -1,63 +1,55 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { ReactNode } from "react";
 
 interface StatCardProps {
   title: string;
   value: string;
   icon?: ReactNode;
-  change?: string;
-  trend?: "up" | "down";
   description?: string;
-  total?: string;
+  isLoading?: boolean;
 }
 
 export function StatCard({
   title,
   value,
   icon,
-  change,
-  trend,
   description,
-  total,
+  isLoading = false,
 }: StatCardProps) {
+  if (isLoading) {
+    return (
+      <Card className="shadow-sm transition-all hover:shadow-md">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            {title}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-2 flex items-center justify-between">
+            <Skeleton className="h-8 w-16" />
+            {icon && <Skeleton className="h-5 w-5 rounded-md" />}
+          </div>
+          {description && <Skeleton className="mt-2 h-4 w-24" />}
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <Card className="shadow-sm hover:shadow-md transition-all">
+    <Card className="shadow-sm transition-all hover:shadow-md">
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center justify-between">
+        <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
-          {icon && <span>{icon}</span>}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">
-          {value}
-          {total && `/${total}`}
+        <div className="flex items-center justify-between">
+          <div className="text-2xl font-bold">{value}</div>
+          {icon}
         </div>
-        {change && (
-          <div className="flex items-center mt-1">
-            <span
-              className={`text-xs font-medium flex items-center ${
-                trend === "up"
-                  ? "text-green-500"
-                  : trend === "down"
-                    ? "text-red-500"
-                    : "text-muted-foreground"
-              }`}
-            >
-              {trend === "up" && <ArrowUp className="h-3 w-3 mr-1" />}
-              {trend === "down" && <ArrowDown className="h-3 w-3 mr-1" />}
-              {change}
-            </span>
-            {description && (
-              <span className="text-xs text-muted-foreground ml-2">
-                {description}
-              </span>
-            )}
-          </div>
-        )}
-        {!change && description && (
-          <p className="text-xs text-muted-foreground mt-1">{description}</p>
+        {description && (
+          <p className="mt-2 text-xs text-muted-foreground">{description}</p>
         )}
       </CardContent>
     </Card>

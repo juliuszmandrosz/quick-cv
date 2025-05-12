@@ -228,8 +228,8 @@ const plans = {
 
 export const createCheckoutSession = async (
   plan: string,
-  cvId: string,
-  lang: string,
+  cvId?: string | null,
+  lang?: string | null,
 ) => {
   const supabase = await createClient();
 
@@ -245,6 +245,14 @@ export const createCheckoutSession = async (
     return redirect("/login");
   }
 
+  const successUrl = cvId
+    ? `${process.env.NEXT_PUBLIC_BASE_URL}/cv-preview?cvId=${cvId}&lang=${lang}&paymentPending=true`
+    : `${process.env.NEXT_PUBLIC_BASE_URL}`;
+
+  const cancelUrl = cvId
+    ? `${process.env.NEXT_PUBLIC_BASE_URL}/subscriptions?cvId=${cvId}&lang=${lang}`
+    : `${process.env.NEXT_PUBLIC_BASE_URL}/subscriptions`;
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     mode: "payment",
@@ -254,8 +262,8 @@ export const createCheckoutSession = async (
       plan,
       tokens: config.tokens,
     },
-    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cv-preview?cvId=${cvId}&lang=${lang}&paymentPending=true`,
-    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/subscriptions?cvId=${cvId}&lang=${lang}`,
+    success_url: successUrl,
+    cancel_url: cancelUrl,
   });
 
   redirect(session.url!);

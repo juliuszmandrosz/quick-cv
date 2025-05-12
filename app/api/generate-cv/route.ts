@@ -102,33 +102,39 @@ export async function POST(request: Request) {
 	##GOALS:
       Generate a highly effective, ATS-optimized CV, meticulously tailored to the target job description, while remaining 100% authentic to the candidate's history and experience. The entire narrative must be credible and strategically focused.
 
-        ##TONE:
-    The final output must be perceived as entirely human-written. It is key to maintain a professional and natural tone throughout all adapted content.
+    ##TONE:
+      The final output must be perceived as entirely human-written. It is key to maintain a professional and natural tone throughout all adapted content.
     
-        ##CHRONOLOGICAL ORDER:
-    Use the original order work experiences provided by the candidate, maintaining their exact chronological order. Do not add, remove, or reorder any distinct job entries. The last experience chronologically should be placed at the top and go down in the same order.
+    ##CHRONOLOGICAL ORDER:
+      Use the original order work experiences provided by the candidate, maintaining their exact chronological order. Do not add, remove, or reorder any distinct job entries. The last experience chronologically should be placed at the top and go down in the same order.
     
-        ##EXPERIENCE & RESPONSIBILITIES:
-          Strategically rewrite ONLY the responsibilities/details within each preserved experience to maximize relevance to the job offer, quantifying achievements where possible and highlighting impact using strong action verbs. Base these modifications strictly on the provided candidate data and specific rewriting instructions. 
-    Crucially, do not invent experiences, skills, or exaggerate claims beyond verifiable facts derived from the original CV.
-    Focus solely on rephrasing and highlighting existing information effectively.
+    ##EXPERIENCE & RESPONSIBILITIES:
+      Strategically rewrite ONLY the responsibilities/details within each preserved experience to maximize relevance to the job offer, quantifying achievements where possible and highlighting impact using strong action verbs. Base these modifications strictly on the provided candidate data and specific rewriting instructions. 
+      Crucially, do not invent experiences, skills, or exaggerate claims beyond verifiable facts derived from the original CV.
+      Focus solely on rephrasing and highlighting existing information effectively.
     
     ##ACCOMPLISHMENTS:
-    This is guidance for how to phrase bullet points within the "EXPERIENCE & RESPONSIBILITIES". Frame accomplishments positively, focusing on the results and positive impact of the candidate's actions. 
-    Incorporate subtle humanizing phrases naturally where appropriate (e.g., 'Collaborated closely with cross-functional teams to achieve X...', 'Successfully navigated complex challenges by implementing Y...', 'Played a key role in improving Z...'). These are non-strict examples for your reference; you can use other words that fit perfectly with the context of the sentence.
+      This is guidance for how to phrase bullet points within the "EXPERIENCE & RESPONSIBILITIES". Frame accomplishments positively, focusing on the results and positive impact of the candidate's actions. 
+      Incorporate subtle humanizing phrases naturally where appropriate (e.g., 'Collaborated closely with cross-functional teams to achieve X...', 'Successfully navigated complex challenges by implementing Y...', 'Played a key role in improving Z...'). These are non-strict examples for your reference; you can use other words that fit perfectly with the context of the sentence.
+    
+    #FILE NAME
+      The filename should be the candidate's name, followed by the job title and the date in YYYY-MM-DD format. For example: "John_Doe_Software_Engineer_2023-10-01.pdf".
          
-        ##SKILLS:
-    Consolidate and refine the skills section, limiting the list of "generated skills" to a strategic selection of 10 to 15 skills. It should be separated into three sections: technical skills, soft skills, and power skills. This should be a selection of the most relevant skills for the job description. Prioritize skills explicitly or implicitly mentioned in the job posting, linked to the current skills on the candidate's CV. Do not add spoken languages to the skills.
+    ##SKILLS
+      Consolidate and refine the skills section, limiting the list of "generated skills" to a strategic selection of 10 to 15 skills. It should be separated into three sections: technical skills, soft skills, and power skills. This should be a selection of the most relevant skills for the job description. Prioritize skills explicitly or implicitly mentioned in the job posting, linked to the current skills on the candidate's CV. Do not add spoken languages to the skills.
     
-        ##PERSONAL SUMMARY:
-          Generate a concise, compelling personal summary (candidate_description) that immediately highlights the candidate's most relevant qualifications, key strengths, and unique value proposition specifically for this role, integrating keywords from the job offer naturally.
+    #TITLE:
+        The title should mix of the title 
     
-        ##VERBS:
-    Employ sophisticated, high-impact action verbs (e.g., Accelerated, Advocated, Amplified, Architected, Attained, Authored, Capitalized, Catalyzed, Championed, Commanded, Conceptualized, Cultivated, Deciphered, Delivered, Devised, Directed, Drove, Elevated, Engineered, Established, Executed, Forged, Fortified, Founded, Generated, Governed, Guided, Harmonized, Ignited, Influenced, Innovated, Instituted, Launched, Masterminded, Mobilized, Modernized, Navigated, Negotiated, Orchestrated, Overhauled, Pioneered, Piloted, Quantified, Reconciled, Rectified, Revitalized, Secured, Spearheaded, Steered, Transformed). These are non-strict examples for your reference; you can use other words that fit perfectly with the context of the sentence.
     
+    ##PERSONAL SUMMARY:
+      Generate a concise, compelling personal summary (candidate_description) that immediately highlights the candidate's most relevant qualifications, key strengths, and unique value proposition specifically for this role, integrating keywords from the job offer naturally.
+    
+    ##VERBS:
+      Employ sophisticated, high-impact action verbs (e.g., Accelerated, Advocated, Amplified, Architected, Attained, Authored, Capitalized, Catalyzed, Championed, Commanded, Conceptualized, Cultivated, Deciphered, Delivered, Devised, Directed, Drove, Elevated, Engineered, Established, Executed, Forged, Fortified, Founded, Generated, Governed, Guided, Harmonized, Ignited, Influenced, Innovated, Instituted, Launched, Masterminded, Mobilized, Modernized, Navigated, Negotiated, Orchestrated, Overhauled, Pioneered, Piloted, Quantified, Reconciled, Rectified, Revitalized, Secured, Spearheaded, Steered, Transformed). These are non-strict examples for your reference; you can use other words that fit perfectly with the context of the sentence.
     
     ##ADJECTIVES:
-    Employ sophisticated, high-impact and strategically chosen adjectives to convey competence and achievement (e.g., Adaptable, Analytical, Articulate, Assertive, Astute, Attentive, Authentic, Client-Focused, Collaborative, Compelling, Comprehensive, Conscientious, Constructive, Creative, Data-Driven, Decisive, Dedicated, Determined, Diligent, Diplomatic, Disciplined, Dynamic, Effective, Efficient, Empathetic, Enterprising, Exceptional, Forward-Thinking, Impactful, Incisive, Influential, Ingenious, Innovative, Inquisitive, Insightful, Integrative, Methodical, Meticulous, Perceptive, Persuasive, Pioneering, Pragmatic, Proactive, Proficient, Resilient, Resourceful, Results-Oriented, Rigorous, Strategic, Transformative). These are non-strict examples for your reference; you can use other words that fit perfectly with the context of the sentence.
+      Employ sophisticated, high-impact and strategically chosen adjectives to convey competence and achievement (e.g., Adaptable, Analytical, Articulate, Assertive, Astute, Attentive, Authentic, Client-Focused, Collaborative, Compelling, Comprehensive, Conscientious, Constructive, Creative, Data-Driven, Decisive, Dedicated, Determined, Diligent, Diplomatic, Disciplined, Dynamic, Effective, Efficient, Empathetic, Enterprising, Exceptional, Forward-Thinking, Impactful, Incisive, Influential, Ingenious, Innovative, Inquisitive, Insightful, Integrative, Methodical, Meticulous, Perceptive, Persuasive, Pioneering, Pragmatic, Proactive, Proficient, Resilient, Resourceful, Results-Oriented, Rigorous, Strategic, Transformative). These are non-strict examples for your reference; you can use other words that fit perfectly with the context of the sentence.
 
 	##OUTPUT:
      STRICT JSON OUTPUT ONLY — Adhere rigidly to the specified JSON structure. Output only the JSON object. Do not include any explanatory text, markdown formatting (like \\\`), comments, or any characters outside the final JSON structure. Ensure correct JSON syntax, including proper quoting of keys and string values.
@@ -143,6 +149,7 @@ export async function POST(request: Request) {
           "email": "string",
           "linkedin": "string"
         },
+        "file_name": "string",
         "title": "string",
         "candidate_description": "string",
         "generated_experience": [

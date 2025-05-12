@@ -22,8 +22,8 @@ import { createCheckoutSession } from "@/app/actions";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface SubscriptionPlanProps {
-  cvId: string;
-  lang: string;
+  cvId?: string | null;
+  lang?: string | null;
   title: string;
   price: string;
   cvCount: number;
@@ -40,16 +40,10 @@ const SubscriptionPlan: React.FC<SubscriptionPlanProps> = ({
 }) => {
   const { toast } = useToast();
 
-  const handleSubscribe = async (cvId: string, lang: string) => {
-    if (!cvId) {
-      toast({
-        title: "Error",
-        description: "CV ID is missing. Please check the link.",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleSubscribe = async (
+    cvId?: string | null,
+    lang?: string | null,
+  ) => {
     toast({
       title: "Subscription Selected",
       description: `You've selected the ${title} plan. Proceeding to checkout...`,
@@ -135,26 +129,19 @@ export default function SubscriptionClient() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!cvId) {
-    return (
-      <div>
-        <p className="text-gray-500">No CV ID found. Please check the link.</p>
-        <Button onClick={() => router.push("/")} className="mt-4">
-          Go to Home
-        </Button>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen p-4 md:p-8 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-[#9B87F5]/10 to-[#5B2EFF]/10 dark:from-[#9B87F5]/20 dark:to-[#5B2EFF]/20 -z-10"></div>
 
       <div className="absolute top-4 left-4 md:top-8 md:left-8">
         <Button
-          onClick={() =>
-            router.push("/cv-preview?cvId=" + cvId + "&lang=" + lang)
-          }
+          onClick={() => {
+            if (cvId) {
+              router.push("/cv-preview?cvId=" + cvId + "&lang=" + lang);
+            } else {
+              router.push("/dashboard");
+            }
+          }}
           variant="ghost"
           size="sm"
           className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors flex items-center"

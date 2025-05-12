@@ -27,11 +27,26 @@ type RecentCV = {
   created_at: string;
 };
 
+type UserStats = {
+  tokens_left: number;
+  total_tokens: number;
+  total_cvs: number;
+  plan: string;
+};
+
 const Dashboard = () => {
   const user = useCurrentUser();
   const isMobile = useIsMobile();
+  const emptyStats = {
+    tokens_left: 0,
+    total_cvs: 0,
+    total_tokens: 0,
+    plan: "",
+  };
   const [recentCVs, setRecentCVs] = useState<RecentCV[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [userStats, setUserStats] = useState<UserStats>(emptyStats);
+  const [recentCvsLoading, setRecentCvsLoading] = useState(true);
+  const [userStatsLoading, setUserStatsLoading] = useState(true);
 
   useEffect(() => {
     const fetchCVs = async () => {
@@ -39,16 +54,32 @@ const Dashboard = () => {
         const res = await fetch("/api/recent-generated-cvs");
         const data = await res.json();
         setRecentCVs(data.data || []);
-        console.log("Fetched recent CVs:", data); // Debugging line to check the fetched data
       } catch (error) {
         console.error("Failed to fetch recent CVs", error);
         setRecentCVs([]);
       } finally {
-        setLoading(false);
+        setRecentCvsLoading(false);
       }
     };
 
     fetchCVs();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserStats = async () => {
+      try {
+        const res = await fetch("/api/user-stats");
+        const data = await res.json();
+        setUserStats(data.data || emptyStats);
+      } catch (error) {
+        console.error("Failed to fetch recent CVs", error);
+        setRecentCVs([]);
+      } finally {
+        setUserStatsLoading(false);
+      }
+    };
+
+    fetchUserStats();
   }, []);
 
   return (
@@ -73,30 +104,64 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
         <StatCard
           title="Total CVs Created"
-          value="12"
+          value={userStats.total_cvs.toString()}
           icon={<FileText className="h-5 w-5 text-primary" />}
+          isLoading={userStatsLoading}
         />
-        <Card className="shadow-sm transition-all hover:shadow-md">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Remaining Credits
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="mb-2 flex items-center justify-between">
-              <div className="text-2xl font-bold">8/15</div>
-              <Badge variant="outline" className="bg-primary/10 text-primary">
-                <Zap className="mr-1 h-3 w-3" />
-                Premium
-              </Badge>
-            </div>
-            <Progress value={53} className="h-2" />
-          </CardContent>
-        </Card>
+        {userStatsLoading ? (
+          <Card className="shadow-sm transition-all hover:shadow-md">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Remaining Credits
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-2 flex items-center justify-between">
+                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-6 w-20 rounded-full" />
+              </div>
+              <Skeleton className="h-2 w-full mt-2" />
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="shadow-sm transition-all hover:shadow-md">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Remaining Credits
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-2 flex items-center justify-between">
+                <div className="text-2xl font-bold">
+                  {userStats.tokens_left}/{userStats.total_tokens}
+                </div>
+                <Badge variant="outline" className="bg-primary/10 text-primary">
+                  <Zap className="mr-1 h-3 w-3" />
+                  {userStats.plan}
+                </Badge>
+              </div>
+              <Progress
+                value={(userStats.tokens_left / userStats.total_tokens) * 100}
+                className="h-2"
+              />
+              {userStats.tokens_left === 0 && (
+                <div className="mt-4">
+                  <Link href="/subscriptions">
+                    <Button className="w-full" size="sm">
+                      <Zap className="mr-2 h-4 w-4" />
+                      Buy More Credits
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
         <StatCard
           title="Interview Preparation Sessions"
           value="0"
           description="Available soon!"
+          isLoading={userStatsLoading}
         />
       </div>
 
@@ -109,7 +174,7 @@ const Dashboard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {loading ? (
+            {recentCvsLoading ? (
               <div className="space-y-3">
                 <Skeleton className="h-14 rounded-md" />
                 <Skeleton className="h-14 rounded-md" />
@@ -117,7 +182,7 @@ const Dashboard = () => {
               </div>
             ) : recentCVs?.length === 0 ? (
               <div className="text-center text-muted-foreground py-24">
-                <p>You haven’t created any CVs yet.</p>
+                <p>You haven't created any CVs yet.</p>
               </div>
             ) : (
               <div className="space-y-3 md:space-y-4">
