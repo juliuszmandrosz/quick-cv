@@ -220,10 +220,10 @@ export const signOutAction = async () => {
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 const plans = {
-  basic: { priceId: "price_1RDmnnGagz5xt87zdGOBSdAq", tokens: 5 },
-  standard: { priceId: "price_1RDmnnGagz5xt87zMiITvleK", tokens: 9 },
-  professional: { priceId: "price_1RDmnnGagz5xt87zVFG3g5Zz", tokens: 15 },
-  ultimate: { priceId: "price_1RDmnnGagz5xt87zVFG3g5Zz", tokens: 22 },
+  basic: { priceId: process.env.BASIC_PRICE_ID, tokens: 5 },
+  standard: { priceId: process.env.STANDARD_PRICE_ID, tokens: 9 },
+  professional: { priceId: process.env.PROFESSIONAL_PRICE_ID, tokens: 15 },
+  ultimate: { priceId: process.env.ULTIMATE_PRICE_ID, tokens: 22 },
 };
 
 export const createCheckoutSession = async (
