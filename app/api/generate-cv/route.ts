@@ -230,6 +230,8 @@ export async function POST(request: Request) {
       });
     }
 
+    console.log(generationResponse);
+
     let generatedCV;
     try {
       generatedCV = JSON.parse(generationResponse);
