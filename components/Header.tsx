@@ -10,7 +10,7 @@ const Header = () => {
   const router = useRouter();
 
   return (
-    <header className="border-b border-gray-100 py-4 w-full fixed top-0 bg-white/80 backdrop-blur-md z-50">
+    <header className="border-b border-gray-100 py-4 w-full top-0 bg-white/80 backdrop-blur-md z-50">
       <div className="container flex justify-between items-center">
         <div className="flex items-center">
           <a href="/" className="flex items-center">
@@ -41,12 +41,6 @@ const Header = () => {
 
         <div className="flex items-center space-x-4">
           <LanguageSwitcher />
-          <Button
-            onClick={() => router.push("/login")}
-            className="bg-white text-nicecv-dark-purple hover:bg-gray-50 border border-gray-200"
-          >
-            {t("header.login")}
-          </Button>
           <Button
             onClick={() => router.push("/login")}
             className="bg-nicecv-purple hover:bg-nicecv-dark-purple text-white"
