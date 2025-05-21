@@ -31,6 +31,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 export default function CreateCvClientPage() {
   const [step, setStep] = useState<number>(1);
   const [jobUrl, setJobUrl] = useState<string>("");
+  const [jobDesc, setJobDesc] = useState<string>("");
   const [uploadedCV, setUploadedCV] = useState<File | null>(null);
   const [uploadedPhoto, setUploadedPhoto] = useState<File | null>(null);
   const [jobOfferId, setJobOfferId] = useState<string | null>(null);
@@ -39,6 +40,8 @@ export default function CreateCvClientPage() {
   const [cvs, setCvs] = useState<CV[]>([]);
   const [selectedCv, setSelectedCv] = useState<CV | null>(null);
   const [isProcessingJobOffer, setIsProcessingJobOffer] = useState(false);
+  const [jobOfferTab, setJobOfferTab] = useState("url");
+  const [cvTab, setCvTab] = useState("upload");
 
   const { toast } = useToast();
   const router = useRouter();
@@ -47,7 +50,10 @@ export default function CreateCvClientPage() {
 
   const handleNext = async () => {
     if (step === 1) {
-      if (!jobUrl) {
+      if (
+        (jobOfferTab === "url" && !jobUrl) ||
+        (jobOfferTab === "desc" && !jobDesc)
+      ) {
         toast({
           title: t("create.missingTitle"),
           description: t("create.missingDesc"),
@@ -62,12 +68,23 @@ export default function CreateCvClientPage() {
           title: t("create.processing"),
           description: t("create.analyzing"),
         });
-        const res = await fetch("/api/job-offers", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ jobUrl }),
-        });
-        const result = await res.json();
+        let result;
+        if (jobOfferTab == "url") {
+          const res = await fetch("/api/job-offers", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ jobUrl }),
+          });
+          result = await res.json();
+        } else {
+          const res = await fetch("/api/analyze-job-offer", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ jobDesc }),
+          });
+          result = await res.json();
+        }
+
         if (!result.success) {
           setIsProcessingJobOffer(false);
           toast({
@@ -75,7 +92,6 @@ export default function CreateCvClientPage() {
             description: result.error || t("create.errorUrl"),
             variant: "destructive",
           });
-
           return;
         }
         setIsProcessingJobOffer(false);
@@ -84,6 +100,7 @@ export default function CreateCvClientPage() {
           title: t("create.processedTitle"),
           description: t("create.processedDesc"),
         });
+        setCvTab("upload");
         setStep(2);
       } catch (error: any) {
         toast({
@@ -254,12 +271,12 @@ export default function CreateCvClientPage() {
     }
   };
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setUploadedPhoto(file);
-    }
-  };
+  // const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     setUploadedPhoto(file);
+  //   }
+  // };
 
   if (isGenerating) {
     return <LoadingScreen />;
@@ -287,28 +304,61 @@ export default function CreateCvClientPage() {
             <div className="space-y-4">
               {step === 1 ? (
                 <>
-                  <div className="space-y-2">
-                    <Label htmlFor="job-url">{t("create.jobUrl")}</Label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <LinkIcon className="h-4 w-4 text-muted-foreground" />
+                  <Tabs defaultValue="url" onValueChange={setJobOfferTab}>
+                    <TabsList className="dark:glass-dark glass neumorphic mb-4">
+                      <TabsTrigger value="url">
+                        {t("create.pasteUrl")}
+                      </TabsTrigger>
+                      <TabsTrigger value="desc">
+                        {t("create.pasteJobDesc")}
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="url">
+                      <div className="space-y-2">
+                        <Label htmlFor="job-url">{t("create.jobUrl")}</Label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <LinkIcon className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                          <Input
+                            id="job-url"
+                            placeholder="https://example.com/job-posting"
+                            value={jobUrl}
+                            onChange={(e) => setJobUrl(e.target.value)}
+                            className="pl-10 dark:glass-dark glass neumorphic"
+                          />
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {t("create.pasteJobDescExplanation")}: justjoin.it,
+                          nofluffjobs.com)
+                        </p>
                       </div>
-                      <Input
-                        id="job-url"
-                        placeholder="https://example.com/job-posting"
-                        value={jobUrl}
-                        onChange={(e) => setJobUrl(e.target.value)}
-                        className="pl-10 dark:glass-dark glass neumorphic"
-                      />
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {t("create.pasteUrlDesc")}: justjoin.it, nofluffjobs.com)
-                    </p>
-                  </div>
+                    </TabsContent>
+                    <TabsContent value="desc">
+                      <div className="space-y-2">
+                        <Label htmlFor="job-desc">
+                          {t("create.jobListingDesc")}
+                        </Label>
+                        <div className="relative">
+                          <textarea
+                            id="job-desc"
+                            placeholder="We're hiring a Full Stack Developer to join our fast-growing SaaS team. You'll work on modern web apps using TypeScript, React, and Node.js, building features from concept to deployment. Experience with PostgreSQL and cloud platforms like AWS or Vercel is a plus. You should write clean code, enjoy solving real-world problems, and be comfortable collaborating in an Agile environment..."
+                            value={jobDesc}
+                            onChange={(e) => setJobDesc(e.target.value)}
+                            className="w-full min-h-[300px] p-4 dark:glass-dark glass neumorphic rounded-md border border-input bg-background resize-none"
+                          />
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {t("create.pasteJobDescExplanation")}
+                        </p>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
                 </>
               ) : (
                 <>
-                  <Tabs defaultValue="upload">
+                  <Tabs value={cvTab} onValueChange={setCvTab}>
                     {user.user && (
                       <TabsList className="dark:glass-dark glass neumorphic mb-4">
                         <TabsTrigger value="upload">

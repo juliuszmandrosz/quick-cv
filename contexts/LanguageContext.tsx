@@ -170,7 +170,7 @@ export const translations = {
     "create.titleDesc": "Create a perfectly tailored CV for your dream job",
     "create.step": "Step",
     "create.of": "of",
-    "create.enterUrl": "Enter job description URL",
+    "create.enterUrl": "Enter job description URL or paste the description",
     "create.upload": "Upload your CV",
     "create.jobUrl": "Job Description URL",
     "create.pasteUrlDesc":
@@ -202,6 +202,11 @@ export const translations = {
     "create.cvPleaseUploadOrSelect":
       "Please upload your CV or select an existing one",
     "create.cvPleaseUpload": "Please upload your CV",
+    "create.pasteUrl": "Paste the URL",
+    "create.pasteJobDesc": "Paste the description",
+    "create.pasteJobDescExplanation":
+      "Paste the full job offer description here.",
+    "create.jobListingDesc": "Job listing description",
 
     // Loader Section
     "loader.building": "Building something special just for you...",
@@ -363,7 +368,7 @@ export const translations = {
     "create.titleDesc": "Create a perfectly tailored CV for your dream job",
     "create.step": "Step",
     "create.of": "of",
-    "create.enterUrl": "Enter job description URL",
+    "create.enterUrl": "Enter job description URL or paste the description",
     "create.upload": "Upload your CV",
     "create.jobUrl": "Job Description URL",
     "create.pasteUrlDesc":
@@ -395,6 +400,9 @@ export const translations = {
     "create.cvPleaseUploadOrSelect":
       "Please upload your CV or select an existing one",
     "create.cvPleaseUpload": "Please upload your CV",
+    "create.pasteUrl": "URL",
+    "create.pasteJobDesc": "Description",
+    "create.jobListingDesc": "Job listing description",
   },
 };
 
