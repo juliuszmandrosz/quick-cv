@@ -333,22 +333,22 @@ export const translations = {
     // Footer section
     "footer.title":
       "The smartest way to optimize your CV for any job application.",
-    "footer.product": "Produkt",
-    "footer.features": "Funkcje",
-    "footer.howItWorks": "Jak to działa?",
-    "footer.pricing": "Cennik",
+    "footer.product": "Product",
+    "footer.features": "Features",
+    "footer.howItWorks": "How It Works",
+    "footer.pricing": "Pricing",
     "footer.legal": "Legal",
-    "footer.privacyPolicy": "Polityka Prywatności",
-    "footer.termsOfService": "Regulamin",
-    "footer.allRightsReserved": "Wszelkie prawa zastrzeżone",
+    "footer.privacyPolicy": "Privacy Policy",
+    "footer.termsOfService": "Terms of Service",
+    "footer.allRightsReserved": "All rights reserved",
 
     // Login form section
     "login.login": "Login",
-    "login.signUp": "Rejestracja",
-    "login.recover": "Przywróć hasło",
+    "login.signUp": "Sign Up",
+    "login.recover": "Recover",
     "login.email": "Email",
-    "login.password": "Hasło",
-    "login.forgotPassword": "Zapomniałeś hasła?",
+    "login.password": "Password",
+    "login.forgotPassword": "Forgot password?",
     "login.passwordLength": "Password must be at least 8 characters",
     "login.confirmPassword": "Confirm Password",
     "login.emailInstructions":
@@ -393,16 +393,237 @@ export const translations = {
     "create.errorUrl": "Error processing job URL",
     "create.errorCv": "Error creating CV",
     "create.error": "Error",
-    "create.processedTitle": "Error processing job URL",
+    "create.processedTitle": "Job Offer Processed",
     "create.processedDesc": "Job offer details saved successfully.",
     "create.cvGeneratedTitle": "CV Generated",
-    "create.cvGeneratedDesc": "CV Generated",
+    "create.cvGeneratedDesc": "Your tailored CV has been created.",
     "create.cvPleaseUploadOrSelect":
       "Please upload your CV or select an existing one",
     "create.cvPleaseUpload": "Please upload your CV",
-    "create.pasteUrl": "URL",
-    "create.pasteJobDesc": "Description",
+    "create.pasteUrl": "Paste the URL",
+    "create.pasteJobDesc": "Paste the description",
+    "create.pasteJobDescExplanation":
+      "Paste the full job offer description here.",
     "create.jobListingDesc": "Job listing description",
+
+    // Loader Section
+    "loader.building": "Building something special just for you...",
+    "loader.grabCoffee": "Grab a coffee while we craft your perfect CV...",
+    "loader.addingTouch": "Adding that professional touch to your resume...",
+    "loader.almost": "Almost there! Your CV is going to be a BOMB!",
+    "loader.polishing": "Polishing the final details...",
+    "loader.justSeconds": "Just a few more seconds for perfection...",
+    "loader.magic": "NICE CV Magic in Progress",
+    "loader.creating":
+      "We're creating something extraordinary that will make your CV stand out!",
+  },
+  es: {
+    // Header
+    "header.features": "Features",
+    "header.howItWorks": "How it Works",
+    "header.testimonials": "Testimonials",
+    "header.login": "Login",
+    "header.signUp": "Sign Up Free",
+
+    // Hero
+    "hero.title": "Stop Tailoring, ",
+    "hero.titleBold": "Start Interviewing.",
+    "hero.subtitle":
+      "Upload your CV and the job description link. Our AI crafts a perfectly optimized resume in seconds, helping you beat the ATS and land more interviews.",
+    "hero.cta": "Create Your Perfect CV",
+    "hero.learnMore": "Listen More",
+    "hero.pause": "Stop audio",
+
+    // Problem Section
+    "problem.title": "The Job Hunt ",
+    "problem.titleBold": "Shouldn't Be This Hard",
+    "problem.paragraph1":
+      "Remember the endless hours spent tweaking your CV for just one application? The frustration of matching keywords, the uncertainty if you've done enough, the silence after hitting 'submit'?",
+    "problem.paragraph2":
+      "You pour your energy into customizing, applying to dozens of roles, only to hear nothing back. It feels like shouting into a void.",
+    "problem.paragraph3":
+      "The job hunt becomes a draining numbers game, stealing time you could be using to prepare for actual interviews. You know you're qualified, but getting noticed feels impossible.",
+    "problem.question": "What if there was a smarter way?",
+    "problem.hoursWasted.title": "Hours Wasted",
+    "problem.hoursWasted.desc":
+      "Manual tailoring takes hours for each application",
+    "problem.rejected.title": "Getting Rejected",
+    "problem.rejected.desc":
+      "Without ATS optimization, your CV gets filtered out",
+    "problem.fatigue.title": "Mental Fatigue",
+    "problem.fatigue.desc":
+      "The repetitive process drains your energy and creativity",
+    "problem.invisible.title": "Invisible to Recruiters",
+    "problem.invisible.desc":
+      "Without the right keywords, recruiters don't see your application",
+
+    // Solution Section
+    "solution.title": "Introducing",
+    "solution.titleBold": "Nice CV",
+    "solution.subtitle":
+      "Our AI-powered platform instantly creates perfectly tailored CVs for each job application, helping you get more interviews with less effort.",
+    "solution.step1": "1. Upload Your CV",
+    "solution.step1.desc": "Upload your existing CV in any common format",
+    "solution.step2": "2. Add Job URL",
+    "solution.step2.desc": "Paste the link to your target job description",
+    "solution.step3": "3. Get Optimized CV",
+    "solution.step3.desc": "Download your perfectly tailored CV in seconds",
+    "solution.cta": "Create Your Perfect CV",
+
+    // Features Section
+    "features.title": "Why Job Seekers ",
+    "features.titleBold": "Love Nice CV",
+    "features.subtitle":
+      "Our platform offers everything you need to stand out in today's competitive job market",
+    "features.time.title": "Save Hours of Time",
+    "features.time.desc":
+      "Get a perfectly tailored CV in seconds, not hours. Apply to more jobs in less time.",
+    "features.ats.title": "Beat ATS Systems",
+    "features.ats.desc":
+      "Our AI perfectly matches keywords from the job description to pass Applicant Tracking Systems.",
+    "features.interview.title": "Increase Interview Chances",
+    "features.interview.desc":
+      "Highlight the exact skills and experiences that recruiters are looking for.",
+    "features.easy.title": "Effortless to Use",
+    "features.easy.desc":
+      "No complicated software to learn. Just upload, paste URL, and download.",
+    "features.repository.title": "CV Repository",
+    "features.repository.desc":
+      "Store and manage all your tailored CVs in one place for future reference.",
+    "features.success.title": "Higher Success Rate",
+    "features.success.desc":
+      "Users report up to 3x more interview invitations after using Nice CV.",
+
+    // How It Works Section
+    "howItWorks.title": "How It Works",
+    "howItWorks.subtitle":
+      "Our advanced AI does all the heavy lifting for you in three simple steps",
+    "howItWorks.upload.title": "Upload Your CV",
+    "howItWorks.upload.desc":
+      "Simply upload your existing CV in any common format (PDF, DOCX, etc.). Our system will analyze your skills, experience, and qualifications.",
+    "howItWorks.url.title": "Add Job Description URL",
+    "howItWorks.url.desc":
+      "Paste the URL of the job listing you're applying for. Our AI scans and analyzes the job requirements, key skills, and qualifications.",
+    "howItWorks.get.title": "Get Your Optimized CV",
+    "howItWorks.get.desc":
+      "Our AI instantly creates a perfectly tailored version of your CV that highlights relevant experience and includes key terms from the job description.",
+
+    // Testimonials Section
+    "testimonials.title": "What Our Users ",
+    "testimonials.titleBold": "Are Saying",
+    "testimonials.subtitle":
+      "Join hundreds of successful job seekers who landed interviews faster with Nice CV",
+    "testimonials.join":
+      "Join hundreds of job seekers who have already improved their job application success",
+
+    // CTA Section
+    "cta.title": "Stop Wasting Time on Manual CV Tailoring",
+    "cta.subtitle":
+      "Get more interviews with less effort. Create your perfect CV in seconds.",
+    "cta.feature1": "Save Hours Per Application",
+    "cta.feature2": "Beat ATS Filters",
+    "cta.feature3": "Land More Interviews",
+    "cta.button": "Create Your Perfect CV",
+    "cta.free": "No credit card required. Free to get started.",
+
+    // CV template section
+    "cv.ready": "Your tailored CV is ready for download",
+    "cv.jobOffer": "Job Offer Link",
+    "cv.downloadBtn": "Download CV",
+    "cv.summary": "Summary",
+    "cv.technicalSkills": "Technical Skills",
+    "cv.softPowerSkills": "Soft & Power Skills",
+    "cv.experience": "Experience",
+    "cv.languages": "Languages",
+    "cv.education": "Education",
+    "cv.present": "Present",
+
+    // Footer section
+    "footer.title":
+      "The smartest way to optimize your CV for any job application.",
+    "footer.product": "Product",
+    "footer.features": "Features",
+    "footer.howItWorks": "How It Works",
+    "footer.pricing": "Pricing",
+    "footer.legal": "Legal",
+    "footer.privacyPolicy": "Privacy Policy",
+    "footer.termsOfService": "Terms of Service",
+    "footer.allRightsReserved": "All rights reserved",
+
+    // Login form section
+    "login.login": "Login",
+    "login.signUp": "Sign Up",
+    "login.recover": "Recover",
+    "login.email": "Email",
+    "login.password": "Password",
+    "login.forgotPassword": "Forgot password?",
+    "login.passwordLength": "Password must be at least 8 characters",
+    "login.confirmPassword": "Confirm Password",
+    "login.emailInstructions":
+      "We'll send you instructions on how to reset your password.",
+    "login.sendEmail": "Send Recovery Email",
+    "login.checkInbox": "Check your inbox",
+    "login.emailSent": "We've sent recovery instructions to:",
+    "login.backToLogin": "Back to Login",
+    "login.orContinueWith": "or continue with",
+    "login.noAccount": "Don't have an account?",
+    "login.hasAccount": "Already have an account?",
+    "login.byContinuing": "By continuing, you agree to NICE CV's",
+    "login.and": "and",
+
+    // Create cv
+    "create.title": "Create New CV",
+    "create.titleDesc": "Create a perfectly tailored CV for your dream job",
+    "create.step": "Step",
+    "create.of": "of",
+    "create.enterUrl": "Enter job description URL or paste the description",
+    "create.upload": "Upload your CV",
+    "create.jobUrl": "Job Description URL",
+    "create.pasteUrlDesc":
+      "Paste the URL of the job description you're applying for (allowed websites",
+    "create.uploadCv": "Upload CV",
+    "create.useExistingCv": "Use Existing CV",
+    "create.dropCv": "Drop your CV here or click to browse",
+    "create.supportedFormats": "Supported formats",
+    "create.selectCv": "Select an existing CV from your repository",
+    "create.createdAt": "Created at",
+    "create.language": "CV Language",
+    "create.english": "English",
+    "create.polish": "Polish",
+    "create.spanish": "Spanish",
+    "create.back": "Back",
+    "create.generateCv": "Generate CV",
+    "create.next": "Next",
+    "create.processing": "Processing job offer",
+    "create.analyzing": "Analyzing job offer and extracting data...",
+    "create.missingTitle": "Missing Information",
+    "create.missingDesc": "Please provide a job description URL",
+    "create.errorUrl": "Error processing job URL",
+    "create.errorCv": "Error creating CV",
+    "create.error": "Error",
+    "create.processedTitle": "Job Offer Processed",
+    "create.processedDesc": "Job offer details saved successfully.",
+    "create.cvGeneratedTitle": "CV Generated",
+    "create.cvGeneratedDesc": "Your tailored CV has been created.",
+    "create.cvPleaseUploadOrSelect":
+      "Please upload your CV or select an existing one",
+    "create.cvPleaseUpload": "Please upload your CV",
+    "create.pasteUrl": "Paste the URL",
+    "create.pasteJobDesc": "Paste the description",
+    "create.pasteJobDescExplanation":
+      "Paste the full job offer description here.",
+    "create.jobListingDesc": "Job listing description",
+
+    // Loader Section
+    "loader.building": "Building something special just for you...",
+    "loader.grabCoffee": "Grab a coffee while we craft your perfect CV...",
+    "loader.addingTouch": "Adding that professional touch to your resume...",
+    "loader.almost": "Almost there! Your CV is going to be a BOMB!",
+    "loader.polishing": "Polishing the final details...",
+    "loader.justSeconds": "Just a few more seconds for perfection...",
+    "loader.magic": "NICE CV Magic in Progress",
+    "loader.creating":
+      "We're creating something extraordinary that will make your CV stand out!",
   },
 };
 

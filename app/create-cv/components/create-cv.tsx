@@ -330,7 +330,7 @@ export default function CreateCvClientPage() {
                           />
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {t("create.pasteJobDescExplanation")}: justjoin.it,
+                          {t("create.pasteUrlDesc")}: justjoin.it,
                           nofluffjobs.com)
                         </p>
                       </div>
