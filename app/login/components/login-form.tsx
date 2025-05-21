@@ -31,7 +31,8 @@ import {
   signInAction,
   signInWithGoogleAction,
   signUpAction,
-} from "@/app/actions"; // UI Components
+} from "@/app/actions";
+import { useLanguage } from "@/contexts/LanguageContext"; // UI Components
 
 // UI Components
 interface PasswordInputProps {
@@ -116,6 +117,7 @@ export default function LoginForm() {
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useLanguage();
 
   // Form state
   const [activeTab, setActiveTab] = useState("login");
@@ -295,9 +297,9 @@ export default function LoginForm() {
             </span>
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Stop tailoring,{" "}
+            {t("hero.title")}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary/90 to-primary">
-              start interviewing.
+              {t("hero.titleBold")}
             </span>
           </p>
         </div>
@@ -317,19 +319,19 @@ export default function LoginForm() {
                 value="login"
                 className="flex-1 rounded-md px-2 py-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/90 data-[state=active]:to-primary data-[state=active]:text-white transition-all"
               >
-                Login
+                {t("login.login")}
               </TabsTrigger>
               <TabsTrigger
                 value="signup"
                 className="flex-1 rounded-md px-2 py-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/90 data-[state=active]:to-primary data-[state=active]:text-white transition-all"
               >
-                Sign Up
+                {t("login.signUp")}
               </TabsTrigger>
               <TabsTrigger
                 value="recover"
                 className="flex-1 rounded-md px-2 py-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/90 data-[state=active]:to-primary data-[state=active]:text-white transition-all"
               >
-                Recover
+                {t("login.recover")}
               </TabsTrigger>
             </TabsList>
 
@@ -339,7 +341,7 @@ export default function LoginForm() {
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-medium">
-                      Email
+                      {t("login.email")}
                     </Label>
                     <Input
                       id="email"
@@ -355,7 +357,7 @@ export default function LoginForm() {
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <Label htmlFor="password" className="text-sm font-medium">
-                        Password
+                        {t("login.password")}
                       </Label>
                       <Link
                         href="#"
@@ -365,7 +367,7 @@ export default function LoginForm() {
                         }}
                         className="text-xs text-primary hover:text-primary/80 dark:text-primary/90 dark:hover:text-primary/70"
                       >
-                        Forgot password?
+                        {t("login.forgotPassword")}
                       </Link>
                     </div>
 
@@ -384,7 +386,7 @@ export default function LoginForm() {
                   </div>
 
                   <LoadingButton loading={loading} isPending={isPending}>
-                    Login
+                    {t("login.login")}
                   </LoadingButton>
                 </form>
               </TabsContent>
@@ -397,7 +399,7 @@ export default function LoginForm() {
                       htmlFor="signup-email"
                       className="text-sm font-medium"
                     >
-                      Email
+                      {t("login.email")}
                     </Label>
                     <Input
                       id="signup-email"
@@ -415,7 +417,7 @@ export default function LoginForm() {
                       htmlFor="signup-password"
                       className="text-sm font-medium"
                     >
-                      Password
+                      {t("login.password")}
                     </Label>
 
                     <PasswordInput
@@ -432,7 +434,7 @@ export default function LoginForm() {
                     />
                     {password.length === 0 && (
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Password must be at least 8 characters
+                        {t("login.passwordLength")}
                       </p>
                     )}
                   </div>
@@ -442,7 +444,7 @@ export default function LoginForm() {
                       htmlFor="confirmPassword"
                       className="text-sm font-medium"
                     >
-                      Confirm Password
+                      {t("login.confirmPassword")}
                     </Label>
                     <PasswordInput
                       id="confirm-password"
@@ -459,7 +461,7 @@ export default function LoginForm() {
                   </div>
 
                   <LoadingButton loading={loading} isPending={isPending}>
-                    Sign up
+                    {t("login.signUp")}
                   </LoadingButton>
                 </form>
               </TabsContent>
@@ -474,7 +476,7 @@ export default function LoginForm() {
                           htmlFor="recoveryEmail"
                           className="text-sm font-medium"
                         >
-                          Email
+                          {t("login.email")}
                         </Label>
                         <Input
                           id="recoveryEmail"
@@ -493,13 +495,12 @@ export default function LoginForm() {
                       >
                         <AlertTriangle className="h-5 w-5 text-amber-500" />
                         <AlertDescription className="text-amber-800 dark:text-amber-200">
-                          We'll send you instructions on how to reset your
-                          password.
+                          {t("login.emailInstructions")}
                         </AlertDescription>
                       </Alert>
 
                       <LoadingButton loading={loading} isPending={isPending}>
-                        Send Recovery Email
+                        {t("login.sendEmail")}
                       </LoadingButton>
                     </>
                   ) : (
@@ -508,10 +509,10 @@ export default function LoginForm() {
                         <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
                       </div>
                       <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-                        Check your inbox
+                        {t("login.checkInbox")}
                       </h3>
                       <p className="text-gray-600 dark:text-gray-400 max-w-xs mx-auto">
-                        We've sent recovery instructions to:
+                        {t("login.emailSent")}
                       </p>
                       <p className="font-medium text-gray-900 dark:text-white">
                         {recoveryEmail}
@@ -525,7 +526,7 @@ export default function LoginForm() {
                         }}
                         className="mt-4 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
                       >
-                        Back to Login
+                        {t("login.backToLogin")}
                       </Button>
                     </div>
                   )}
@@ -540,7 +541,7 @@ export default function LoginForm() {
               </div>
               <div className="relative flex justify-center text-xs">
                 <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">
-                  or continue with
+                  {t("login.orContinueWith")}
                 </span>
               </div>
             </div>
@@ -561,7 +562,7 @@ export default function LoginForm() {
             <CardFooter className="text-center pt-0 pb-6">
               {activeTab === "login" ? (
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Don't have an account?{" "}
+                  {t("login.noAccount")}{" "}
                   <Link
                     href="#"
                     onClick={(e) => {
@@ -570,12 +571,12 @@ export default function LoginForm() {
                     }}
                     className="text-primary hover:text-primary/80 dark:text-primary/90 dark:hover:text-primary/70 font-medium"
                   >
-                    Sign up
+                    {t("login.signUp")}
                   </Link>
                 </p>
               ) : (
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Already have an account?{" "}
+                  {t("login.hasAccount")}{" "}
                   <Link
                     href="#"
                     onClick={(e) => {
@@ -584,7 +585,7 @@ export default function LoginForm() {
                     }}
                     className="text-primary hover:text-primary/80 dark:text-primary/90 dark:hover:text-primary/70 font-medium"
                   >
-                    Login
+                    {t("login.login")}
                   </Link>
                 </p>
               )}
@@ -594,19 +595,19 @@ export default function LoginForm() {
 
         {/* Terms and privacy */}
         <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-8">
-          By continuing, you agree to NICE CV's{" "}
+          {t("login.byContinuing")}{" "}
           <Link
             href="#"
             className="text-primary hover:text-primary/80 dark:text-primary/90 dark:hover:text-primary/70"
           >
-            Terms of Service
+            {t("footer.termsOfService")}
           </Link>{" "}
-          and{" "}
+          {t("login.and")}{" "}
           <Link
             href="#"
             className="text-primary hover:text-primary/80 dark:text-primary/90 dark:hover:text-primary/70"
           >
-            Privacy Policy
+            {t("footer.privacyPolicy")}
           </Link>
         </p>
       </div>

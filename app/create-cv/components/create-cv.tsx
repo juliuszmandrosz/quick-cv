@@ -26,6 +26,7 @@ import {
 import LoadingScreen from "@/app/create-cv/components/loading-screen";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { CV } from "@/app/create-cv/types/cv";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function CreateCvClientPage() {
   const [step, setStep] = useState<number>(1);
@@ -42,13 +43,14 @@ export default function CreateCvClientPage() {
   const { toast } = useToast();
   const router = useRouter();
   const user = useCurrentUser();
+  const { t } = useLanguage();
 
   const handleNext = async () => {
     if (step === 1) {
       if (!jobUrl) {
         toast({
-          title: "Missing Information",
-          description: "Please provide a job description URL",
+          title: t("create.missingTitle"),
+          description: t("create.missingDesc"),
           variant: "destructive",
         });
         return;
@@ -57,8 +59,8 @@ export default function CreateCvClientPage() {
       try {
         setIsProcessingJobOffer(true);
         toast({
-          title: "Processing job offer",
-          description: "Analyzing job offer and extracting data...",
+          title: t("create.processing"),
+          description: t("create.analyzing"),
         });
         const res = await fetch("/api/job-offers", {
           method: "POST",
@@ -69,8 +71,8 @@ export default function CreateCvClientPage() {
         if (!result.success) {
           setIsProcessingJobOffer(false);
           toast({
-            title: "Error",
-            description: result.error || "Error processing job URL",
+            title: t("create.error"),
+            description: result.error || t("create.errorUrl"),
             variant: "destructive",
           });
 
@@ -79,24 +81,24 @@ export default function CreateCvClientPage() {
         setIsProcessingJobOffer(false);
         setJobOfferId(result.data[0]?.id);
         toast({
-          title: "Job Offer Processed",
-          description: "Job offer details saved successfully.",
+          title: t("create.processedTitle"),
+          description: t("create.processedDesc"),
         });
         setStep(2);
       } catch (error: any) {
         toast({
-          title: "Error",
-          description: error.message || "Error processing job URL",
+          title: t("create.error"),
+          description: error.message || t("create.errorUrl"),
           variant: "destructive",
         });
       }
     } else if (step === 2) {
       if (!uploadedCV && !selectedCv) {
         const message = user.user
-          ? "Please upload your CV or select an existing one"
-          : "Please upload your CV";
+          ? `${t("create.cvPleaseUploadOrSelect")}`
+          : `${t("create.cvPleaseUpload")}`;
         toast({
-          title: "Missing Information",
+          title: t("create.missingTitle"),
           description: message,
           variant: "destructive",
         });
@@ -123,8 +125,8 @@ export default function CreateCvClientPage() {
           if (!extractCvResult.success) {
             setIsGenerating(false);
             toast({
-              title: "Error",
-              description: extractCvResult.error || "Error creating CV",
+              title: t("create.error"),
+              description: extractCvResult.error || t("create.errorCv"),
               variant: "destructive",
             });
             return;
@@ -146,8 +148,8 @@ export default function CreateCvClientPage() {
           if (!updateJobOfferResult.success) {
             setIsGenerating(false);
             toast({
-              title: "Error",
-              description: updateJobOfferResult.error || "Error creating CV",
+              title: t("create.error"),
+              description: updateJobOfferResult.error || t("create.errorCv"),
               variant: "destructive",
             });
             return;
@@ -172,8 +174,8 @@ export default function CreateCvClientPage() {
         if (!generatePromptPlanResult.success) {
           setIsGenerating(false);
           toast({
-            title: "Error",
-            description: generatePromptPlanResult.error || "Error creating CV",
+            title: t("create.error"),
+            description: generatePromptPlanResult.error || t("create.errorCv"),
             variant: "destructive",
           });
           return;
@@ -195,8 +197,8 @@ export default function CreateCvClientPage() {
         if (!generateCvResult.success) {
           setIsGenerating(false);
           toast({
-            title: "Error",
-            description: generateCvResult.error || "Error creating CV",
+            title: t("create.error"),
+            description: generateCvResult.error || t("create.errorCv"),
             variant: "destructive",
           });
           return;
@@ -204,8 +206,8 @@ export default function CreateCvClientPage() {
 
         setIsGenerating(false);
         toast({
-          title: "CV Generated",
-          description: "Your tailored CV has been created.",
+          title: t("create.cvGeneratedTitle"),
+          description: t("create.cvGeneratedDesc"),
         });
         router.push(
           "/cv-preview?cvId=" + generateCvResult.cvId + "&lang=" + cvLanguage,
@@ -213,8 +215,8 @@ export default function CreateCvClientPage() {
       } catch (error: any) {
         setIsGenerating(false);
         toast({
-          title: "Error",
-          description: error.message || "Error processing CV",
+          title: t("create.error"),
+          description: error.message || t("create.errorCv"),
           variant: "destructive",
         });
       }
@@ -267,18 +269,18 @@ export default function CreateCvClientPage() {
     <div className="max-w-3xl mx-auto p-4">
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Create New CV</h1>
-          <p className="text-muted-foreground mt-2">
-            Create a perfectly tailored CV for your dream job
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {t("create.title")}
+          </h1>
+          <p className="text-muted-foreground mt-2">{t("create.titleDesc")}</p>
         </div>
         <Card className="dark:glass-dark glass neumorphic">
           <CardHeader>
-            <CardTitle>Step {step} of 2</CardTitle>
+            <CardTitle>
+              {t("create.step")} {step} {t("create.of")} 2
+            </CardTitle>
             <CardDescription>
-              {step === 1
-                ? "Enter job description URL"
-                : "Upload your CV and Profile Photo"}
+              {step === 1 ? `${t("create.enterUrl")}` : `${t("create.upload")}`}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -286,7 +288,7 @@ export default function CreateCvClientPage() {
               {step === 1 ? (
                 <>
                   <div className="space-y-2">
-                    <Label htmlFor="job-url">Job Description URL</Label>
+                    <Label htmlFor="job-url">{t("create.jobUrl")}</Label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <LinkIcon className="h-4 w-4 text-muted-foreground" />
@@ -300,8 +302,7 @@ export default function CreateCvClientPage() {
                       />
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      Paste the URL of the job description you're applying for
-                      (allowed websites: justjoin.it, nofluffjobs.com)
+                      {t("create.pasteUrlDesc")}: justjoin.it, nofluffjobs.com)
                     </p>
                   </div>
                 </>
@@ -310,9 +311,11 @@ export default function CreateCvClientPage() {
                   <Tabs defaultValue="upload">
                     {user.user && (
                       <TabsList className="dark:glass-dark glass neumorphic mb-4">
-                        <TabsTrigger value="upload">Upload CV</TabsTrigger>
+                        <TabsTrigger value="upload">
+                          {t("create.uploadCv")}
+                        </TabsTrigger>
                         <TabsTrigger value="existing">
-                          Use Existing CV
+                          {t("create.useExistingCv")}
                         </TabsTrigger>
                       </TabsList>
                     )}
@@ -333,13 +336,13 @@ export default function CreateCvClientPage() {
                                 <Upload className="h-6 w-6 text-primary" />
                               </div>
                               <div className="text-lg font-medium">
-                                Upload your CV
+                                {t("create.upload")}
                               </div>
                               <p className="text-sm text-muted-foreground">
-                                Drop your CV here or click to browse
+                                {t("create.dropCv")}
                               </p>
                               <p className="text-xs text-muted-foreground">
-                                Supported formats: PDF
+                                {t("create.supportedFormats")}: PDF
                               </p>
                             </div>
                           </label>
@@ -355,7 +358,7 @@ export default function CreateCvClientPage() {
                     <TabsContent value="existing">
                       <div className="space-y-4">
                         <p className="text-sm text-muted-foreground mb-4">
-                          Select an existing CV from your repository
+                          {t("create.selectCv")}
                         </p>
                         {cvs.map((cv) => (
                           <div
@@ -375,7 +378,7 @@ export default function CreateCvClientPage() {
                                   {cv.title}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
-                                  Created at{" "}
+                                  {t("create.createdAt")}{" "}
                                   {new Date(cv.created_at).toLocaleString(
                                     undefined,
                                     {
@@ -394,63 +397,63 @@ export default function CreateCvClientPage() {
                       </div>
                     </TabsContent>
                   </Tabs>
-                  {step === 1 && (
-                    <div className="mt-6">
-                      <Label htmlFor="photo-upload" className="mb-2">
-                        Upload Profile Photo (Optional)
-                      </Label>
-                      <div className="border-2 border-dashed border-primary/40 rounded-lg p-4 text-center cursor-pointer hover:border-primary/60 transition-colors">
-                        <input
-                          id="photo-upload"
-                          type="file"
-                          className="hidden"
-                          onChange={handlePhotoChange}
-                          accept="image/*"
-                        />
-                        <label
-                          htmlFor="photo-upload"
-                          className="cursor-pointer"
-                        >
-                          <div className="space-y-2">
-                            <div className="mx-auto bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center">
-                              <Upload className="h-6 w-6 text-primary" />
-                            </div>
-                            <div className="text-lg font-medium">
-                              Upload your photo
-                            </div>
-                            <p className="text-sm text-muted-foreground">
-                              Drop your photo here or click to browse
-                            </p>
-                          </div>
-                        </label>
-                      </div>
-                      {uploadedPhoto && (
-                        <div className="mt-2 flex items-center p-3 rounded-md bg-primary/10">
-                          {uploadedPhoto && (
-                            <div className="flex items-center gap-2">
-                              <div className="h-10 w-10 rounded-full overflow-hidden bg-muted">
-                                <img
-                                  src={
-                                    URL.createObjectURL(uploadedPhoto) ||
-                                    "/placeholder.svg"
-                                  }
-                                  alt="Profile preview"
-                                  className="h-full w-full object-cover"
-                                />
-                              </div>
-                              <span className="text-sm">
-                                {uploadedPhoto.name}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  {/*{step === 1 && (*/}
+                  {/*  <div className="mt-6">*/}
+                  {/*    <Label htmlFor="photo-upload" className="mb-2">*/}
+                  {/*      Upload Profile Photo (Optional)*/}
+                  {/*    </Label>*/}
+                  {/*    <div className="border-2 border-dashed border-primary/40 rounded-lg p-4 text-center cursor-pointer hover:border-primary/60 transition-colors">*/}
+                  {/*      <input*/}
+                  {/*        id="photo-upload"*/}
+                  {/*        type="file"*/}
+                  {/*        className="hidden"*/}
+                  {/*        onChange={handlePhotoChange}*/}
+                  {/*        accept="image/*"*/}
+                  {/*      />*/}
+                  {/*      <label*/}
+                  {/*        htmlFor="photo-upload"*/}
+                  {/*        className="cursor-pointer"*/}
+                  {/*      >*/}
+                  {/*        <div className="space-y-2">*/}
+                  {/*          <div className="mx-auto bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center">*/}
+                  {/*            <Upload className="h-6 w-6 text-primary" />*/}
+                  {/*          </div>*/}
+                  {/*          <div className="text-lg font-medium">*/}
+                  {/*            Upload your photo*/}
+                  {/*          </div>*/}
+                  {/*          <p className="text-sm text-muted-foreground">*/}
+                  {/*            Drop your photo here or click to browse*/}
+                  {/*          </p>*/}
+                  {/*        </div>*/}
+                  {/*      </label>*/}
+                  {/*    </div>*/}
+                  {/*    {uploadedPhoto && (*/}
+                  {/*      <div className="mt-2 flex items-center p-3 rounded-md bg-primary/10">*/}
+                  {/*        {uploadedPhoto && (*/}
+                  {/*          <div className="flex items-center gap-2">*/}
+                  {/*            <div className="h-10 w-10 rounded-full overflow-hidden bg-muted">*/}
+                  {/*              <img*/}
+                  {/*                src={*/}
+                  {/*                  URL.createObjectURL(uploadedPhoto) ||*/}
+                  {/*                  "/placeholder.svg"*/}
+                  {/*                }*/}
+                  {/*                alt="Profile preview"*/}
+                  {/*                className="h-full w-full object-cover"*/}
+                  {/*              />*/}
+                  {/*            </div>*/}
+                  {/*            <span className="text-sm">*/}
+                  {/*              {uploadedPhoto.name}*/}
+                  {/*            </span>*/}
+                  {/*          </div>*/}
+                  {/*        )}*/}
+                  {/*      </div>*/}
+                  {/*    )}*/}
+                  {/*  </div>*/}
+                  {/*)}*/}
 
                   <div className="mt-6">
                     <Label htmlFor="cv-language" className="mb-2">
-                      CV Language
+                      {t("create.language")}
                     </Label>
                     <div className="flex gap-2">
                       <Button
@@ -459,7 +462,7 @@ export default function CreateCvClientPage() {
                         className={`w-24 ${cvLanguage === "en" ? "bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] hover:from-[#8A76E4] hover:to-[#4A1DEE] text-white" : ""}`}
                         onClick={() => setCvLanguage("en")}
                       >
-                        English
+                        {t("create.english")}
                       </Button>
                       <Button
                         type="button"
@@ -467,7 +470,15 @@ export default function CreateCvClientPage() {
                         className={`w-24 ${cvLanguage === "pl" ? "bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] hover:from-[#8A76E4] hover:to-[#4A1DEE] text-white" : ""}`}
                         onClick={() => setCvLanguage("pl")}
                       >
-                        Polish
+                        {t("create.polish")}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={cvLanguage === "es" ? "default" : "outline"}
+                        className={`w-24 ${cvLanguage === "es" ? "bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] hover:from-[#8A76E4] hover:to-[#4A1DEE] text-white" : ""}`}
+                        onClick={() => setCvLanguage("es")}
+                      >
+                        {t("create.spanish")}
                       </Button>
                     </div>
                   </div>
@@ -475,19 +486,21 @@ export default function CreateCvClientPage() {
               )}
               <div className="flex justify-between mt-8">
                 <Button variant="outline" onClick={handleBack}>
-                  <ChevronLeft className="mr-2 h-4 w-4" /> Back
+                  <ChevronLeft className="mr-2 h-4 w-4" /> {t("create.back")}
                 </Button>
                 <Button
                   onClick={handleNext}
                   className="neumorphic-button bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] hover:from-[#8A76E4] hover:to-[#4A1DEE] text-white"
                   disabled={isProcessingJobOffer}
                 >
-                  {step === 2 ? "Generate CV" : "Next"}{" "}
-                  {isProcessingJobOffer ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <ChevronRight className="mr-2 h-4 w-4" />
-                  )}
+                  <>
+                    {step === 2 ? t("create.generateCv") : t("create.next")}
+                    {isProcessingJobOffer ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <ChevronRight className="mr-2 h-4 w-4" />
+                    )}
+                  </>
                 </Button>
               </div>
             </div>

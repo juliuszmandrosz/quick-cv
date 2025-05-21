@@ -5,7 +5,6 @@ import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorks from "@/components/HowItWorks";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
-import TestimonialsSection from "@/components/TestimonialsSection";
 import { Hero } from "@/components/hero";
 
 export default function Home() {
@@ -18,7 +17,7 @@ export default function Home() {
         <SolutionSection />
         <FeaturesSection />
         <HowItWorks />
-        <TestimonialsSection />
+        {/*<TestimonialsSection />*/}
         <CTASection />
       </main>
       <Footer />

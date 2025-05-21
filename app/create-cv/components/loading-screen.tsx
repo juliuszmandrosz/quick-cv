@@ -4,20 +4,22 @@ import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Coffee, Loader2, Sparkles } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function LoadingScreen() {
   const isMobile = useIsMobile();
   const [progress, setProgress] = useState(0);
   const [messageIndex, setMessageIndex] = useState(0);
   const [visible, setVisible] = useState(true);
+  const { t } = useLanguage();
 
   const messages = [
-    "Building something special just for you...",
-    "Grab a coffee while we craft your perfect CV...",
-    "Adding that professional touch to your resume...",
-    "Almost there! Your CV is going to be a BOMB!",
-    "Polishing the final details...",
-    "Just a few more seconds for perfection...",
+    t("loader.building"),
+    t("loader.grabCoffee"),
+    t("loader.addingTouch"),
+    t("loader.almost"),
+    t("loader.polishing"),
+    t("loader.justSeconds"),
   ];
 
   useEffect(() => {
@@ -69,7 +71,7 @@ export default function LoadingScreen() {
         </div>
 
         <h2 className={`mb-4 font-bold ${isMobile ? "text-2xl" : "text-4xl"}`}>
-          NICE CV Magic in Progress
+          {t("loader.magic")}
         </h2>
 
         <div className="mb-8 min-h-16 flex items-center justify-center">
@@ -89,8 +91,7 @@ export default function LoadingScreen() {
         <p
           className={`mt-8 text-slate-300 ${isMobile ? "text-sm" : "text-base"}`}
         >
-          We're creating something extraordinary that will make your CV stand
-          out!
+          {t("loader.creating")}
         </p>
       </div>
     </div>
