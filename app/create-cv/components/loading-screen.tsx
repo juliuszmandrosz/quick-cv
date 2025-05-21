@@ -23,7 +23,7 @@ export default function LoadingScreen() {
   ];
 
   useEffect(() => {
-    const totalDuration = 70; // czas trwania w sekundach
+    const totalDuration = 80; // czas trwania w sekundach
     const increment = 100 / totalDuration;
 
     const progressInterval = setInterval(() => {
