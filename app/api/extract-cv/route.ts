@@ -124,7 +124,7 @@ export async function POST(request: Request) {
     }
 
     const { data: cvUserDataId, error: createError } = await supabase.rpc(
-      "create_default_cv_user_data",
+      "insert_cv_user_data",
       {
         job_offer_id: jobOfferId,
         email: extractedData.email,
