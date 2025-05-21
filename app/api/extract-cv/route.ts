@@ -82,7 +82,7 @@ export async function POST(request: Request) {
       
       Select most appropriate title based on the CV content.
       
-      Dates must be in YYYY-MM-DD format; if only month and year are provided, assume day 01; if end_date is missing or "present" / "PRESENT" put null for end_date
+      Dates must be in YYYY-MM-DD format; if only month and year are provided, assume day 01; if end_date is missing or is not a real date or some random text, put null for end_date
       
       Do not invent any skills or data.
       
