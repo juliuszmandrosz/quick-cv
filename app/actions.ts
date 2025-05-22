@@ -228,6 +228,7 @@ const plans = {
 
 export const createCheckoutSession = async (
   plan: string,
+  currency: string,
   cvId?: string | null,
   lang?: string | null,
 ) => {
@@ -257,6 +258,7 @@ export const createCheckoutSession = async (
     payment_method_types: ["card"],
     mode: "payment",
     line_items: [{ price: config.priceId, quantity: 1 }],
+    currency: currency,
     metadata: {
       user_id: user.id,
       plan,

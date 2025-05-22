@@ -6,6 +6,7 @@ import {
   Check,
   ChevronLeft,
   FileText,
+  Globe,
   HelpCircle,
   Languages,
 } from "lucide-react";
@@ -20,6 +21,12 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { createCheckoutSession } from "@/app/actions";
 import { useRouter, useSearchParams } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface SubscriptionPlanProps {
   cvId?: string | null;
@@ -30,14 +37,15 @@ interface SubscriptionPlanProps {
   isPopular?: boolean;
 }
 
-const SubscriptionPlan: React.FC<SubscriptionPlanProps> = ({
-  cvId,
-  lang,
-  title,
-  price,
-  cvCount,
-  isPopular = false,
-}) => {
+interface CurrencyRates {
+  [key: string]: {
+    [key: string]: number;
+  };
+}
+
+const SubscriptionPlan: React.FC<
+  SubscriptionPlanProps & { currency: string }
+> = ({ cvId, lang, title, price, cvCount, isPopular = false, currency }) => {
   const { toast } = useToast();
 
   const handleSubscribe = async (
@@ -45,11 +53,16 @@ const SubscriptionPlan: React.FC<SubscriptionPlanProps> = ({
     lang?: string | null,
   ) => {
     toast({
-      title: "Subscription Selected",
+      title: "Plan Selected",
       description: `You've selected the ${title} plan. Proceeding to checkout...`,
     });
 
-    await createCheckoutSession(title.toLowerCase(), cvId, lang ?? "en");
+    await createCheckoutSession(
+      `${title.toLowerCase()}`,
+      currency,
+      cvId,
+      lang ?? "en",
+    );
   };
 
   return (
@@ -72,7 +85,9 @@ const SubscriptionPlan: React.FC<SubscriptionPlanProps> = ({
         </CardTitle>
         <div className="flex items-baseline mt-2">
           <span className="text-3xl font-bold text-[#5B2EFF] dark:text-[#9B87F5]">
+            {currency === "EUR" ? "€" : ""}
             {price}
+            {currency === "PLN" ? "zł" : ""}
           </span>
         </div>
       </CardHeader>
@@ -81,7 +96,7 @@ const SubscriptionPlan: React.FC<SubscriptionPlanProps> = ({
         <ul className="space-y-3 text-sm">
           {[
             `Create ${cvCount} CVs`,
-            "English & Polish language support",
+            "English, Polish & Spanish languages",
             "Professional template",
             "PDF format",
           ].map((item, i) => (
@@ -100,7 +115,7 @@ const SubscriptionPlan: React.FC<SubscriptionPlanProps> = ({
             isPopular ? "shadow-md" : ""
           }`}
         >
-          Subscribe Now
+          Buy Now
         </Button>
       </CardFooter>
     </Card>
@@ -114,6 +129,27 @@ export default function SubscriptionClient() {
   const lang = searchParams.get("lang") || "en";
 
   const [mounted, setMounted] = useState(false);
+  const [currency, setCurrency] = useState<"EUR" | "PLN">("PLN");
+
+  // Currency conversion rates
+  const currencyRates: CurrencyRates = {
+    EUR: {
+      Basic: 3,
+      Standard: 4,
+      Professional: 6,
+      Ultimate: 8,
+    },
+    PLN: {
+      Basic: 13,
+      Standard: 17,
+      Professional: 26,
+      Ultimate: 34,
+    },
+  };
+
+  const getPrice = (plan: string) => {
+    return currencyRates[currency][plan];
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -174,9 +210,27 @@ export default function SubscriptionClient() {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
             Choose Your Perfect Plan
           </h2>
+          <div className="flex justify-center mb-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  {currency === "EUR" ? "EUR (€)" : "PLN (zł)"}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setCurrency("EUR")}>
+                  EUR (€)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setCurrency("PLN")}>
+                  PLN (zł)
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Select a subscription that suits your needs. All plans include our
-            premium features and support.
+            Select a plan that suits your needs. All plans include our premium
+            features and support.
           </p>
         </div>
 
@@ -185,30 +239,34 @@ export default function SubscriptionClient() {
             cvId={cvId}
             lang={lang}
             title="Ultimate"
-            price="€8"
+            price={getPrice("Ultimate").toString()}
             cvCount={22}
+            currency={currency}
           />
           <SubscriptionPlan
             cvId={cvId}
             lang={lang}
             title="Professional"
-            price="€6"
+            price={getPrice("Professional").toString()}
             cvCount={15}
+            currency={currency}
           />
           <SubscriptionPlan
             cvId={cvId}
             lang={lang}
             title="Standard"
-            price="€4"
+            price={getPrice("Standard").toString()}
             cvCount={9}
             isPopular
+            currency={currency}
           />
           <SubscriptionPlan
             cvId={cvId}
             lang={lang}
             title="Basic"
-            price="€3"
+            price={getPrice("Basic").toString()}
             cvCount={5}
+            currency={currency}
           />
         </div>
 
@@ -242,7 +300,7 @@ export default function SubscriptionClient() {
                     <Languages className="h-5 w-5 mr-2 text-[#5B2EFF] dark:text-[#9B87F5] mt-0.5 flex-shrink-0" />
                     <span className="text-gray-600 dark:text-gray-300">
                       <strong>Language Support:</strong> All plans support
-                      English and Polish languages.
+                      English, Polish and Spanish languages.
                     </span>
                   </li>
                 </ul>
