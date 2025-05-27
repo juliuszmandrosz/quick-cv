@@ -113,8 +113,15 @@ export async function POST(request: Request) {
     
     ##EXPERIENCE & RESPONSIBILITIES:
       Strategically rewrite ONLY the responsibilities/details within each preserved experience to maximize relevance to the job offer, quantifying achievements where possible and highlighting impact using strong action verbs. Base these modifications strictly on the provided candidate data and specific rewriting instructions. 
-      Crucially, do not invent experiences, skills, or exaggerate claims beyond verifiable facts derived from the original CV.
-      Focus solely on rephrasing and highlighting existing information effectively.
+      Do NOT invent experiences, skills, or exaggerate claims beyond verifiable facts from the original CV. Focus solely on rephrasing and highlighting existing information effectively.
+      Translate all job titles ("position") into ${language}. Avoid literal translations. Use culturally appropriate role names.
+      For example, if ${language} is Polish:
+      - "Senior .NET Developer" → "Starszy Programista .NET"
+      - "Fullstack .NET / Angular Developer" → "Programista .NET / Angular (Fullstack)"
+      - "Co-Founder & CTO" → "Współzałożyciel i CTO"
+      Make sure the position titles feel natural and realistic in ${language}, especially for technical and senior-level roles. Do not mix languages in a single title.
+      Avoid vague or informal phrases such as "on the frontend" or "on the backend" without context. Always provide specific technical details and results. Replace generic expressions with professional and precise language such as "in the frontend layer", "within backend services", or "in server-side logic", depending on the context. Clarify what was built, optimized, or improved, and what the outcome was.
+      **Write all bullet points using the first person singular in ${language}**, maintaining a natural and professional tone (e.g., "Zaprojektowałem", "Wdrożyłem", "Koordynowałem"). Avoid passive voice or third-person formulations.
     
     ##ACCOMPLISHMENTS:
       This is guidance for how to phrase bullet points within the "EXPERIENCE & RESPONSIBILITIES". Frame accomplishments positively, focusing on the results and positive impact of the candidate's actions. 
@@ -125,12 +132,27 @@ export async function POST(request: Request) {
          
     ##SKILLS
       Consolidate and refine the skills section, limiting the list of "generated skills" to a strategic selection of 10 to 15 skills. It should be separated into three sections: technical skills, soft skills, and power skills. This should be a selection of the most relevant skills for the job description. Prioritize skills explicitly or implicitly mentioned in the job posting, linked to the current skills on the candidate's CV. Do not add spoken languages to the skills.
-    
+      
+   ##EDUCATION
+      Translate the field of study ("field_of_study") into ${language} using natural, culturally accurate academic phrasing. Avoid word-for-word or overly formal translations, and never invent or reuse nonstandard degree names.
+      For example: if the input for field_of_study exactly matches "Computer Science Engineering" (case-insensitive), override it to:
+      - "Bachelor in Computer Science" when ${language} is English  
+      - "Informatyka, inżynier" when ${language} is Polish  
+      - "Informática, ingeniero" when ${language} is Spanish  
+      This override is absolute: under no circumstances output "Computer Science Engineering". For all other inputs, translate naturally to the corresponding academic field in ${language}, sounding like a real graduate’s diploma.
+
+    ##LANGUAGES
+      Translate language names and proficiency levels into ${language}. For example, use "Spanish – Native" and "English – B2" if the target language is English. Do not leave language names or levels in any other language than ${language}.
+
     ##TITLE:
-      Craft a concise and high-impact CV title in ${language}, consisting of no more than 5 words. The title must clearly reflect the candidate's core competencies and match the terminology used in the provided Job Description. Avoid generic or vague phrases. Focus on a professional identity that is specific, relevant, and optimized for recruiters and ATS systems.
-    
+      Craft a concise and high-impact CV title in ${language}, consisting of no more than 5 words. The title must clearly reflect the candidate's core competencies and match the terminology used in the provided Job Description. Avoid generic or vague phrases.
+      If ${language} is not English, do not use untranslated English role levels such as "Senior", "Lead", "Junior" in the title. Instead, translate them appropriately (e.g., "Senior" → "Starszy" in Polish, "Senior" → "Senior" in Spanish where culturally accepted).
+      Focus on a professional identity that is specific, relevant, localized, and optimized for recruiters and ATS systems.
+
     ##PERSONAL SUMMARY:
-      Generate a concise, compelling personal summary (candidate_description) that immediately highlights the candidate's most relevant qualifications, key strengths, and unique value proposition specifically for this role, integrating keywords from the job offer naturally.
+      Generate a short, natural-sounding and compelling personal summary (candidate_description) written entirely in ${language}. It should sound like it was written by a real person, not a marketing bot or AI.
+      Highlight the candidate's most relevant qualifications, key strengths, and unique value for this specific role. Integrate keywords from the job offer naturally, without stuffing.
+      Avoid vague statements, overused buzzwords, and generic phrases (e.g., “passionate team player”, “results-oriented professional”). Use fluent, confident, and professional phrasing appropriate for a CV in ${language}.
     
     ##VERBS:
       Employ sophisticated, high-impact action verbs (e.g., Accelerated, Advocated, Amplified, Architected, Attained, Authored, Capitalized, Catalyzed, Championed, Commanded, Conceptualized, Cultivated, Deciphered, Delivered, Devised, Directed, Drove, Elevated, Engineered, Established, Executed, Forged, Fortified, Founded, Generated, Governed, Guided, Harmonized, Ignited, Influenced, Innovated, Instituted, Launched, Masterminded, Mobilized, Modernized, Navigated, Negotiated, Orchestrated, Overhauled, Pioneered, Piloted, Quantified, Reconciled, Rectified, Revitalized, Secured, Spearheaded, Steered, Transformed). These are non-strict examples for your reference; you can use other words that fit perfectly with the context of the sentence.
@@ -138,9 +160,11 @@ export async function POST(request: Request) {
     ##ADJECTIVES:
       Employ sophisticated, high-impact and strategically chosen adjectives to convey competence and achievement (e.g., Adaptable, Analytical, Articulate, Assertive, Astute, Attentive, Authentic, Client-Focused, Collaborative, Compelling, Comprehensive, Conscientious, Constructive, Creative, Data-Driven, Decisive, Dedicated, Determined, Diligent, Diplomatic, Disciplined, Dynamic, Effective, Efficient, Empathetic, Enterprising, Exceptional, Forward-Thinking, Impactful, Incisive, Influential, Ingenious, Innovative, Inquisitive, Insightful, Integrative, Methodical, Meticulous, Perceptive, Persuasive, Pioneering, Pragmatic, Proactive, Proficient, Resilient, Resourceful, Results-Oriented, Rigorous, Strategic, Transformative). These are non-strict examples for your reference; you can use other words that fit perfectly with the context of the sentence.
 
+    ##LOCALIZATION RULES:
+      All user-facing content, including job titles, degree titles, and language details, must be fully localized into ${language}. Preserve proper nouns (e.g., company names, university names) in their original form, but everything else must be translated.
+
 	##OUTPUT:
      STRICT JSON OUTPUT ONLY — Adhere rigidly to the specified JSON structure. Output only the JSON object. Do not include any explanatory text, markdown formatting (like \\\`), comments, or any characters outside the final JSON structure. Ensure correct JSON syntax, including proper quoting of keys and string values.
-
       
       OUTPUT STRUCTURE:
       Return only a valid JSON object. Start with \`{\` and end with \`}\`. Use correct brackets (\`{}\`, \`[]\`) and straight double quotes (\`"\`). Do not include markdown or extra text. The output must be parsable by JSON.parse(). 
@@ -272,13 +296,13 @@ export async function POST(request: Request) {
           school_name: edu.school_name,
           field_of_study: edu.field_of_study,
           start_date: edu.start_date,
-          end_date: edu.end_date,
+          end_date: isValidDate(edu.end_date) ? edu.end_date : null,
         })),
         experience_list: generatedCV.generated_experience.map((exp: any) => ({
           position: exp.position,
           company_name: exp.company_name,
           start_date: exp.start_date,
-          end_date: exp.end_date,
+          end_date: isValidDate(exp.end_date) ? exp.end_date : null,
           responsibilities: exp.responsibilities,
           location: exp.location,
         })),
@@ -309,4 +333,10 @@ export async function POST(request: Request) {
       status: 500,
     });
   }
+}
+
+function isValidDate(value: string | null | undefined): boolean {
+  if (!value) return false;
+  const date = new Date(value);
+  return !isNaN(date.getTime()) && /^\d{4}-\d{2}$/.test(value);
 }

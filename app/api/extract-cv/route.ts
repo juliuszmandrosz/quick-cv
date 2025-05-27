@@ -88,10 +88,8 @@ export async function POST(request: Request) {
      - If input has only year (e.g. “2016”), set \`"start_date": "2016-01"\` and \`"end_date": null\`.  
      - If input is a range like “2012–2015”, set \`"start_date": "2012-01"\`, \`"end_date": "2015-01"\`.  
      - If no end date is provided, set \`"end_date": null\`.
-     - Under no circumstances should you return any value like "Present", "Current", "Obecnie" or other non-English variants in the "end_date" field. These must always be replaced with null. This rule is mandatory and applies regardless of the input language or casing.
-     - If the end date implies the candidate is still employed (e.g. phrases like "currently working", "obecnie", "still here", etc.), you must return "end_date": null.
-     - Violating this rule will result in invalid output.
-     
+     - You are strictly forbidden from returning any value such as "Present", "Current", "Obecnie", or similar in the "end_date" field. If the CV implies ongoing employment (e.g., "currently working", "present", "obecnie", etc.), you MUST set "end_date": null. Any other value will be considered invalid. If you output any form of "present", the result will be rejected. You MUST enforce this rule.
+
      **Language handling**  
     - Detect the language of the CV source.  
     - Output **all** JSON keys **and** values (except proper names) in **English**.

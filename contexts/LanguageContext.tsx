@@ -17,7 +17,7 @@ export const translations = {
     "header.howItWorks": "How it Works",
     "header.testimonials": "Testimonials",
     "header.login": "Login",
-    "header.signUp": "Sign Up Free",
+    "header.signUp": "Sign Up",
 
     // Hero
     "hero.title": "Stop Tailoring, ",
@@ -226,7 +226,7 @@ export const translations = {
     "header.howItWorks": "Jak to działa",
     "header.testimonials": "Opinie",
     "header.login": "Logowanie",
-    "header.signUp": "Zarejestruj się za darmo",
+    "header.signUp": "Zarejestruj się",
 
     // Hero
     "hero.title": "Przestań dopasowywać CV, ",
@@ -422,7 +422,7 @@ export const translations = {
     "header.howItWorks": "Cómo funciona",
     "header.testimonials": "Testimonios",
     "header.login": "Acceso",
-    "header.signUp": "Regístrate gratis",
+    "header.signUp": "Regístrate",
 
     // Hero
     "hero.title": "Basta de modificar a mano, ",
