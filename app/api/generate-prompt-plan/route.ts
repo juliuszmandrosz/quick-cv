@@ -169,6 +169,7 @@ export async function POST(request: Request) {
         { role: "user", content: planUserPrompt },
       ],
       temperature: 0.4,
+      response_format: { type: "json_object" },
     });
 
     const promptPlan = JSON.parse(

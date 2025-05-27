@@ -25,8 +25,9 @@ import {
 } from "lucide-react";
 import LoadingScreen from "@/app/create-cv/components/loading-screen";
 import { useCurrentUser } from "@/hooks/use-auth";
-import { CV } from "@/app/create-cv/types/cv";
+import type { CV } from "@/app/create-cv/types/cv";
 import { useLanguage } from "@/contexts/LanguageContext";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function CreateCvClientPage() {
   const [step, setStep] = useState<number>(1);
@@ -285,11 +286,16 @@ export default function CreateCvClientPage() {
   return (
     <div className="max-w-3xl mx-auto p-4">
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            {t("create.title")}
-          </h1>
-          <p className="text-muted-foreground mt-2">{t("create.titleDesc")}</p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">
+              {t("create.title")}
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              {t("create.titleDesc")}
+            </p>
+          </div>
+          <LanguageSwitcher />
         </div>
         <Card className="dark:glass-dark glass neumorphic">
           <CardHeader>
@@ -447,59 +453,6 @@ export default function CreateCvClientPage() {
                       </div>
                     </TabsContent>
                   </Tabs>
-                  {/*{step === 1 && (*/}
-                  {/*  <div className="mt-6">*/}
-                  {/*    <Label htmlFor="photo-upload" className="mb-2">*/}
-                  {/*      Upload Profile Photo (Optional)*/}
-                  {/*    </Label>*/}
-                  {/*    <div className="border-2 border-dashed border-primary/40 rounded-lg p-4 text-center cursor-pointer hover:border-primary/60 transition-colors">*/}
-                  {/*      <input*/}
-                  {/*        id="photo-upload"*/}
-                  {/*        type="file"*/}
-                  {/*        className="hidden"*/}
-                  {/*        onChange={handlePhotoChange}*/}
-                  {/*        accept="image/*"*/}
-                  {/*      />*/}
-                  {/*      <label*/}
-                  {/*        htmlFor="photo-upload"*/}
-                  {/*        className="cursor-pointer"*/}
-                  {/*      >*/}
-                  {/*        <div className="space-y-2">*/}
-                  {/*          <div className="mx-auto bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center">*/}
-                  {/*            <Upload className="h-6 w-6 text-primary" />*/}
-                  {/*          </div>*/}
-                  {/*          <div className="text-lg font-medium">*/}
-                  {/*            Upload your photo*/}
-                  {/*          </div>*/}
-                  {/*          <p className="text-sm text-muted-foreground">*/}
-                  {/*            Drop your photo here or click to browse*/}
-                  {/*          </p>*/}
-                  {/*        </div>*/}
-                  {/*      </label>*/}
-                  {/*    </div>*/}
-                  {/*    {uploadedPhoto && (*/}
-                  {/*      <div className="mt-2 flex items-center p-3 rounded-md bg-primary/10">*/}
-                  {/*        {uploadedPhoto && (*/}
-                  {/*          <div className="flex items-center gap-2">*/}
-                  {/*            <div className="h-10 w-10 rounded-full overflow-hidden bg-muted">*/}
-                  {/*              <img*/}
-                  {/*                src={*/}
-                  {/*                  URL.createObjectURL(uploadedPhoto) ||*/}
-                  {/*                  "/placeholder.svg"*/}
-                  {/*                }*/}
-                  {/*                alt="Profile preview"*/}
-                  {/*                className="h-full w-full object-cover"*/}
-                  {/*              />*/}
-                  {/*            </div>*/}
-                  {/*            <span className="text-sm">*/}
-                  {/*              {uploadedPhoto.name}*/}
-                  {/*            </span>*/}
-                  {/*          </div>*/}
-                  {/*        )}*/}
-                  {/*      </div>*/}
-                  {/*    )}*/}
-                  {/*  </div>*/}
-                  {/*)}*/}
 
                   <div className="mt-6">
                     <Label htmlFor="cv-language" className="mb-2">

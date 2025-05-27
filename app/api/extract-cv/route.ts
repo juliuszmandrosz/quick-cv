@@ -74,17 +74,36 @@ export async function POST(request: Request) {
 
       Extract and return ONLY valid JSON in this exact structure:
       
-      { "email": "", "full_name": "", "phone": "", "skills": [], "title": "", "language_list": [{ "name": "", "level": "" }], "education_list": [{ "school_name": "", "field_of_study": "", "start_date": "", "end_date": "" }], "experience_list": [{ "company_name": "", "position": "", "details": "", "start_date": "", "end_date": "" }] }
+      { "email": "", "full_name": "", "phone": "", "skills": [], "title": "", "linkedin": "", "language_list": [{ "name": "", "level": "" }], "education_list": [{ "school_name": "", "field_of_study": "", "start_date": "", "end_date": "" }], "experience_list": [{ "company_name": "", "position": "", "details": "", "start_date": "", "end_date": "", "location": "" }] }
       
       RULES:
       
-      Extract only what exists in the CV text.
+      **LinkedIn**  
+      - Extract any URL matching \`linkedin.com/in/...\` into the \`"linkedin"\` field.  
+      - If none, leave as empty string.
+      
+      **Date normalization**  
+     - Strip any brackets (\`[ ]\`) and normalize all date separators to \`-\`.  
+     - Output dates in \`YYYY-MM-DD\`.  
+     - If input has only year (e.g. “2016”), set \`"start_date": "2016-01-01"\` and \`"end_date": null\`.  
+     - If input is a range like “2012–2015”, set \`"start_date": "2012-01-01"\`, \`"end_date": "2015-01-01"\`.  
+     - Do **not** assume \`present\` unless explicitly “Present” or “Current”.
+     
+     **Language handling**  
+    - Detect the language of the CV source.  
+    - Output **all** JSON keys **and** values (except proper names) in **English**.
+     
+     **Company names**  
+     - If phrasing is “Hired by X and provided services to Y”, set  
+       \`"company_name": "X (for Y)"\`.  
+     - Otherwise use the full company string as given.
+      
+      **No invention**  
+      - Extract only what exists. Do not hallucinate skills, dates or titles.
+      
+      Phone must contain country code also if available.
       
       Select most appropriate title based on the CV content.
-      
-      Dates must be in YYYY-MM-DD format; if only month and year are provided, assume day 01; if end_date is missing or is not a real date or some random text, put null for end_date
-      
-      Do not invent any skills or data.
       
       STRICT JSON OUTPUT ONLY — No markdown, no commentary, no extra text. DO NOT use any markdown formatting or triple backticks.
     `;
@@ -98,6 +117,7 @@ export async function POST(request: Request) {
         { role: "user", content: extractionUserPrompt },
       ],
       temperature: 0,
+      response_format: { type: "json_object" },
     });
 
     const extractionResponseText =
@@ -124,7 +144,7 @@ export async function POST(request: Request) {
     }
 
     const { data: cvUserDataId, error: createError } = await supabase.rpc(
-      "insert_cv_user_data",
+      "insert_cv_user_data_v2",
       {
         job_offer_id: jobOfferId,
         email: extractedData.email,
@@ -132,6 +152,7 @@ export async function POST(request: Request) {
         phone: extractedData.phone,
         skills: extractedData.skills || [],
         title: extractedData.title,
+        linkedin: extractedData.linkedin || null,
         profile_photo_url: profilePhotoUrl ?? null,
         language_list: extractedData.language_list || [],
         education_list: extractedData.education_list || [],

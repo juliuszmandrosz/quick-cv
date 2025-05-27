@@ -104,6 +104,9 @@ export async function POST(request: Request) {
 
     ##TONE:
       The final output must be perceived as entirely human-written. It is key to maintain a professional and natural tone throughout all adapted content.
+      
+    ##DATE HANDLING:
+      All dates already normalized to YYYY-MM-DD.
     
     ##CHRONOLOGICAL ORDER:
       Use the original order work experiences provided by the candidate, maintaining their exact chronological order date descending. Do not add, remove, or reorder any distinct job entries. The last experience chronologically should be placed at the top and go down in the same order.
@@ -219,6 +222,7 @@ export async function POST(request: Request) {
         { role: "user", content: userPrompt },
       ],
       temperature: 1.0,
+      response_format: { type: "json_object" },
     });
 
     const generationResponse = generationCompletion.choices[0].message?.content;
@@ -242,8 +246,6 @@ export async function POST(request: Request) {
         error: "Failed to parse generated CV response: " + generationResponse,
       });
     }
-
-    console.log(language, "LANGUAGE");
 
     const { data: generatedCvId, error: saveError } = await supabase.rpc(
       "save_generated_cv",
@@ -278,6 +280,7 @@ export async function POST(request: Request) {
           start_date: exp.start_date,
           end_date: exp.end_date,
           responsibilities: exp.responsibilities,
+          location: exp.location,
         })),
         language_list: generatedCV.generated_language.map((lang: any) => ({
           name: lang.name,

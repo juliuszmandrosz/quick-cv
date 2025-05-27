@@ -43,6 +43,7 @@ export async function POST(request: Request) {
         { role: "user", content: userPrompt },
       ],
       temperature: 0,
+      response_format: { type: "json_object" },
     });
 
     const jobOffer = JSON.parse(

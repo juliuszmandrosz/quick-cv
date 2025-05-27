@@ -29,6 +29,7 @@ export type CVData = {
     start_date: string;
     end_date: string;
     responsibilities: string[];
+    location?: string | null;
   }[];
   generated_language: {
     name: string;

@@ -92,7 +92,11 @@ export default function CvTemplate({
             className={`mb-6 last:mb-0 experience-item ${idx > 0 && false ? "blur-sm opacity-70 pointer-events-none" : ""}`}
           >
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
-              <h5 className="font-bold text-gray-800">{exp.position}</h5>
+              <h5 className="font-bold text-gray-800">
+                {exp.location
+                  ? `${exp.position}, ${exp.location}`
+                  : exp.position}
+              </h5>
               <span className="text-gray-600 text-sm mt-1 sm:mt-0">
                 {formatDate(exp.start_date)} -{" "}
                 {exp.end_date
