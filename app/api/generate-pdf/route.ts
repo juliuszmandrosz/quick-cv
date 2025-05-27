@@ -52,7 +52,7 @@ export async function POST(req: Request) {
 
     await supabase
       .from("generated_cv")
-      .update({ token_consumed: true })
+      .update({ token_consumed: true, user_id: user.id })
       .eq("id", cvId);
 
     const { error: updateUserIdError } = await supabase
