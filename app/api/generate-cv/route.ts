@@ -127,7 +127,7 @@ export async function POST(request: Request) {
       Consolidate and refine the skills section, limiting the list of "generated skills" to a strategic selection of 10 to 15 skills. It should be separated into three sections: technical skills, soft skills, and power skills. This should be a selection of the most relevant skills for the job description. Prioritize skills explicitly or implicitly mentioned in the job posting, linked to the current skills on the candidate's CV. Do not add spoken languages to the skills.
     
     ##TITLE:
-        Craft a high-impact, concise CV title in ${language} that accurately reflects the candidate's core strengths and aligns seamlessly with the provided Job Description. The title must consist of no more than 5 words and effectively capture the candidate's professional identity
+      Craft a concise and high-impact CV title in ${language}, consisting of no more than 5 words. The title must clearly reflect the candidate's core competencies and match the terminology used in the provided Job Description. Avoid generic or vague phrases. Focus on a professional identity that is specific, relevant, and optimized for recruiters and ATS systems.
     
     ##PERSONAL SUMMARY:
       Generate a concise, compelling personal summary (candidate_description) that immediately highlights the candidate's most relevant qualifications, key strengths, and unique value proposition specifically for this role, integrating keywords from the job offer naturally.

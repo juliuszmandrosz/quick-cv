@@ -84,10 +84,13 @@ export async function POST(request: Request) {
       
       **Date normalization**  
      - Strip any brackets (\`[ ]\`) and normalize all date separators to \`-\`.  
-     - Output dates in \`YYYY-MM-DD\`.  
-     - If input has only year (e.g. “2016”), set \`"start_date": "2016-01-01"\` and \`"end_date": null\`.  
-     - If input is a range like “2012–2015”, set \`"start_date": "2012-01-01"\`, \`"end_date": "2015-01-01"\`.  
-     - Do **not** assume \`present\` unless explicitly “Present” or “Current”.
+     - Output dates in \`YYYY-MM\`.  
+     - If input has only year (e.g. “2016”), set \`"start_date": "2016-01"\` and \`"end_date": null\`.  
+     - If input is a range like “2012–2015”, set \`"start_date": "2012-01"\`, \`"end_date": "2015-01"\`.  
+     - If no end date is provided, set \`"end_date": null\`.
+     - Under no circumstances should you return any value like "Present", "Current", "Obecnie" or other non-English variants in the "end_date" field. These must always be replaced with null. This rule is mandatory and applies regardless of the input language or casing.
+     - If the end date implies the candidate is still employed (e.g. phrases like "currently working", "obecnie", "still here", etc.), you must return "end_date": null.
+     - Violating this rule will result in invalid output.
      
      **Language handling**  
     - Detect the language of the CV source.  
