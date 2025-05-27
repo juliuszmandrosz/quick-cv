@@ -28,6 +28,10 @@ export async function GET(request: Request) {
     `,
     )
     .eq("id", cvId)
+    .order("end_date", {
+      referencedTable: "generated_experience",
+      ascending: false,
+    })
     .single<GeneratedCvFull>();
 
   if (error) {
