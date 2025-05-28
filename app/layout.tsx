@@ -25,6 +25,13 @@ export const metadata: Metadata = {
     ],
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "NICE CV – Tailored, ATS-Optimized Resumes in Seconds",
+    description:
+      "Generate your perfect CV in seconds. Paste a job offer, upload your resume, and get hired faster.",
+    images: ["https://quick-cv-eight.vercel.app/logo.png"],
+  },
 };
 
 // const queryClient = new QueryClient();
