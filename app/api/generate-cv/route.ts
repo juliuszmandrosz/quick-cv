@@ -106,7 +106,7 @@ export async function POST(request: Request) {
       The final output must be perceived as entirely human-written. It is key to maintain a professional and natural tone throughout all adapted content.
       
     ##DATE HANDLING:
-      All dates already normalized to YYYY-MM-DD.
+      All dates already normalized to YYYY-MM.
     
     ##CHRONOLOGICAL ORDER:
       Use the original order work experiences provided by the candidate, maintaining their exact chronological order date descending. Do not add, remove, or reorder any distinct job entries. The last experience chronologically should be placed at the top and go down in the same order.

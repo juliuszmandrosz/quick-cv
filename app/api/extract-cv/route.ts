@@ -102,6 +102,11 @@ export async function POST(request: Request) {
       **No invention**  
       - Extract only what exists. Do not hallucinate skills, dates or titles.
       
+      **Education**
+      - Identify each full degree entry (degree level + program name + optional specialization + institution + dates) as a single record. Do not split degree title and specialization into separate records.
+      - Combine degree level and program name (and any sub-line specializations) into the single "field_of_study" string.
+      - Preserve the start_date and end_date for that same block.
+      
       Phone must contain country code also if available.
       
       Select most appropriate title based on the CV content.

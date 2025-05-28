@@ -14,7 +14,6 @@ export default function CvsLayout({ children }: { children: React.ReactNode }) {
       <SidebarInset>
         <header className="flex h-16 items-center border-b px-4">
           <SidebarTrigger className="mr-2" />
-          <h1 className="text-lg font-medium">Dashboard</h1>
         </header>
         <main className="flex-1 overflow-auto">{children}</main>
       </SidebarInset>

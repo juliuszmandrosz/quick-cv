@@ -6,6 +6,7 @@ export type CVData = {
   title: string;
   file_name: string;
   job_url: string;
+  token_consumed: boolean;
   generated_skills: {
     soft_skills: string[];
     technical_skills: string[];

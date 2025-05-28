@@ -89,7 +89,7 @@ export default function CvTemplate({
         {cvData.generated_experience.map((exp, idx) => (
           <div
             key={idx}
-            className={`mb-6 last:mb-0 experience-item ${idx > 0 && false ? "blur-sm opacity-70 pointer-events-none" : ""}`}
+            className={`mb-6 last:mb-0 experience-item ${idx > 0 && !cvData.token_consumed ? "blur-sm opacity-70 pointer-events-none" : ""}`}
           >
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
               <h5 className="font-bold text-gray-800">
