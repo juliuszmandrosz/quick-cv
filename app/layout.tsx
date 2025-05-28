@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     siteName: "NICE CV",
     images: [
       {
-        url: "https://unaqbcplczayqbrrkuqq.supabase.co/storage/v1/object/public/logo//NICE%20CV%20LOGO.png",
+        url: "https://quick-cv-eight.vercel.app/logo.png",
         width: 1200,
         height: 630,
         alt: "NICE CV Preview",
