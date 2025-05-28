@@ -55,6 +55,8 @@
     "openai": "^4.94.0",
     "pdf-parse": "^1.1.1",
     "playwright": "^1.51.1",
+    "posthog-js": "^1.248.0",
+    "posthog-node": "^4.18.0",
     "prettier": "^3.4.2",
     "puppeteer": "^24.8.2",
     "react": "^19.0.0",

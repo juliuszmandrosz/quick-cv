@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import { PostHogProvider } from "@/components/PostHogProvider";
 
 export const metadata: Metadata = {
   title: "NICE CV",
@@ -20,16 +21,18 @@ export default function RootLayout({
   return (
     <html lang="pl">
       <body>
-        {/*<QueryClientProvider client={queryClient}>*/}
-        <TooltipProvider>
-          <LanguageProvider>
-            <Toaster />
-            <Sonner />
-            {children}
-          </LanguageProvider>
-        </TooltipProvider>
-        {/*<ReactQueryDevtools initialIsOpen={false} />*/}
-        {/*</QueryClientProvider>*/}
+        <PostHogProvider>
+          {/*<QueryClientProvider client={queryClient}>*/}
+          <TooltipProvider>
+            <LanguageProvider>
+              <Toaster />
+              <Sonner />
+              {children}
+            </LanguageProvider>
+          </TooltipProvider>
+          {/*<ReactQueryDevtools initialIsOpen={false} />*/}
+          {/*</QueryClientProvider>*/}
+        </PostHogProvider>
       </body>
     </html>
   );
