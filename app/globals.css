@@ -202,3 +202,12 @@
         page-break-after: avoid;
     }
 }
+
+.no-copy {
+    user-select: none;
+}
+
+.no-copy::selection {
+    background: transparent;
+    color: transparent;
+}
