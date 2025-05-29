@@ -32,20 +32,24 @@ export default function CvTemplate({
           {cvData.generated_personal_data.full_name}
         </h2>
         <p className="text-gray-600 text-lg mb-1">{cvData.title}</p>
-        <div className="text-sm text-gray-600">
-          {cvData.generated_personal_data.linkedin ? (
-            <p>
-              {cvData.generated_personal_data.email} |{" "}
-              {cvData.generated_personal_data.phone} |{" "}
-              {cvData.generated_personal_data.linkedin}
-            </p>
-          ) : (
-            <p>
-              {cvData.generated_personal_data.email} |{" "}
-              {cvData.generated_personal_data.phone}
-            </p>
-          )}
-        </div>
+        {cvData.generated_personal_data.email ||
+          cvData.generated_personal_data.phone ||
+          (cvData.generated_personal_data.linkedin && (
+            <div className="text-sm text-gray-600">
+              {cvData.generated_personal_data.linkedin ? (
+                <p>
+                  {cvData.generated_personal_data.email} |{" "}
+                  {cvData.generated_personal_data.phone} |{" "}
+                  {cvData.generated_personal_data.linkedin}
+                </p>
+              ) : (
+                <p>
+                  {cvData.generated_personal_data.email} |{" "}
+                  {cvData.generated_personal_data.phone}
+                </p>
+              )}
+            </div>
+          ))}
       </div>
       <Section title={(translations[lang] as any)["cv.summary"]}>
         <p className="text-gray-700 leading-relaxed">
@@ -97,12 +101,14 @@ export default function CvTemplate({
                   ? `${exp.position}, ${exp.location}`
                   : exp.position}
               </h5>
-              <span className="text-gray-600 text-sm mt-1 sm:mt-0">
-                {formatDate(exp.start_date)} -{" "}
-                {exp.end_date
-                  ? formatDate(exp.end_date)
-                  : (translations[lang] as any)["cv.present"]!}
-              </span>
+              {exp.start_date && (
+                <span className="text-gray-600 text-sm mt-1 sm:mt-0">
+                  {formatDate(exp.start_date)} -{" "}
+                  {exp.end_date
+                    ? formatDate(exp.end_date)
+                    : (translations[lang] as any)["cv.present"]!}
+                </span>
+              )}
             </div>
             <p className="text-gray-700 font-medium mb-2">{exp.company_name}</p>
             <ul className="list-disc pl-5 space-y-1 text-gray-700">

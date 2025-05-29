@@ -5,6 +5,9 @@ import { createClient } from "@/utils/supabase/server";
 import OpenAI from "openai";
 
 export async function POST(request: Request) {
+  const errorMessage =
+    "Error extracting CV data, please try again. If the problem persists, contact support.";
+
   try {
     const formData = await request.formData();
     const cvFile = formData.get("cv") as File | null;
@@ -53,9 +56,10 @@ export async function POST(request: Request) {
           contentType: contentType,
         });
       if (uploadError) {
+        console.error("Upload error:", uploadError.message);
         return NextResponse.json({
           success: false,
-          error: `Photo upload error: ${uploadError.message}`,
+          error: errorMessage,
           status: 500,
         });
       }
@@ -128,10 +132,11 @@ export async function POST(request: Request) {
 
     const extractionResponseText =
       extractionCompletion.choices[0].message?.content;
+    console.error("Extraction response text:", extractionResponseText);
     if (!extractionResponseText) {
       return NextResponse.json({
         success: false,
-        error: "No response from GPT extraction",
+        error: errorMessage,
         status: 500,
       });
     }
@@ -143,11 +148,12 @@ export async function POST(request: Request) {
       console.error("Error parsing extraction response:", jsonError);
       return NextResponse.json({
         success: false,
-        error:
-          "Failed to parse GPT extraction response: " + extractionResponseText,
+        error: errorMessage,
         status: 500,
       });
     }
+
+    console.log("Extracted data:", extractedData);
 
     const { data: cvUserDataId, error: createError } = await supabase.rpc(
       "insert_cv_user_data_v2",
@@ -173,9 +179,10 @@ export async function POST(request: Request) {
         createError.code,
         createError.details,
       );
+      console.error("Create error data:", createError.message);
       return NextResponse.json({
         success: false,
-        error: createError.message,
+        error: errorMessage,
         status: 500,
       });
     }
@@ -183,7 +190,7 @@ export async function POST(request: Request) {
     if (!cvUserDataId) {
       return NextResponse.json({
         success: false,
-        error: "Failed to create CV user data",
+        error: errorMessage,
         status: 500,
       });
     }
@@ -196,7 +203,7 @@ export async function POST(request: Request) {
     console.error("Extract cv error:", err);
     return NextResponse.json({
       success: false,
-      error: err.message,
+      error: errorMessage,
       status: 500,
     });
   }

@@ -5,6 +5,9 @@ import { createClient } from "@/utils/supabase/server";
 import OpenAI from "openai";
 
 export async function POST(request: Request) {
+  const errorMessage =
+    "Error generating CV, please try again. If the problem persists, contact support.";
+
   try {
     const { cvUserDataId, jobOfferId } = await request.json();
 
@@ -42,13 +45,15 @@ export async function POST(request: Request) {
       .single();
 
     if (selectUserDataError) {
+      console.error("Select user data error:", selectUserDataError.message);
       return NextResponse.json({
         success: false,
-        error: selectUserDataError.message,
+        error: errorMessage,
         status: 500,
       });
     }
     if (!fullCvData) {
+      console.error("CV user data not found for ID:", cvUserDataId);
       return NextResponse.json({
         success: false,
         error: "CV user data not found",
@@ -63,9 +68,10 @@ export async function POST(request: Request) {
       .single();
 
     if (jobOfferError) {
+      console.error("Job offer select error:", jobOfferError.message);
       return NextResponse.json({
         success: false,
-        error: jobOfferError.message,
+        error: errorMessage,
         status: 500,
       });
     }
@@ -176,6 +182,8 @@ export async function POST(request: Request) {
       planCompletion.choices[0].message?.content || "{}",
     );
 
+    console.log(promptPlan);
+
     const instructionsArray = Array.isArray(
       promptPlan.experience_rewrite_instructions,
     )
@@ -197,9 +205,10 @@ export async function POST(request: Request) {
     );
 
     if (insertError) {
+      console.error("Insert prompt plan error:", insertError.message);
       return NextResponse.json({
         success: false,
-        error: insertError.message,
+        error: errorMessage,
         status: 500,
       });
     }
@@ -212,7 +221,7 @@ export async function POST(request: Request) {
     console.error("Generate prompt plan error:", err);
     return NextResponse.json({
       success: false,
-      error: err.message,
+      error: errorMessage,
       status: 500,
     });
   }

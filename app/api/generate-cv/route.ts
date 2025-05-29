@@ -5,6 +5,9 @@ import { createClient } from "@/utils/supabase/server";
 import OpenAI from "openai";
 
 export async function POST(request: Request) {
+  const errorMessage =
+    "Error generating CV, please try again. If the problem persists, contact support.";
+
   try {
     const { language, cvUserDataId, jobOfferId, promptPlanId } =
       await request.json();
@@ -25,13 +28,15 @@ export async function POST(request: Request) {
       .single();
 
     if (selectError) {
+      console.error("Select user data error:", selectError.message);
       return NextResponse.json({
         success: false,
-        error: selectError.message,
+        error: errorMessage,
         status: 500,
       });
     }
     if (!fullCvData) {
+      console.error("CV user data not found for ID:", cvUserDataId);
       return NextResponse.json({
         success: false,
         error: "CV user data not found",
@@ -46,14 +51,16 @@ export async function POST(request: Request) {
       .single();
 
     if (jobError) {
+      console.error("Job offer select error:", jobError.message);
       return NextResponse.json({
         success: false,
-        error: "Failed to fetch job offer",
+        error: errorMessage,
         status: 500,
       });
     }
 
     if (!jobOffer) {
+      console.error("Job offer not found for ID:", jobOfferId);
       return NextResponse.json({
         success: false,
         error: "Job offer not found",
@@ -73,9 +80,10 @@ export async function POST(request: Request) {
       .single();
 
     if (promptPlanError) {
+      console.error("Prompt plan select error:", promptPlanError.message);
       return NextResponse.json({
         success: false,
-        error: promptPlanError.message,
+        error: errorMessage,
         status: 500,
       });
     }
@@ -83,7 +91,7 @@ export async function POST(request: Request) {
     if (!promptPlan) {
       return NextResponse.json({
         success: false,
-        error: "Prompt plan not found for this user",
+        error: errorMessage,
         status: 404,
       });
     }
@@ -314,9 +322,10 @@ export async function POST(request: Request) {
     );
 
     if (saveError) {
+      console.error("Save generated CV error:", saveError.message);
       return NextResponse.json({
         success: false,
-        error: saveError.message,
+        error: errorMessage,
         status: 500,
       });
     }
@@ -329,7 +338,7 @@ export async function POST(request: Request) {
     console.error("Generate cv error:", err);
     return NextResponse.json({
       success: false,
-      error: err.message,
+      error: errorMessage,
       status: 500,
     });
   }

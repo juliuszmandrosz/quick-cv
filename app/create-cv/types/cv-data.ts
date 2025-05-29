@@ -27,8 +27,8 @@ export type CVData = {
   generated_experience: {
     position: string;
     company_name: string;
-    start_date: string;
-    end_date: string;
+    start_date?: string;
+    end_date?: string;
     responsibilities: string[];
     location?: string | null;
   }[];
