@@ -32,24 +32,21 @@ export default function CvTemplate({
           {cvData.generated_personal_data.full_name}
         </h2>
         <p className="text-gray-600 text-lg mb-1">{cvData.title}</p>
-        {cvData.generated_personal_data.email ||
+        {(cvData.generated_personal_data.email ||
           cvData.generated_personal_data.phone ||
-          (cvData.generated_personal_data.linkedin && (
-            <div className="text-sm text-gray-600">
-              {cvData.generated_personal_data.linkedin ? (
-                <p>
-                  {cvData.generated_personal_data.email} |{" "}
-                  {cvData.generated_personal_data.phone} |{" "}
-                  {cvData.generated_personal_data.linkedin}
-                </p>
-              ) : (
-                <p>
-                  {cvData.generated_personal_data.email} |{" "}
-                  {cvData.generated_personal_data.phone}
-                </p>
-              )}
-            </div>
-          ))}
+          cvData.generated_personal_data.linkedin) && (
+          <div className="text-sm text-gray-600">
+            <p>
+              {[
+                cvData.generated_personal_data.email,
+                cvData.generated_personal_data.phone,
+                cvData.generated_personal_data.linkedin,
+              ]
+                .filter(Boolean)
+                .join(" | ")}
+            </p>
+          </div>
+        )}
       </div>
       <Section title={(translations[lang] as any)["cv.summary"]}>
         <p className="text-gray-700 leading-relaxed">
