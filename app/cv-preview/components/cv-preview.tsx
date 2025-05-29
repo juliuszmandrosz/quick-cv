@@ -143,9 +143,11 @@ export const CvPreviewClient = () => {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">CV Preview</h1>
           <p className="text-muted-foreground mt-2">{t("cv.ready")}</p>
-          <p className="text-muted-foreground mt-2">
-            <a href={cvData.job_url}>{t("cv.jobOffer")}</a>
-          </p>
+          {cvData.job_url && (
+            <p className="text-muted-foreground mt-2">
+              <a href={cvData.job_url}>{t("cv.jobOffer")}</a>
+            </p>
+          )}
         </div>
 
         {user.user?.id ? (
