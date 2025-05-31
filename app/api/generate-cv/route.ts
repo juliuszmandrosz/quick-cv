@@ -130,6 +130,7 @@ export async function POST(request: Request) {
       Make sure the position titles feel natural and realistic in ${language}, especially for technical and senior-level roles. Do not mix languages in a single title.
       Avoid vague or informal phrases such as "on the frontend" or "on the backend" without context. Always provide specific technical details and results. Replace generic expressions with professional and precise language such as "in the frontend layer", "within backend services", or "in server-side logic", depending on the context. Clarify what was built, optimized, or improved, and what the outcome was.
       **Write all bullet points using the first person singular in ${language}**, maintaining a natural and professional tone (e.g., "Zaprojektowałem", "Wdrożyłem", "Koordynowałem"). Avoid passive voice or third-person formulations.
+      Limit the number of bullet points per experience to **a maximum of 3**, prioritizing the most impactful and relevant achievements.
     
     ##ACCOMPLISHMENTS:
       This is guidance for how to phrase bullet points within the "EXPERIENCE & RESPONSIBILITIES". Frame accomplishments positively, focusing on the results and positive impact of the candidate's actions. 
