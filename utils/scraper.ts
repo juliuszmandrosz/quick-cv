@@ -12,6 +12,6 @@ export default async function scrapeJobOffer(
   } else if (domain.includes("justjoin.it")) {
     return await scrapeJustJoinIt(url);
   } else {
-    throw new Error("Nieobsługiwana domena: " + domain);
+    throw new Error("Unsupported domain: " + domain);
   }
 }

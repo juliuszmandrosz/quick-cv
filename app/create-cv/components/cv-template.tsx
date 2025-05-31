@@ -141,12 +141,14 @@ export default function CvTemplate({
                 </h5>
                 <p className="text-gray-700">{edu.school_name}</p>
               </div>
-              <span className="text-gray-600 text-sm mt-1 sm:mt-0">
-                {formatDate(edu.start_date)} -{" "}
-                {edu.end_date
-                  ? formatDate(edu.end_date)
-                  : (translations[lang] as any)["cv.present"]!}
-              </span>
+              {edu.start_date && (
+                <span className="text-gray-600 text-sm mt-1 sm:mt-0">
+                  {formatDate(edu.start_date)} -{" "}
+                  {edu.end_date
+                    ? formatDate(edu.end_date)
+                    : (translations[lang] as any)["cv.present"]!}
+                </span>
+              )}
             </div>
           </div>
         ))}
