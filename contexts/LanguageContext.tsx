@@ -216,21 +216,36 @@ export const translations = {
     "create.tip": "Tip:",
     "create.tipText":
       "Include requirements, responsibilities, and company info for best results",
-    "create.step1title": "Step 1: Paste job offer",
+    "create.step1title": "Paste job offer",
     "create.step1desc":
-      "Paste the job offer below, our AI will tailor your resume to it.",
+      "Paste a job listing or its full description, our AI will tailor your resume perfectly to it.",
+    "create.step2title": "Upload your CV",
+    "create.step2desc":
+      "Upload your current resume, our AI will rewrite it to perfectly match the offer.",
     "create.step1next": "Next: Upload your CV",
+    "create.cvPreviewTitle": "What your tailored CV might look like",
+    "create.cvPreviewDesc": "See a sample of your future optimized CV",
+    "create.cvPreviewCaption":
+      "Example CV preview. Yours will be personalized to your profile.",
+    "create.aiBoostLine1":
+      "Users who tailor their CVs with NiceCV get 3x more interview invites.",
+    "create.aiBoostLine2":
+      "Generation takes about 40-60 seconds. No credit card needed.",
 
     // Loader Section
-    "loader.building": "Building something special just for you...",
-    "loader.grabCoffee": "Grab a coffee while we craft your perfect CV...",
-    "loader.addingTouch": "Adding that professional touch to your resume...",
-    "loader.almost": "Almost there! Your CV is going to be a BOMB!",
-    "loader.polishing": "Polishing the final details...",
-    "loader.justSeconds": "Just a few more seconds for perfection...",
+    "loader.loader1": "☕ Grab a coffee, while we create your perfect CV...",
+    "loader.loader2":
+      "⏳ Analyzing the job description and key requirements...",
+    "loader.loader3":
+      "🤖 Matching your experience to what recruiters actually want...",
+    "loader.loader4": "🧠 Optimizing your CV to beat the ATS systems...",
+    "loader.loader5": "🪄 Adding that professional, polished touch...",
+    "loader.loader6": "💥 Almost there! Your CV is going to be a BOMB!",
+    "loader.promise":
+      "Almost there… You're seconds away from a CV that gets interviews.",
+    "loader.explanation":
+      "This usually takes 40-60 seconds, depending on job complexity.",
     "loader.magic": "NICE CV Magic in Progress",
-    "loader.creating":
-      "We're creating something extraordinary that will make your CV stand out!",
   },
   pl: {
     // Header
@@ -427,20 +442,36 @@ export const translations = {
     "create.tip": "Wskazówka:",
     "create.tipText":
       "Podaj wymagania, obowiązki i informacje o firmie dla najlepszych wyników",
-    "create.step1title": "Krok 1: Wklej ofertę pracy",
+    "create.step1title": "Wklej ofertę pracy",
     "create.step1desc":
-      "Wklej poniżej ofertę pracy – nasza AI dopasuje do niej Twoje CV.",
+      "Wklej link do ogłoszenia lub jego pełną treść, nasze AI idealnie dopasuje do niej Twoje CV.",
+    "create.step2title": "Prześlij swoje CV",
+    "create.step2desc":
+      "Prześlij aktualne CV, nasze AI dostosuje je idealnie do oferty pracy.",
     "create.step1next": "Dalej: dodaj swoje CV",
+    "create.cvPreviewTitle": "Tak może wyglądać Twoje dopasowane CV",
+    "create.cvPreviewDesc": "Zobacz przykładową wersję zoptymalizowanego CV",
+    "create.cvPreviewCaption":
+      "Podgląd przykładowego CV. Twoje zostanie spersonalizowane do Twojego profilu.",
+    "create.aiBoostLine1":
+      "Użytkownicy, którzy dostosowują CV z NiceCV, otrzymują 3x więcej zaproszeń na rozmowy.",
+    "create.aiBoostLine2":
+      "Generowanie trwa około 40-60 sekund. Karta płatnicza nie jest wymagana.",
 
     // Loader Section
-    "loader.building": "Tworzymy coś wyjątkowego specjalnie dla Ciebie...",
-    "loader.grabCoffee": "Zaparz kawę, a my stworzymy idealne CV...",
-    "loader.addingTouch": "Dodajemy profesjonalne szlify do Twojego CV...",
-    "loader.almost": "Prawie gotowe! Twoje CV będzie PETARDĄ!",
-    "loader.polishing": "Szlifujemy ostatnie szczegóły...",
-    "loader.justSeconds": "Jeszcze tylko kilka sekund do perfekcji...",
+    "loader.loader1": "☕ Zaparz sobie kawę, my zajmiemy się Twoim CV...",
+    "loader.loader2":
+      "⏳ Analizujemy ofertę pracy i najważniejsze wymagania...",
+    "loader.loader3":
+      "🤖 Dopasowujemy Twoje doświadczenie do oczekiwań rekruterów...",
+    "loader.loader4": "🧠 Optymalizujemy Twoje CV, by pokonało systemy ATS...",
+    "loader.loader5": "🪄 Dodajemy profesjonalne, dopracowane wykończenie...",
+    "loader.loader6": "💥 Już prawie gotowe! Twoje CV będzie PETARDĄ",
+    "loader.promise":
+      "Już prawie... Za chwilę otrzymasz CV, które da Ci rozmowy.",
+    "loader.explanation":
+      "To zazwyczaj zajmuje 40-60 sekund, zależnie od złożoności oferty.",
     "loader.magic": "Trwa magia NICE CV",
-    "loader.creating": "Tworzymy coś niezwykłego, co wyróżni Twoje CV z tłumu!",
   },
   es: {
     // Header
@@ -651,23 +682,36 @@ export const translations = {
     "create.tip": "Consejo:",
     "create.tipText":
       "Incluye requisitos, responsabilidades e información de la empresa para mejores resultados",
-    "create.step1title": "Paso 1: Pega la oferta de trabajo",
+    "create.step1title": "Pega la oferta de trabajo",
     "create.step1desc":
-      "Pega la oferta de trabajo a continuación; nuestra IA adaptará tu CV.",
+      "Pega el enlace o la descripción completa de la oferta y nuestra IA adaptará tu CV perfectamente.",
+    "create.step2title": "Sube tu CV",
+    "create.step2desc":
+      "Sube tu currículum actual y nuestra IA lo reescribirá para que coincida perfectamente con la oferta.",
     "create.step1next": "Siguiente: subir tu CV",
+    "create.cvPreviewTitle": "Así podría verse tu CV personalizado",
+    "create.cvPreviewDesc": "Mira un ejemplo de tu futuro CV optimizado",
+    "create.cvPreviewCaption":
+      "Vista previa de un CV de ejemplo. El tuyo se personalizará según tu perfil.",
+    "create.aiBoostLine1":
+      "Los usuarios que adaptan su CV con NiceCV reciben 3x más invitaciones a entrevistas.",
+    "create.aiBoostLine2":
+      "La generación tarda unos 40-60 segundos. No se necesita tarjeta de crédito.",
 
     // Loader Section
-    "loader.building": "Preparando algo especial, hecho a tu medida...",
-    "loader.grabCoffee":
-      "Prepara un café mientras preparamos tu CV impecable...",
-    "loader.addingTouch":
-      "Puliendo tu CV para darle un aspecto más profesional...",
-    "loader.almost": "¡Ya casi! Tu currículum va a quedar impresionante.",
-    "loader.polishing": "Puliendo los últimos detalles...",
-    "loader.justSeconds": "Sólo unos segundos más para la perfección...",
-    "loader.magic": "NICE CV Realizando nuestra magia",
-    "loader.creating":
-      "¡Estamos creando algo extraordinario que hará que tu CV destaque!",
+    "loader.loader1": "☕ Tómate un café mientras creamos tu CV perfecto...",
+    "loader.loader2":
+      "⏳ Analizando la oferta de trabajo y sus requisitos clave...",
+    "loader.loader3":
+      "🤖 Comparando tu experiencia con lo que buscan los reclutadores...",
+    "loader.loader4": "🧠 Optimizando tu CV para superar los sistemas ATS...",
+    "loader.loader5": "🪄 Dándole un toque profesional y pulido...",
+    "loader.loader6": "💥 ¡Ya casi está! Tu CV va a ser una bomba.",
+    "loader.promise":
+      "Ya casi... Estás a segundos de un CV que consigue entrevistas.",
+    "loader.explanation":
+      "Esto suele tardar entre 40 y 60 segundos, según la complejidad.",
+    "loader.magic": "Magia de NICE CV en progreso",
   },
 };
 

@@ -8,6 +8,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -16,20 +17,25 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import {
+  CheckCircle2,
   ChevronLeft,
   ChevronRight,
   FileText,
   Flame,
   LinkIcon,
   Loader2,
-  Upload,
+  Sparkles,
+  TrendingUp,
+  UploadCloud,
+  X,
 } from "lucide-react";
-import LoadingScreen from "@/app/create-cv/components/loading-screen";
+import LoadingScreen from "@/app/create-cv/components/loading-screen"; // Assuming this path is correct
+import type { CV } from "@/app/create-cv/types/cv"; // Assuming this path is correct
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCurrentUser } from "@/hooks/use-auth";
-import type { CV } from "@/app/create-cv/types/cv";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { flushSync } from "react-dom";
 
 export default function CreateCvClientPage() {
   const [step, setStep] = useState<number>(1);
@@ -44,7 +50,7 @@ export default function CreateCvClientPage() {
   const [selectedCv, setSelectedCv] = useState<CV | null>(null);
   const [isProcessingJobOffer, setIsProcessingJobOffer] = useState(false);
   const [jobOfferTab, setJobOfferTab] = useState("url");
-  const [cvTab, setCvTab] = useState("upload");
+  const [cvTab, setCvTab] = useState("upload"); // Default to upload
 
   const urlInputRef = useRef<HTMLInputElement>(null);
   const descInputRef = useRef<HTMLTextAreaElement>(null);
@@ -53,12 +59,6 @@ export default function CreateCvClientPage() {
   const router = useRouter();
   const user = useCurrentUser();
   const { t } = useLanguage();
-
-  const handleJobInputChange = (value: string) => {
-    flushSync(() => {
-      setCvTab(value);
-    });
-  };
 
   const handleNext = async () => {
     if (step === 1) {
@@ -300,7 +300,6 @@ export default function CreateCvClientPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-border/50 sticky top-0 z-40">
         <div className="max-w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-2xl 2xl:max-w-3xl mx-auto px-4 py-3 md:py-4">
           <div className="flex justify-between items-center">
@@ -339,13 +338,13 @@ export default function CreateCvClientPage() {
           <CardHeader className="pb-4 2xl:pb-6 px-4 sm:px-5 md:px-6 pt-4 2xl:pt-6">
             <CardTitle className="text-lg 2xl:text-xl font-bold">
               {step === 1
-                ? `${t("create.step1title")}`
-                : `${t("create.step")} 2 ${t("create.of")} 2`}
+                ? `🔗 ${t("create.step1title")}`
+                : `📝 ${t("create.step2title")}`}
             </CardTitle>
             <CardDescription className="text-xs sm:text-sm 2xl:text-base text-muted-foreground">
               {step === 1
                 ? `${t("create.step1desc")}`
-                : `${t("create.upload")}`}
+                : `${t("create.step2desc")}`}
             </CardDescription>
           </CardHeader>
 
@@ -456,7 +455,7 @@ export default function CreateCvClientPage() {
                   )}
                 </div>
 
-                <div className="flex items-center justify-center gap-2 sm:gap-2.5 text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base text-muted-foreground bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 border border-orange-200 dark:border-orange-800 rounded-lg py-2.5 sm:py-3 md:py-3.5 lg:py-2.5 xl:py-2.5 2xl:py-3.5 px-4 sm:px-5">
+                <div className="flex items-center justify-center gap-2 sm:gap-2.5 text-sm 2xl:text-base text-muted-foreground bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 border border-orange-200 dark:border-orange-800 rounded-lg py-2.5 sm:py-3 md:py-3.5 lg:py-2.5 xl:py-2.5 2xl:py-3.5 px-4 sm:px-5">
                   <Flame className="h-4 w-4 2xl:h-5 2xl:w-5 text-orange-500" />
                   <span className="font-medium">
                     {t("create.optimizedCvs")}
@@ -464,161 +463,288 @@ export default function CreateCvClientPage() {
                 </div>
               </div>
             ) : (
-              <div className="space-y-4 sm:space-y-5 md:space-y-6">
-                {user.user && cvs.length > 0 ? (
-                  <div className="space-y-3 sm:space-y-4">
-                    <Label className="text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base font-semibold">
-                      Choose CV source:
-                    </Label>
-                    <RadioGroup
-                      value={cvTab}
-                      onValueChange={handleJobInputChange}
-                      className="space-y-3 md:space-y-4"
-                    >
-                      <div className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 md:p-4 rounded-lg border border-border/50 hover:border-primary/50 transition-colors">
-                        <RadioGroupItem value="upload" id="upload-option" />
-                        <Label
-                          htmlFor="upload-option"
-                          className="flex-1 cursor-pointer font-medium text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base"
-                        >
-                          {t("create.uploadCv")}
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 md:p-4 rounded-lg border border-border/50 hover:border-primary/50 transition-colors">
-                        <RadioGroupItem value="existing" id="existing-option" />
-                        <Label
-                          htmlFor="existing-option"
-                          className="flex-1 cursor-pointer font-medium text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base"
-                        >
-                          {t("create.useExistingCv")}
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-                ) : null}
-
-                {cvTab === "upload" || !user.user ? (
-                  <div className="space-y-3 sm:space-y-4">
-                    <div className="border-2 border-dashed border-primary/40 rounded-lg p-4 sm:p-6 md:p-6 text-center cursor-pointer hover:border-primary/60 hover:bg-primary/5 transition-all duration-200">
-                      <input
-                        id="cv-upload"
-                        type="file"
-                        className="hidden"
-                        onChange={handleCVFileChange}
-                        accept=".pdf"
-                      />
-                      <label htmlFor="cv-upload" className="cursor-pointer">
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="mx-auto bg-primary/10 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center">
-                            <Upload className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-primary" />
-                          </div>
-                          <div className="text-base sm:text-lg md:text-lg lg:text-sm xl:text-sm 2xl:text-lg font-semibold">
-                            {t("create.upload")}
-                          </div>
-                          <p className="text-xs sm:text-sm md:text-sm lg:text-xs xl:text-xs 2xl:text-sm text-muted-foreground">
-                            {t("create.dropCv")}
-                          </p>
-                          <p className="text-xs sm:text-sm md:text-sm lg:text-xs xl:text-xs 2xl:text-sm text-muted-foreground">
-                            {t("create.supportedFormats")}: PDF
-                          </p>
+              <div className="space-y-6 md:space-y-8">
+                <div className="grid lg:grid-cols-12 gap-6 md:gap-8 items-start">
+                  <div className="lg:col-span-5">
+                    <Card className="overflow-hidden shadow-lg border-border/30 sticky top-28">
+                      <CardHeader className="p-4 bg-muted/20 border-b text-left">
+                        <CardTitle className="text-xs sm:text-sm text-foreground">
+                          {t("create.cvPreviewTitle")}
+                        </CardTitle>
+                        <CardDescription className="text-xs">
+                          {t("create.cvPreviewDesc")}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="p-3">
+                        <div className="aspect-auto w-full max-w-[280px] mx-auto rounded-lg overflow-hidden border-2 border-dashed border-primary/20 bg-muted/30 shadow-lg">
+                          <img
+                            src="/cv-sample.png?width=280"
+                            alt={t("create.sampleCvAlt")}
+                            className="w-full h-full object-contain"
+                          />
                         </div>
-                      </label>
-                    </div>
-                    {uploadedCV && (
-                      <div className="flex items-center p-3 sm:p-3.5 md:p-4 rounded-lg bg-primary/10 border border-primary/20">
-                        <FileText className="h-5 w-5 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-2.5 sm:mr-3 text-primary" />
-                        <span className="text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base font-medium">
-                          {uploadedCV.name}
-                        </span>
+                      </CardContent>
+                      <CardFooter className="p-3 text-left text-xs text-muted-foreground bg-muted/20 border-t">
+                        {t("create.cvPreviewCaption")}
+                      </CardFooter>
+                    </Card>
+                  </div>
+
+                  <div className="mt-4 sm:mt-0 lg:col-span-7 space-y-6">
+                    {user.user && cvs.length > 0 ? (
+                      <Tabs
+                        defaultValue={cvTab}
+                        onValueChange={setCvTab}
+                        className="w-full"
+                      >
+                        <TabsList className="grid w-full grid-cols-2 h-11">
+                          <TabsTrigger
+                            value="upload"
+                            className="text-sm font-medium h-full"
+                          >
+                            <UploadCloud className="w-4 h-4 mr-2" />
+                            {t("create.upload")}
+                          </TabsTrigger>
+                          <TabsTrigger
+                            value="existing"
+                            className="text-sm font-medium h-full"
+                          >
+                            <FileText className="w-4 h-4 mr-2" />
+                            {t("create.useExistingCv")}
+                          </TabsTrigger>
+                        </TabsList>
+                        <TabsContent
+                          value="upload"
+                          className="mt-4 sm:mt-6 space-y-3 sm:space-y-4"
+                        >
+                          <Label className="text-base font-semibold block mb-1">
+                            {t("create.upload")}
+                          </Label>
+                          <div className="relative block w-full rounded-lg border-2 border-dashed border-muted-foreground/30 p-6 py-8 text-center hover:border-primary/50 transition-colors duration-200 group cursor-pointer bg-background hover:bg-muted/20">
+                            <input
+                              id="cv-upload"
+                              type="file"
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                              onChange={handleCVFileChange}
+                              accept=".pdf,.doc,.docx"
+                            />
+                            <div className="flex flex-col items-center justify-center space-y-2">
+                              <div className="rounded-full bg-primary/10 p-3 group-hover:bg-primary/20 transition-colors">
+                                <UploadCloud className="h-7 w-7 text-primary" />
+                              </div>
+                              <p className="text-sm font-medium text-foreground">
+                                {t("create.dropCv")}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {t("create.supportedFormats")}: PDF
+                              </p>
+                            </div>
+                          </div>
+                          {uploadedCV && (
+                            <Card className="bg-muted/50 border-primary/20 shadow-sm">
+                              <CardContent className="p-3 flex items-center space-x-3">
+                                <FileText className="h-6 w-6 text-primary flex-shrink-0" />
+                                <div className="flex-grow overflow-hidden">
+                                  <p
+                                    className="text-sm font-medium text-foreground truncate"
+                                    title={uploadedCV.name}
+                                  >
+                                    {uploadedCV.name}
+                                  </p>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => {
+                                    setUploadedCV(null);
+                                    const cvUploadInput =
+                                      document.getElementById(
+                                        "cv-upload",
+                                      ) as HTMLInputElement;
+                                    if (cvUploadInput) cvUploadInput.value = "";
+                                  }}
+                                  className="text-muted-foreground hover:text-destructive h-7 w-7"
+                                >
+                                  <X className="h-4 w-4" />
+                                  <span className="sr-only">
+                                    {t("create.removeFile")}
+                                  </span>
+                                </Button>
+                              </CardContent>
+                            </Card>
+                          )}
+                        </TabsContent>
+                        <TabsContent
+                          value="existing"
+                          className="mt-6 space-y-4"
+                        >
+                          <Label className="text-base font-semibold block mb-1">
+                            {t("create.selectCv")}
+                          </Label>
+                          {cvs.length > 0 ? (
+                            <ScrollArea className="max-h-72 overflow-y-auto rounded-md border bg-background">
+                              <div className="p-2 space-y-2">
+                                {cvs.map((cv) => (
+                                  <div
+                                    key={cv.id}
+                                    className={`flex items-center p-3 rounded-md border-2 transition-all duration-150 cursor-pointer
+                                    ${
+                                      selectedCv?.id === cv.id
+                                        ? "bg-primary/10 border-primary shadow-md"
+                                        : "bg-background hover:bg-muted/50 border-transparent hover:border-border"
+                                    }`}
+                                    onClick={() => {
+                                      setSelectedCv(cv);
+                                      setUploadedCV(null);
+                                      setCvTab("existing");
+                                    }}
+                                  >
+                                    <FileText className="h-5 w-5 mr-3 text-muted-foreground flex-shrink-0" />
+                                    <div className="flex-grow">
+                                      <p className="text-sm font-semibold text-foreground">
+                                        {cv.title ||
+                                          `CV Document ${cv.id.substring(0, 6)}`}
+                                      </p>
+                                      <p className="text-xs text-muted-foreground">
+                                        {new Date(
+                                          cv.created_at,
+                                        ).toLocaleDateString()}
+                                      </p>
+                                    </div>
+                                    {selectedCv?.id === cv.id && (
+                                      <CheckCircle2 className="h-5 w-5 text-primary ml-auto flex-shrink-0" />
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </ScrollArea>
+                          ) : (
+                            <p className="text-sm text-muted-foreground p-4 text-center border rounded-md bg-muted/30">
+                              {t("create.noExistingCvs")}
+                            </p>
+                          )}
+                        </TabsContent>
+                      </Tabs>
+                    ) : (
+                      <div className="space-y-3 sm:space-y-4">
+                        {" "}
+                        <Label className="text-sm sm:text-base font-semibold block mb-1">
+                          {t("create.upload")}
+                        </Label>
+                        <div className="relative block w-full rounded-lg border-2 border-dashed border-muted-foreground/30 p-6 py-8 text-center hover:border-primary/50 transition-colors duration-200 group cursor-pointer bg-background hover:bg-muted/20">
+                          <input
+                            id="cv-upload-fallback"
+                            type="file"
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            onChange={handleCVFileChange}
+                            accept=".pdf"
+                          />
+                          <div className="flex flex-col items-center justify-center space-y-2">
+                            <div className="rounded-full bg-primary/10 p-3 group-hover:bg-primary/20 transition-colors">
+                              <UploadCloud className="h-7 w-7 text-primary" />
+                            </div>
+                            <p className="text-sm font-medium text-foreground">
+                              {t("create.dropCv")}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {t("create.supportedFormats")}
+                            </p>
+                          </div>
+                        </div>
+                        {uploadedCV && (
+                          <Card className="bg-muted/50 border-primary/20 shadow-sm">
+                            <CardContent className="p-3 flex items-center space-x-3">
+                              <FileText className="h-6 w-6 text-primary flex-shrink-0" />
+                              <div className="flex-grow overflow-hidden">
+                                <p
+                                  className="text-sm font-medium text-foreground truncate"
+                                  title={uploadedCV.name}
+                                >
+                                  {uploadedCV.name}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {(uploadedCV.size / 1024 / 1024).toFixed(2)}{" "}
+                                  MB
+                                </p>
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => {
+                                  setUploadedCV(null);
+                                  const cvUploadInput = document.getElementById(
+                                    "cv-upload-fallback",
+                                  ) as HTMLInputElement;
+                                  if (cvUploadInput) cvUploadInput.value = "";
+                                }}
+                                className="text-muted-foreground hover:text-destructive h-7 w-7"
+                              >
+                                <X className="h-4 w-4" />
+                                <span className="sr-only">
+                                  {t("create.removeFile")}
+                                </span>
+                              </Button>
+                            </CardContent>
+                          </Card>
+                        )}
                       </div>
                     )}
-                  </div>
-                ) : (
-                  <div className="space-y-3 sm:space-y-4">
-                    <p className="text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base text-muted-foreground">
-                      {t("create.selectCv")}
-                    </p>
-                    <div className="space-y-2 sm:space-y-3 max-h-48 sm:max-h-60 md:max-h-64 overflow-y-auto">
-                      {cvs.map((cv) => (
-                        <div
-                          key={cv.id}
-                          className={`flex items-center p-3 sm:p-3.5 md:p-4 rounded-lg border transition-all duration-200 cursor-pointer ${
-                            selectedCv?.id === cv.id
-                              ? "bg-primary/10 border-primary/30"
-                              : "bg-background/50 border-border/50 hover:bg-primary/5 hover:border-primary/20"
-                          }`}
-                          onClick={() => {
-                            setSelectedCv(cv);
-                            setUploadedCV(null);
-                          }}
-                        >
-                          <FileText className="h-5 w-5 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-2.5 sm:mr-3 text-muted-foreground" />
-                          <div>
-                            <p className="text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base font-semibold">
-                              {cv.title}
-                            </p>
-                            <p className="text-xs sm:text-sm md:text-sm lg:text-xs xl:text-xs 2xl:text-sm text-muted-foreground">
-                              {new Date(cv.created_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
+
+                    <div className="space-y-3 sm:pt-2">
+                      <Label className="text-sm sm:text-base font-semibold">
+                        {t("create.language")}
+                      </Label>
+                      <div className="flex flex-wrap gap-3">
+                        {[
+                          {
+                            value: "en",
+                            label: t("create.english"),
+                          },
+                          { value: "pl", label: t("create.polish") },
+                          {
+                            value: "es",
+                            label: t("create.spanish"),
+                          },
+                        ].map((lang) => (
+                          <Button
+                            key={lang.value}
+                            type="button"
+                            variant={
+                              cvLanguage === lang.value ? "default" : "outline"
+                            }
+                            size="sm"
+                            className={`h-10 px-4 text-sm font-medium rounded-md transition-all
+                              ${
+                                cvLanguage === lang.value
+                                  ? "bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] hover:from-[#8A76E4] hover:to-[#4A1DEE] text-white shadow-md ring-2 ring-offset-2 ring-primary/70 ring-offset-background"
+                                  : "border-border hover:bg-muted/50 hover:border-muted-foreground/50"
+                              }`}
+                            onClick={() => setCvLanguage(lang.value)}
+                          >
+                            {lang.label}
+                          </Button>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                )}
+                </div>
 
-                <div className="space-y-2.5 sm:space-y-3">
-                  <Label className="text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base font-medium">
-                    {t("create.language")}
-                  </Label>
-                  <div className="flex flex-wrap gap-2 sm:gap-2.5 md:gap-3">
-                    <Button
-                      type="button"
-                      variant={cvLanguage === "en" ? "default" : "outline"}
-                      size="sm"
-                      className={`h-9 sm:h-10 md:h-10 lg:h-8 xl:h-8 2xl:h-10 px-3 sm:px-4 md:px-4 lg:px-3 xl:px-3 2xl:px-4 text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base ${
-                        cvLanguage === "en"
-                          ? "bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] hover:from-[#8A76E4] hover:to-[#4A1DEE] text-white"
-                          : ""
-                      }`}
-                      onClick={() => setCvLanguage("en")}
-                    >
-                      {t("create.english")}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={cvLanguage === "pl" ? "default" : "outline"}
-                      size="sm"
-                      className={`h-9 sm:h-10 md:h-10 lg:h-8 xl:h-8 2xl:h-10 px-3 sm:px-4 md:px-4 lg:px-3 xl:px-3 2xl:px-4 text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base ${
-                        cvLanguage === "pl"
-                          ? "bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] hover:from-[#8A76E4] hover:to-[#4A1DEE] text-white"
-                          : ""
-                      }`}
-                      onClick={() => setCvLanguage("pl")}
-                    >
-                      {t("create.polish")}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={cvLanguage === "es" ? "default" : "outline"}
-                      size="sm"
-                      className={`h-9 sm:h-10 md:h-10 lg:h-8 xl:h-8 2xl:h-10 px-3 sm:px-4 md:px-4 lg:px-3 xl:px-3 2xl:px-4 text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base ${
-                        cvLanguage === "es"
-                          ? "bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] hover:from-[#8A76E4] hover:to-[#4A1DEE] text-white"
-                          : ""
-                      }`}
-                      onClick={() => setCvLanguage("es")}
-                    >
-                      {t("create.spanish")}
-                    </Button>
+                <div className="mt-8 bg-violet-50 dark:bg-violet-950/70 border border-violet-200 dark:border-violet-800/50 rounded-xl p-3 text-sm text-center">
+                  <div className="flex justify-center items-center mb-1.5">
+                    <TrendingUp className="h-4 w-4 text-violet-600 dark:text-violet-400 mr-1.5 flex-shrink-0" />
+                    <span className="font-semibold text-gray-800 dark:text-gray-100">
+                      {t("create.aiBoostLine1")}
+                    </span>
                   </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-tight">
+                    {t("create.aiBoostLine2")}
+                  </p>
                 </div>
               </div>
             )}
           </CardContent>
         </Card>
       </div>
-
       <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-border/50 shadow-xl z-50">
         <div className="max-w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-2xl 2xl:max-w-3xl mx-auto px-4 py-3 md:py-4 xl:py-3 2xl:py-4">
           <div className="flex justify-between gap-3 sm:gap-4">
@@ -634,19 +760,20 @@ export default function CreateCvClientPage() {
             <Button
               onClick={handleNext}
               className="h-10 sm:h-11 md:h-12 lg:h-10 xl:h-10 2xl:h-12 px-4 sm:px-5 md:px-6 lg:px-4 xl:px-4 2xl:px-6 text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base font-medium bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] hover:from-[#8A76E4] hover:to-[#4A1DEE] text-white shadow-lg"
-              disabled={isProcessingJobOffer}
+              disabled={isProcessingJobOffer || isGenerating}
             >
-              {isProcessingJobOffer ? (
+              {isProcessingJobOffer || isGenerating ? (
                 <Loader2 className="mr-1 sm:mr-1.5 md:mr-2 lg:mr-1.5 xl:mr-1.5 2xl:mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
+              ) : step === 2 ? (
+                <Sparkles className="mr-2 h-4 w-4" />
               ) : (
-                <ChevronRight className="mr-1 sm:mr-1.5 md:mr-2 lg:mr-1.5 xl:mr-1.5 2xl:mr-2 h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:w-5 lg:h-4 lg:w-4 xl:h-4 xl:w-4 2xl:h-5 2xl:w-5" />
+                <ChevronRight className="mr-1 sm:mr-1.5 md:mr-2 lg:mr-1.5 xl:mr-1.5 2xl:mr-2 h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:h-5 lg:h-4 lg:w-4 xl:h-4 xl:w-4 2xl:h-5 2xl:w-5" />
               )}
               {step === 2 ? t("create.generateCv") : t("create.step1next")}
             </Button>
           </div>
         </div>
       </div>
-
       <div className="h-16 sm:h-20 md:h-24 lg:h-20 xl:h-20 2xl:h-24" />
     </div>
   );
