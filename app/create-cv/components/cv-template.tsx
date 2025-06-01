@@ -6,7 +6,7 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { CVData } from "@/app/create-cv/types/cv-data";
 import { format } from "date-fns";
-import { translations } from "@/contexts/LanguageContext";
+import { translations, useLanguage } from "@/contexts/LanguageContext";
 
 export default function CvTemplate({
   cvData,
@@ -17,6 +17,8 @@ export default function CvTemplate({
 }) {
   const formatDate = (date: string | undefined | null) =>
     date ? format(new Date(date), "yyyy.MM") : "";
+
+  const { t } = useLanguage();
 
   return (
     <Card
@@ -68,6 +70,11 @@ export default function CvTemplate({
             </span>
           ))}
         </div>
+        {!cvData.token_consumed && (
+          <div className="text-sm text-gray-500 mt-4">
+            {t("cv.unlockSkills")}
+          </div>
+        )}
       </Section>
       <Section title={(translations[lang] as any)["cv.softPowerSkills"]!}>
         <div className="flex flex-wrap gap-2">
@@ -93,6 +100,11 @@ export default function CvTemplate({
             </span>
           ))}
         </div>
+        {!cvData.token_consumed && (
+          <div className="text-sm text-gray-500 mt-4">
+            {t("cv.unlockSkills")}
+          </div>
+        )}
       </Section>
       <Section title={(translations[lang] as any)["cv.experience"]!}>
         {cvData.generated_experience.map((exp, idx) => (
@@ -122,10 +134,8 @@ export default function CvTemplate({
               )}
             </div>
 
-            {/* Company name */}
             <p className="text-gray-700 font-medium mb-2">{exp.company_name}</p>
 
-            {/* Responsibilities */}
             <ul className="list-disc pl-5 space-y-1 text-gray-700">
               {exp.responsibilities.map((r, i) => (
                 <li key={i} className="leading-relaxed">
@@ -133,6 +143,12 @@ export default function CvTemplate({
                 </li>
               ))}
             </ul>
+
+            {!cvData.token_consumed && idx === 0 && (
+              <p className="text-sm text-gray-500 mt-2 mb-2">
+                {t("cv.unlockExperience")}
+              </p>
+            )}
           </div>
         ))}
       </Section>

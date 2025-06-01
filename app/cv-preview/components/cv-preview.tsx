@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, Unlock } from "lucide-react";
+import { Flame, Loader2, Save, Target, Unlock } from "lucide-react";
 import type { CVData } from "@/app/create-cv/types/cv-data";
 import CvTemplate from "@/app/create-cv/components/cv-template";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -37,8 +37,8 @@ export const CvPreviewClient = () => {
         setCvData(data.data);
       } catch (e) {
         toast({
-          title: "Error",
-          description: "Failed to load CV data",
+          title: t("create.error"),
+          description: t("cv.errorLoading"),
           variant: "destructive",
         });
       } finally {
@@ -60,8 +60,8 @@ export const CvPreviewClient = () => {
 
       if (data.tokens_left > 0) {
         toast({
-          title: "Payment Successful",
-          description: "Your CV is ready for download.",
+          title: t("cv.paymentSuccessTitle"),
+          description: t("cv.paymentSuccess"),
           variant: "default",
         });
         setIsLoading(false);
@@ -124,8 +124,8 @@ export const CvPreviewClient = () => {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         toast({
-          title: "Download Successful",
-          description: "Your CV has been downloaded.",
+          title: t("cv.downloadSuccessTitle"),
+          description: t("cv.downloadSuccess"),
           variant: "default",
         });
         setIsDownloading(false);
@@ -133,6 +133,11 @@ export const CvPreviewClient = () => {
       }
     } catch (error) {
       console.error("Download error:", error);
+      toast({
+        title: t("create.error"),
+        description: t("cv.downloadError"),
+        variant: "destructive",
+      });
       setIsDownloading(false);
     }
   };
@@ -148,7 +153,7 @@ export const CvPreviewClient = () => {
   if (!cvData) {
     return (
       <div className="flex items-center justify-center h-[70vh]">
-        <p className="text-gray-500">No CV data found</p>
+        <p className="text-gray-500">{t("cv.noData")}</p>
       </div>
     );
   }
@@ -157,7 +162,9 @@ export const CvPreviewClient = () => {
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">CV Preview</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {t("cv.preview")}
+          </h1>
           <p className="text-muted-foreground mt-2">{t("cv.ready")}</p>
           {cvData.job_url && (
             <p className="text-muted-foreground mt-2">
@@ -167,7 +174,20 @@ export const CvPreviewClient = () => {
         </div>
       </div>
 
+      <div className="flex items-center justify-center gap-2 sm:gap-2.5 text-sm 2xl:text-base text-orange-800 bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-lg py-2.5 sm:py-3 px-4 sm:px-5 mb-4">
+        <Flame className="h-4 w-4 2xl:h-5 2xl:w-5 text-orange-500" />
+        <span>{t("cv.joinUsers")}</span>
+      </div>
+
       <CvTemplate cvData={cvData} lang={lang ?? "en"} />
+
+      <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-2.5 text-xs 2xl:text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-900/30 border-t border-gray-200 dark:border-gray-700 py-2.5 sm:py-3 px-4 sm:px-5 mt-4 rounded-md">
+        <Flame className="h-4 w-4 2xl:h-5 2xl:w-5 text-orange-500" />
+        <span>{t("cv.optimizedCvs")}</span>
+        <span className="hidden sm:inline">•</span>
+        <Target className="h-4 w-4 2xl:h-5 2xl:w-5 text-purple-500" />
+        <span>{t("cv.moreInterviews")}</span>
+      </div>
 
       <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-border/50 shadow-xl z-50">
         <div className="max-w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-2xl 2xl:max-w-3xl mx-auto px-4 py-3 md:py-4 xl:py-3 2xl:py-4">
@@ -178,7 +198,7 @@ export const CvPreviewClient = () => {
                   variant="outline"
                   className="shadow-sm w-full sm:w-auto"
                 >
-                  Go to Dashboard
+                  {t("cv.dashboard")}
                 </Button>
               </Link>
             ) : (
@@ -197,12 +217,12 @@ export const CvPreviewClient = () => {
                   {cvData.token_consumed ? (
                     <>
                       <Save className="mr-2 h-4 w-4" />
-                      Download CV
+                      {t("cv.download")}
                     </>
                   ) : (
                     <>
                       <Unlock className="mr-2 h-4 w-4" />
-                      Unlock CV
+                      {t("cv.unlock")}
                     </>
                   )}
                 </div>

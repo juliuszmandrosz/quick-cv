@@ -132,6 +132,24 @@ export const translations = {
     "cv.languages": "Languages",
     "cv.education": "Education",
     "cv.present": "Present",
+    "cv.preview": "CV Preview",
+    "cv.joinUsers": "Join 100+ users who unlocked their CV this week!",
+    "cv.optimizedCvs": "100+ CVs optimized this week",
+    "cv.moreInterviews": "Tailored CVs lead to 3× more interviews",
+    "cv.unlockSkills":
+      "Unlock to see all tailored skills matched to the job offer. 🔒",
+    "cv.unlockExperience":
+      "Unlock to see all tailored experiences rewritten for this job offer. 🔒",
+    "cv.downloadSuccessTitle": "Download Successful",
+    "cv.downloadSuccess": "Your CV has been downloaded.",
+    "cv.downloadError": "Download error, please try again.",
+    "cv.noData": "No CV data found",
+    "cv.paymentSuccessTitle": "Payment Successful",
+    "cv.paymentSuccess": "Your CV is ready for download.",
+    "cv.errorLoading": "Failed to load CV data",
+    "cv.unlock": "Unlock CV",
+    "cv.download": "Download CV",
+    "cv.dashboard": "Go to Dashboard",
 
     // Footer section
     "footer.title":
@@ -357,6 +375,25 @@ export const translations = {
     "cv.languages": "Języki obce",
     "cv.education": "Edukacja",
     "cv.present": "Obecnie",
+    "cv.preview": "Podgląd CV",
+    "cv.joinUsers":
+      "Dołącz do 100+ użytkowników, którzy odblokowali swoje CV w tym tygodniu!",
+    "cv.optimizedCvs": "100+ CV zoptymalizowanych w tym tygodniu",
+    "cv.moreInterviews": "Dopasowane CV daje 3× więcej zaproszeń na rozmowy",
+    "cv.unlockSkills":
+      "Odblokuj, aby zobaczyć wszystkie dopasowane umiejętności z oferty pracy. 🔒",
+    "cv.unlockExperience":
+      "Odblokuj, aby zobaczyć wszystkie dopasowane doświadczenia do tej oferty pracy. 🔒",
+    "cv.downloadSuccessTitle": "Pobieranie zakończone sukcesem",
+    "cv.downloadSuccess": "Twoje CV zostało pobrane.",
+    "cv.downloadError": "Błąd pobierania, spróbuj ponownie.",
+    "cv.noData": "Nie znaleziono danych CV",
+    "cv.paymentSuccessTitle": "Płatność zakończona sukcesem",
+    "cv.paymentSuccess": "Twoje CV jest gotowe do pobrania.",
+    "cv.errorLoading": "Nie udało się załadować danych CV",
+    "cv.unlock": "Odblokuj CV",
+    "cv.download": "Pobierz CV",
+    "cv.dashboard": "Przejdź do panelu",
 
     // Footer section
     "footer.title":
@@ -596,6 +633,25 @@ export const translations = {
     "cv.languages": "Idiomas",
     "cv.education": "Educación",
     "cv.present": "Presente",
+    "cv.preview": "Vista previa del CV",
+    "cv.joinUsers":
+      "¡Únete a más de 100 usuarios que desbloquearon su CV esta semana!",
+    "cv.optimizedCvs": "Más de 100 CV optimizados esta semana",
+    "cv.moreInterviews": "Los CV personalizados generan 3× más entrevistas",
+    "cv.unlockSkills":
+      "Desbloquea para ver todas las habilidades adaptadas a la oferta. 🔒",
+    "cv.unlockExperience":
+      "Desbloquea para ver toda la experiencia adaptada a esta oferta. 🔒",
+    "cv.downloadSuccessTitle": "Descarga completada con éxito",
+    "cv.downloadSuccess": "Tu CV ha sido descargado.",
+    "cv.downloadError": "Error de descarga, por favor intenta de nuevo.",
+    "cv.noData": "No se encontraron datos del CV",
+    "cv.paymentSuccessTitle": "Pago realizado con éxito",
+    "cv.paymentSuccess": "Tu CV está listo para descargar.",
+    "cv.errorLoading": "No se pudo cargar los datos del CV",
+    "cv.unlock": "Desbloquear CV",
+    "cv.download": "Descargar CV",
+    "cv.dashboard": "Ir al panel",
 
     // Footer section
     "footer.title":
