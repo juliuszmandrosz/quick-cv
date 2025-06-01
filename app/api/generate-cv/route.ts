@@ -304,13 +304,13 @@ export async function POST(request: Request) {
         education_list: generatedCV.generated_education.map((edu: any) => ({
           school_name: edu.school_name,
           field_of_study: edu.field_of_study,
-          start_date: isValidDate(edu.end_date) ? edu.end_date : null,
+          start_date: isValidDate(edu.start_date) ? edu.start_date : null,
           end_date: isValidDate(edu.end_date) ? edu.end_date : null,
         })),
         experience_list: generatedCV.generated_experience.map((exp: any) => ({
           position: exp.position,
           company_name: exp.company_name,
-          start_date: isValidDate(exp.end_date) ? exp.end_date : null,
+          start_date: isValidDate(exp.start_date) ? exp.start_date : null,
           end_date: isValidDate(exp.end_date) ? exp.end_date : null,
           responsibilities: exp.responsibilities,
           location: exp.location,
