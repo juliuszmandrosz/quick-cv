@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Download, Loader2 } from "lucide-react";
+import { Loader2, Save, Unlock } from "lucide-react";
 import type { CVData } from "@/app/create-cv/types/cv-data";
 import CvTemplate from "@/app/create-cv/components/cv-template";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -21,6 +21,7 @@ export const CvPreviewClient = () => {
   const lang = searchParams.get("lang");
   const path = searchParams.get("path");
   const paymentPending = searchParams.get("paymentPending");
+  const loginSuccessful = searchParams.get("loginSuccessful");
 
   const [cvData, setCvData] = useState<CVData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +31,6 @@ export const CvPreviewClient = () => {
     if (!cvId) return;
 
     const fetchCV = async () => {
-      console.log(lang);
       try {
         const res = await fetch(`/api/cv-data?cvId=${cvId}`);
         const data = await res.json();
@@ -73,6 +73,22 @@ export const CvPreviewClient = () => {
     pollTokens();
   }, [paymentPending]);
 
+  useEffect(() => {
+    const redirectToPayment = async () => {
+      if (!loginSuccessful) return;
+      setIsLoading(true);
+      const res = await fetch("/api/subscription-status");
+      const data = await res.json();
+      console.log(data);
+      if (data?.tokens_left > 0) return;
+      router.push("/checkout?cvId=" + cvId + "&lang=en");
+      setIsLoading(false);
+      setIsDownloading(false);
+    };
+
+    redirectToPayment();
+  }, [loginSuccessful]);
+
   const handleDownload = async () => {
     try {
       setIsDownloading(true);
@@ -93,7 +109,7 @@ export const CvPreviewClient = () => {
           return;
         }
         if (response.status === 402) {
-          router.push("/subscriptions?cvId=" + cvData?.id + "&lang=en");
+          router.push("/checkout?cvId=" + cvData?.id + "&lang=en");
           setIsDownloading(false);
           return;
         }
@@ -149,45 +165,54 @@ export const CvPreviewClient = () => {
             </p>
           )}
         </div>
-
-        {user.user?.id ? (
-          <div className="flex flex-col items-start gap-2 sm:items-end">
-            <Button
-              onClick={handleDownload}
-              className="shadow-sm w-full sm:w-auto"
-              disabled={isDownloading}
-            >
-              {isDownloading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Download className="mr-2 h-4 w-4" />
-              )}
-              {t("cv.downloadBtn")}
-            </Button>
-
-            <Link href={`/${path ?? ""}`}>
-              <Button variant="outline" className="shadow-sm w-full sm:w-auto">
-                Go to Dashboard
-              </Button>
-            </Link>
-          </div>
-        ) : (
-          <Button
-            onClick={handleDownload}
-            className="shadow-sm w-full sm:w-auto"
-            disabled={isDownloading}
-          >
-            {isDownloading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Download className="mr-2 h-4 w-4" />
-            )}
-            {t("cv.downloadBtn")}
-          </Button>
-        )}
       </div>
 
       <CvTemplate cvData={cvData} lang={lang ?? "en"} />
+
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-border/50 shadow-xl z-50">
+        <div className="max-w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-2xl 2xl:max-w-3xl mx-auto px-4 py-3 md:py-4 xl:py-3 2xl:py-4">
+          <div className="flex items-center justify-between gap-3 sm:gap-4">
+            {user?.user ? (
+              <Link href={`/${path ?? ""}`}>
+                <Button
+                  variant="outline"
+                  className="shadow-sm w-full sm:w-auto"
+                >
+                  Go to Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <div />
+            )}
+
+            <Button
+              onClick={handleDownload}
+              className="h-10 sm:h-11 md:h-12 lg:h-10 xl:h-10 2xl:h-12 px-4 sm:px-5 md:px-6 lg:px-4 xl:px-4 2xl:px-6 text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base font-medium bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] hover:from-[#8A76E4] hover:to-[#4A1DEE] text-white shadow-lg"
+              disabled={isDownloading}
+            >
+              {isDownloading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <div className="flex items-center">
+                  {cvData.token_consumed ? (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      Download CV
+                    </>
+                  ) : (
+                    <>
+                      <Unlock className="mr-2 h-4 w-4" />
+                      Unlock CV
+                    </>
+                  )}
+                </div>
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="h-16 sm:h-20 md:h-24 lg:h-20 xl:h-20 2xl:h-24" />
     </div>
   );
 };

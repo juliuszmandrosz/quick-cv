@@ -58,7 +58,11 @@ export default function CvTemplate({
           {cvData.generated_skills.technical_skills.map((skill, i) => (
             <span
               key={i}
-              className="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800 border border-gray-200"
+              className={`bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800 border border-gray-200 ${
+                i > 3 && !cvData.token_consumed
+                  ? "blur-sm opacity-70 pointer-events-none no-copy"
+                  : ""
+              }`}
             >
               {skill}
             </span>
@@ -79,7 +83,11 @@ export default function CvTemplate({
           {cvData.generated_skills.power_skills.map((skill, i) => (
             <span
               key={i}
-              className="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800 border border-gray-200"
+              className={`bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800 border border-gray-200 ${
+                !cvData.token_consumed
+                  ? "blur-sm opacity-70 pointer-events-none no-copy"
+                  : ""
+              }`}
             >
               {skill}
             </span>

@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { LoadingSpinner } from "@/components/loading-spinner";
-import SubscriptionClient from "@/app/subscriptions/components/subscriptions";
+import SubscriptionClient from "@/app/checkout/components/subscriptions";
 
 export default function SubscriptionPage() {
   return (

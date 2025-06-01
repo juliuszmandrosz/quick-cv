@@ -14,11 +14,14 @@ export async function GET() {
 
   const { data: data, error: subError } = await supabase
     .from("subscriptions")
-    .select("tokens_left")
+    .select("*")
     .eq("user_id", user.id)
-    .single();
+    .gt("tokens_left", 0)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
-  if (subError) {
+  if (subError || !data) {
     return NextResponse.json({ tokens_left: 0 });
   }
 
