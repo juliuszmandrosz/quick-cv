@@ -90,16 +90,22 @@ export default function CvTemplate({
         {cvData.generated_experience.map((exp, idx) => (
           <div
             key={idx}
-            className={`mb-6 last:mb-0 experience-item ${idx > 0 && !cvData.token_consumed ? "blur-sm opacity-70 pointer-events-none no-copy" : ""}`}
+            className={`mb-6 last:mb-0 experience-item ${
+              idx > 0 && !cvData.token_consumed
+                ? "blur-sm opacity-70 pointer-events-none no-copy"
+                : ""
+            }`}
           >
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
-              <h5 className="font-bold text-gray-800">
-                {exp.location
-                  ? `${exp.position}, ${exp.location}`
-                  : exp.position}
-              </h5>
+            <div className="flex justify-between items-start gap-4 mb-1">
+              <div className="flex-1 min-w-0">
+                <h5 className="font-bold text-gray-800 leading-tight">
+                  {exp.location
+                    ? `${exp.position}, ${exp.location}`
+                    : exp.position}
+                </h5>
+              </div>
               {exp.start_date && (
-                <span className="text-gray-600 text-sm mt-1 sm:mt-0">
+                <span className="text-gray-600 text-sm whitespace-nowrap flex-shrink-0">
                   {formatDate(exp.start_date)} -{" "}
                   {exp.end_date
                     ? formatDate(exp.end_date)
@@ -107,7 +113,11 @@ export default function CvTemplate({
                 </span>
               )}
             </div>
+
+            {/* Company name */}
             <p className="text-gray-700 font-medium mb-2">{exp.company_name}</p>
+
+            {/* Responsibilities */}
             <ul className="list-disc pl-5 space-y-1 text-gray-700">
               {exp.responsibilities.map((r, i) => (
                 <li key={i} className="leading-relaxed">
@@ -134,21 +144,21 @@ export default function CvTemplate({
       <Section title={(translations[lang] as any)["cv.education"]!}>
         {cvData.generated_education.map((edu, i) => (
           <div key={i} className="mb-4 last:mb-0">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start">
-              <div>
-                <h5 className="font-bold text-gray-800">
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between items-start gap-4">
+                <h5 className="font-bold text-gray-800 flex-1 leading-tight">
                   {edu.field_of_study}
                 </h5>
-                <p className="text-gray-700">{edu.school_name}</p>
+                {edu.start_date && (
+                  <span className="text-gray-600 text-sm whitespace-nowrap flex-shrink-0">
+                    {formatDate(edu.start_date)} -{" "}
+                    {edu.end_date
+                      ? formatDate(edu.end_date)
+                      : (translations[lang] as any)["cv.present"]!}
+                  </span>
+                )}
               </div>
-              {edu.start_date && (
-                <span className="text-gray-600 text-sm mt-1 sm:mt-0">
-                  {formatDate(edu.start_date)} -{" "}
-                  {edu.end_date
-                    ? formatDate(edu.end_date)
-                    : (translations[lang] as any)["cv.present"]!}
-                </span>
-              )}
+              <p className="text-gray-700">{edu.school_name}</p>
             </div>
           </div>
         ))}

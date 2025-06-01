@@ -32,6 +32,10 @@ export async function GET(request: Request) {
       referencedTable: "generated_experience",
       ascending: false,
     })
+    .order("end_date", {
+      referencedTable: "generated_education",
+      ascending: false,
+    })
     .single<GeneratedCvFull>();
 
   if (error) {
