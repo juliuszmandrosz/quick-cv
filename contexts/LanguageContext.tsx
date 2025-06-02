@@ -279,7 +279,7 @@ export const translations = {
     "checkout.cvs": "CVs",
     "checkout.languages": "English, Polish & Spanish languages",
     "checkout.template": "Professional template",
-    "checkout.c": "PDF format",
+    "checkout.pdf": "PDF format",
     "checkout.buyNow": "Buy Now",
     "checkout.securePayment": "Secure payment via Stripe",
     "checkout.back": "Back",
