@@ -10,6 +10,7 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  Lock,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
@@ -119,21 +120,18 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const { t } = useLanguage();
 
-  // Form state
   const [activeTab, setActiveTab] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [recoveryEmail, setRecoveryEmail] = useState("");
 
-  // UI state
   const [loading, setLoading] = useState(false);
   const [recoverySubmitted, setRecoverySubmitted] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  // Check for URL messages on component mount
   useEffect(() => {
     const status = searchParams.get("status");
     const message = searchParams.get("message");
@@ -145,7 +143,6 @@ export default function LoginForm() {
     }
   }, [searchParams, toast]);
 
-  // Form validation
   const passwordsMatch = password === confirmPassword;
   const isValidPassword = password.length >= 8;
   const isFormValid = {
@@ -154,7 +151,6 @@ export default function LoginForm() {
     recover: recoveryEmail.length > 0,
   };
 
-  // Get URL parameters for redirects
   const getFormDataWithParams = (formData = new FormData()) => {
     const cvId = searchParams.get("cvId");
     const lang = searchParams.get("lang");
@@ -163,7 +159,6 @@ export default function LoginForm() {
     return formData;
   };
 
-  // Form submission handlers
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -262,30 +257,30 @@ export default function LoginForm() {
     }
   };
 
+  const cvId = searchParams.get("cvId");
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 -z-10"></div>
-
-      <Button
-        onClick={() => {
-          const routerData = getFormDataWithParams();
-          if (routerData.get("cvId")) {
+      <div className="absolute top-4 left-4 md:top-8 md:left-8">
+        <Button
+          onClick={() => {
+            const routerData = getFormDataWithParams();
             const cvId = routerData.get("cvId");
             const lang = routerData.get("lang");
             router.push(
-              `/cv-preview?cvId=${cvId}${lang ? `&lang=${lang}` : "en"}`,
+              cvId
+                ? `/cv-preview?cvId=${cvId}${lang ? `&lang=${lang}` : "en"}`
+                : "/",
             );
-          } else {
-            router.push("/");
-          }
-        }}
-        variant="ghost"
-        size="sm"
-        className="absolute top-4 left-4 md:top-8 md:left-8 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
-      >
-        <ChevronLeft className="h-5 w-5 mr-1" />
-        Back
-      </Button>
+          }}
+          variant="outline"
+          size="sm"
+          className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors flex items-center"
+        >
+          <ChevronLeft className="h-4 w-4 mr-1" />
+          {t("create.back")}
+        </Button>
+      </div>
 
       <div className="w-full max-w-md">
         {/* Logo and tagline */}
@@ -302,11 +297,22 @@ export default function LoginForm() {
               {t("hero.titleBold")}
             </span>
           </p>
+
+          {cvId && (
+            <div className="flex items-center mt-4 sm:mt-6 mb-0 sm:mb-6 justify-center gap-2 sm:gap-4 text-sm sm:text-base text-purple-800 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-950/10 dark:to-purple-950/10 border border-purple-200 dark:border-purple-800 rounded-lg py-2.5 sm:py-3 px-4 sm:px-5 text-center">
+              <Lock className="h-4 w-4 2xl:h-5 2xl:w-5 text-purple-500" />
+              <div className="text-sm sm:text-base text-gray-800 dark:text-gray-200">
+                <div className="font-medium">{t("login.oneStepAway")}</div>
+                <div className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
+                  {t("login.unlockAndDownload")}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Main card */}
         <Card className="overflow-hidden border-0 shadow-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-md">
-          <CardHeader className="space-y-1 pb-2" />
+          <CardHeader className="space-y-0 pb-0 sm:space-y-1 sm:pb-2" />
 
           <Tabs
             value={activeTab}
@@ -335,7 +341,7 @@ export default function LoginForm() {
               </TabsTrigger>
             </TabsList>
 
-            <CardContent className="pt-6 pb-4 px-6">
+            <CardContent className="pt-4 pb-2 px-4 sm:pt-6 sm:pb-4 sm:px-6">
               {/* Login tab */}
               <TabsContent value="login">
                 <form onSubmit={handleLogin} className="space-y-4">
@@ -546,7 +552,6 @@ export default function LoginForm() {
               </div>
             </div>
 
-            {/* Social login buttons */}
             <div className="flex justify-center px-6 pb-6">
               <Button
                 variant="outline"
@@ -554,7 +559,11 @@ export default function LoginForm() {
                 className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
               >
                 <GoogleIcon className="h-5 w-5 mr-2" />
-                Google
+                {t(
+                  cvId
+                    ? "login.continueWithGoogleUnlock"
+                    : "login.continueWithGoogle",
+                )}
               </Button>
             </div>
 

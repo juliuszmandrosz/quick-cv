@@ -132,6 +132,24 @@ export const translations = {
     "cv.languages": "Languages",
     "cv.education": "Education",
     "cv.present": "Present",
+    "cv.preview": "CV Preview",
+    "cv.joinUsers": "Join 100+ users who unlocked their CV this week!",
+    "cv.optimizedCvs": "100+ CVs optimized this week",
+    "cv.moreInterviews": "Tailored CVs lead to 3× more interviews",
+    "cv.unlockSkills":
+      "Unlock to see all tailored skills matched to the job offer. 🔒",
+    "cv.unlockExperience":
+      "Unlock to see all tailored experiences rewritten for this job offer. 🔒",
+    "cv.downloadSuccessTitle": "Download Successful",
+    "cv.downloadSuccess": "Your CV has been downloaded.",
+    "cv.downloadError": "Download error, please try again.",
+    "cv.noData": "No CV data found",
+    "cv.paymentSuccessTitle": "Payment Successful",
+    "cv.paymentSuccess": "Your CV is ready for download.",
+    "cv.errorLoading": "Failed to load CV data",
+    "cv.unlock": "Unlock CV",
+    "cv.download": "Download CV",
+    "cv.dashboard": "Go to Dashboard",
 
     // Footer section
     "footer.title":
@@ -165,34 +183,35 @@ export const translations = {
     "login.hasAccount": "Already have an account?",
     "login.byContinuing": "By continuing, you agree to NICE CV's",
     "login.and": "and",
+    "login.oneStepAway": "You’re one step away from your full tailored CV",
+    "login.unlockAndDownload":
+      "Log in to unlock and download your optimized resume",
+    "login.continueWithGoogle": "Continue with Google",
+    "login.continueWithGoogleUnlock": "Continue with Google to unlock your CV",
 
     // Create cv
     "create.title": "Create New CV",
     "create.titleDesc": "Create a perfectly tailored CV for your dream job",
     "create.step": "Step",
     "create.of": "of",
-    "create.enterUrl": "Enter job description URL or paste the description",
     "create.upload": "Upload your CV",
-    "create.jobUrl": "Job Description URL",
-    "create.pasteUrlDesc":
-      "Paste the URL of the job description you're applying for (allowed websites",
     "create.uploadCv": "Upload CV",
     "create.useExistingCv": "Use Existing CV",
-    "create.dropCv": "Drop your CV here or click to browse",
+    "create.dropCv": "Click here to choose your CV",
     "create.supportedFormats": "Supported formats",
     "create.selectCv": "Select an existing CV from your repository",
-    "create.createdAt": "Created at",
     "create.language": "CV Language",
     "create.english": "English",
     "create.polish": "Polish",
     "create.spanish": "Spanish",
     "create.back": "Back",
     "create.generateCv": "Generate CV",
-    "create.next": "Next",
+    "create.next": "Next: Upload your CV",
+    "create.complete": "complete",
     "create.processing": "Processing job offer",
     "create.analyzing": "Analyzing job offer and extracting data...",
     "create.missingTitle": "Missing Information",
-    "create.missingDesc": "Please provide a job description URL",
+    "create.missingDesc": "Please provide a job description URL or text",
     "create.errorUrl": "Error processing job URL",
     "create.errorCv": "Error creating CV",
     "create.error": "Error",
@@ -203,22 +222,86 @@ export const translations = {
     "create.cvPleaseUploadOrSelect":
       "Please upload your CV or select an existing one",
     "create.cvPleaseUpload": "Please upload your CV",
-    "create.pasteUrl": "Paste the URL",
-    "create.pasteJobDesc": "Paste the description",
+    "create.chooseInput": "Choose input method:",
+    "create.pasteJobLink": "Paste a job link",
+    "create.pasteJobLinkDesc":
+      "Quick and easy - just paste the URL from job boards",
+    "create.pasteJobDesc": "Paste full job description",
     "create.pasteJobDescExplanation":
-      "Paste the full job offer description here.",
-    "create.jobListingDesc": "Job listing description",
+      "Copy and paste the complete job posting text",
+    "create.jobUrl": "Job URL",
+    "create.jobDescription": "Job Description",
+    "create.jobDescriptionPlaceholder":
+      "We're hiring a Frontend Developer to join our team in Warsaw. You'll work with React, TypeScript, and modern web technologies...",
+    "create.supportedPlatforms":
+      "Supported platforms: justjoin.it, nofluffjobs.com, and more coming soon!",
+    "create.optimizedCvs": "100+ CVs optimized this week",
+    "create.tip": "Tip:",
+    "create.tipText":
+      "Include requirements, responsibilities, and company info for best results",
+    "create.step1title": "Paste job offer",
+    "create.step1desc":
+      "Paste a job listing or its full description, our AI will tailor your resume perfectly to it.",
+    "create.step2title": "Upload your CV",
+    "create.step2desc":
+      "Upload your current resume, our AI will rewrite it to perfectly match the offer.",
+    "create.step1next": "Next: Upload your CV",
+    "create.cvPreviewTitle": "What your tailored CV might look like",
+    "create.cvPreviewDesc": "See a sample of your future optimized CV",
+    "create.cvPreviewCaption":
+      "Example CV preview. Yours will be personalized to your profile.",
+    "create.aiBoostLine1":
+      "Users who tailor their CVs with NiceCV get 3x more interview invites.",
+    "create.aiBoostLine2":
+      "Generation takes about 40-60 seconds. No credit card needed.",
 
     // Loader Section
-    "loader.building": "Building something special just for you...",
-    "loader.grabCoffee": "Grab a coffee while we craft your perfect CV...",
-    "loader.addingTouch": "Adding that professional touch to your resume...",
-    "loader.almost": "Almost there! Your CV is going to be a BOMB!",
-    "loader.polishing": "Polishing the final details...",
-    "loader.justSeconds": "Just a few more seconds for perfection...",
+    "loader.loader1": "☕ Grab a coffee, while we create your perfect CV...",
+    "loader.loader2":
+      "⏳ Analyzing the job description and key requirements...",
+    "loader.loader3":
+      "🤖 Matching your experience to what recruiters actually want...",
+    "loader.loader4": "🧠 Optimizing your CV to beat the ATS systems...",
+    "loader.loader5": "🪄 Adding that professional, polished touch...",
+    "loader.loader6": "💥 Almost there! Your CV is going to be a BOMB!",
+    "loader.promise":
+      "Almost there… You're seconds away from a CV that gets interviews.",
+    "loader.explanation":
+      "This usually takes 40-60 seconds, depending on job complexity.",
     "loader.magic": "NICE CV Magic in Progress",
-    "loader.creating":
-      "We're creating something extraordinary that will make your CV stand out!",
+
+    // Checkout section
+    "checkout.planSelected": "Plan Selected",
+    "checkout.planSelectedMessage": "You've selected the",
+    "checkout.proceeding": "Proceeding to checkout...",
+    "checkout.mostPopular": "MOST POPULAR",
+    "checkout.create": "Create",
+    "checkout.cvs": "CVs",
+    "checkout.languages": "English, Polish & Spanish languages",
+    "checkout.template": "Professional template",
+    "checkout.c": "PDF format",
+    "checkout.buyNow": "Buy Now",
+    "checkout.securePayment": "Secure payment via Stripe",
+    "checkout.back": "Back",
+    "checkout.nice": "NICE",
+    "checkout.cv": "CV",
+    "checkout.stopTailoring": "Stop tailoring,",
+    "checkout.startInterviewing": "start interviewing.",
+    "checkout.bannerMessage":
+      "You’re one step away from your full tailored CV. One-time payment. No subscription.",
+    "checkout.heading": "Select a One-Time CV Package",
+    "checkout.subheading": "Pay once. Get full access to your tailored resume.",
+    "checkout.currencyEUR": "EUR (€)",
+    "checkout.currencyPLN": "PLN (zł)",
+    "checkout.helpTitle": "Need Help Choosing?",
+    "checkout.helpDescription":
+      "Not sure which plan is right for you? Here are some things to consider:",
+    "checkout.helpCvsTitle": "Number of CVs:",
+    "checkout.helpCvsDesc":
+      "Consider how many different CV versions you'll need.",
+    "checkout.helpLangTitle": "Language Support:",
+    "checkout.helpLangDesc":
+      "All plans support English, Polish and Spanish languages.",
   },
   pl: {
     // Header
@@ -330,6 +413,25 @@ export const translations = {
     "cv.languages": "Języki obce",
     "cv.education": "Edukacja",
     "cv.present": "Obecnie",
+    "cv.preview": "Podgląd CV",
+    "cv.joinUsers":
+      "Dołącz do 100+ użytkowników, którzy odblokowali swoje CV w tym tygodniu!",
+    "cv.optimizedCvs": "100+ CV zoptymalizowanych w tym tygodniu",
+    "cv.moreInterviews": "Dopasowane CV daje 3× więcej zaproszeń na rozmowy",
+    "cv.unlockSkills":
+      "Odblokuj, aby zobaczyć wszystkie dopasowane umiejętności z oferty pracy. 🔒",
+    "cv.unlockExperience":
+      "Odblokuj, aby zobaczyć wszystkie dopasowane doświadczenia do tej oferty pracy. 🔒",
+    "cv.downloadSuccessTitle": "Pobieranie zakończone sukcesem",
+    "cv.downloadSuccess": "Twoje CV zostało pobrane.",
+    "cv.downloadError": "Błąd pobierania, spróbuj ponownie.",
+    "cv.noData": "Nie znaleziono danych CV",
+    "cv.paymentSuccessTitle": "Płatność zakończona sukcesem",
+    "cv.paymentSuccess": "Twoje CV jest gotowe do pobrania.",
+    "cv.errorLoading": "Nie udało się załadować danych CV",
+    "cv.unlock": "Odblokuj CV",
+    "cv.download": "Pobierz CV",
+    "cv.dashboard": "Przejdź do panelu",
 
     // Footer section
     "footer.title":
@@ -363,58 +465,126 @@ export const translations = {
     "login.hasAccount": "Masz już konto?",
     "login.byContinuing": "Kontynuując, akceptujesz regulamin NICE CV",
     "login.and": "oraz",
+    "login.oneStepAway": "Jesteś o krok od swojego dopasowanego CV",
+    "login.unlockAndDownload":
+      "Zaloguj się, aby odblokować i pobrać zoptymalizowane CV",
+    "login.continueWithGoogle": "Kontynuuj z Google",
+    "login.continueWithGoogleUnlock": "Kontynuuj z Google, aby odblokować CV",
 
     // Create cv
-    "create.title": "Utwórz nowe CV",
-    "create.titleDesc": "Stwórz idealnie dopasowane CV do wymarzonej pracy",
+    "create.title": "Stwórz nowe CV",
+    "create.titleDesc":
+      "Stwórz idealnie dopasowane CV do swojej wymarzonej pracy",
+    "create.desc":
+      "Paste the job offer below, our AI will tailor your resume to it.",
     "create.step": "Krok",
     "create.of": "z",
-    "create.enterUrl": "Wprowadź URL opisu stanowiska lub wklej treść",
-    "create.upload": "Prześlij swoje CV",
-    "create.jobUrl": "URL oferty pracy",
-    "create.pasteUrlDesc":
-      "Wklej URL opisu stanowiska, na które aplikujesz (dozwolone strony",
-    "create.uploadCv": "Prześlij CV",
+    "create.upload": "Załaduj swoje CV",
+    "create.uploadCv": "Wyślij CV",
     "create.useExistingCv": "Użyj istniejącego CV",
-    "create.dropCv": "Upuść swoje CV tutaj lub kliknij, aby wybrać plik",
+    "create.dropCv": "Kliknij tutaj, aby wybrać swoje CV",
     "create.supportedFormats": "Obsługiwane formaty",
-    "create.selectCv": "Wybierz istniejące CV ze swojego repozytorium",
-    "create.createdAt": "Utworzono",
+    "create.selectCv": "Wybierz istniejące CV z repozytorium",
     "create.language": "Język CV",
     "create.english": "Angielski",
     "create.polish": "Polski",
     "create.spanish": "Hiszpański",
     "create.back": "Wstecz",
     "create.generateCv": "Wygeneruj CV",
-    "create.next": "Dalej",
+    "create.next": "Dalej: wyślij CV",
+    "create.complete": "ukończono",
     "create.processing": "Przetwarzanie oferty pracy",
     "create.analyzing": "Analizowanie oferty pracy i wyodrębnianie danych...",
-    "create.missingTitle": "Brakujące informacje",
-    "create.missingDesc": "Proszę podać URL oferty pracy",
+    "create.missingTitle": "Brakujące dane",
+    "create.missingDesc": "Podaj link lub opis oferty pracy",
     "create.errorUrl": "Błąd podczas przetwarzania URL oferty",
     "create.errorCv": "Błąd podczas tworzenia CV",
     "create.error": "Błąd",
     "create.processedTitle": "Oferta przetworzona",
-    "create.processedDesc":
-      "Szczegóły oferty pracy zostały zapisane pomyślnie.",
+    "create.processedDesc": "Szczegóły oferty zostały zapisane.",
     "create.cvGeneratedTitle": "CV wygenerowane",
-    "create.cvGeneratedDesc": "Twoje dopasowane CV zostało utworzone.",
+    "create.cvGeneratedDesc": "Twoje CV zostało pomyślnie wygenerowane.",
     "create.cvPleaseUploadOrSelect": "Prześlij swoje CV lub wybierz istniejące",
-    "create.cvPleaseUpload": "Proszę przesłać swoje CV",
-    "create.pasteUrl": "Wklej URL",
-    "create.pasteJobDesc": "Wklej opis stanowiska",
-    "create.pasteJobDescExplanation": "Wklej tutaj pełny opis oferty pracy.",
-    "create.jobListingDesc": "Opis oferty pracy",
+    "create.cvPleaseUpload": "Prześlij swoje CV",
+    "create.chooseInput": "Wybierz sposób wprowadzenia:",
+    "create.pasteJobLink": "Wklej link do oferty",
+    "create.pasteJobLinkDesc": "Szybko i łatwo – po prostu wklej URL z portalu",
+    "create.pasteJobDesc": "Wklej pełen opis oferty",
+    "create.pasteJobDescExplanation":
+      "Skopiuj i wklej cały tekst ogłoszenia o pracę",
+    "create.jobUrl": "URL oferty pracy",
+    "create.jobDescription": "Opis oferty",
+    "create.jobDescriptionPlaceholder":
+      "Szukamy Frontend Developera do zespołu w Warszawie. Praca z React, TypeScript i nowoczesnymi technologiami webowymi...",
+    "create.supportedPlatforms":
+      "Obsługiwane platformy: justjoin.it, nofluffjobs.com i inne wkrótce!",
+    "create.optimizedCvs": "100+ CV zoptymalizowanych w tym tygodniu",
+    "create.tip": "Wskazówka:",
+    "create.tipText":
+      "Podaj wymagania, obowiązki i informacje o firmie dla najlepszych wyników",
+    "create.step1title": "Wklej ofertę pracy",
+    "create.step1desc":
+      "Wklej link do ogłoszenia lub jego pełną treść, nasze AI idealnie dopasuje do niej Twoje CV.",
+    "create.step2title": "Prześlij swoje CV",
+    "create.step2desc":
+      "Prześlij aktualne CV, nasze AI dostosuje je idealnie do oferty pracy.",
+    "create.step1next": "Dalej: dodaj swoje CV",
+    "create.cvPreviewTitle": "Tak może wyglądać Twoje dopasowane CV",
+    "create.cvPreviewDesc": "Zobacz przykładową wersję zoptymalizowanego CV",
+    "create.cvPreviewCaption":
+      "Podgląd przykładowego CV. Twoje zostanie spersonalizowane do Twojego profilu.",
+    "create.aiBoostLine1":
+      "Użytkownicy, którzy dostosowują CV z NiceCV, otrzymują 3x więcej zaproszeń na rozmowy.",
+    "create.aiBoostLine2":
+      "Generowanie trwa około 40-60 sekund. Karta płatnicza nie jest wymagana.",
 
     // Loader Section
-    "loader.building": "Tworzymy coś wyjątkowego specjalnie dla Ciebie...",
-    "loader.grabCoffee": "Zaparz kawę, a my stworzymy idealne CV...",
-    "loader.addingTouch": "Dodajemy profesjonalne szlify do Twojego CV...",
-    "loader.almost": "Prawie gotowe! Twoje CV będzie PETARDĄ!",
-    "loader.polishing": "Szlifujemy ostatnie szczegóły...",
-    "loader.justSeconds": "Jeszcze tylko kilka sekund do perfekcji...",
+    "loader.loader1": "☕ Zaparz sobie kawę, my zajmiemy się Twoim CV...",
+    "loader.loader2":
+      "⏳ Analizujemy ofertę pracy i najważniejsze wymagania...",
+    "loader.loader3":
+      "🤖 Dopasowujemy Twoje doświadczenie do oczekiwań rekruterów...",
+    "loader.loader4": "🧠 Optymalizujemy Twoje CV, by pokonało systemy ATS...",
+    "loader.loader5": "🪄 Dodajemy profesjonalne, dopracowane wykończenie...",
+    "loader.loader6": "💥 Już prawie gotowe! Twoje CV będzie PETARDĄ",
+    "loader.promise":
+      "Już prawie... Za chwilę otrzymasz CV, które da Ci rozmowy.",
+    "loader.explanation":
+      "To zazwyczaj zajmuje 40-60 sekund, zależnie od złożoności oferty.",
     "loader.magic": "Trwa magia NICE CV",
-    "loader.creating": "Tworzymy coś niezwykłego, co wyróżni Twoje CV z tłumu!",
+
+    // Checkout section
+    "checkout.planSelected": "Plan wybrany",
+    "checkout.planSelectedMessage": "Wybrałeś plan",
+    "checkout.proceeding": "Przechodzę do płatności...",
+    "checkout.mostPopular": "NAJPOPULARNIEJSZY",
+    "checkout.create": "Utwórz",
+    "checkout.cvs": "CV",
+    "checkout.languages": "Języki: angielski, polski i hiszpański",
+    "checkout.template": "Profesjonalny szablon",
+    "checkout.pdf": "Format PDF",
+    "checkout.buyNow": "Kup teraz",
+    "checkout.securePayment": "Bezpieczna płatność przez Stripe",
+    "checkout.back": "Wstecz",
+    "checkout.nice": "NICE",
+    "checkout.cv": "CV",
+    "checkout.stopTailoring": "Przestań dopasowywać CV,",
+    "checkout.startInterviewing": "zacznij chodzić na rozmowy.",
+    "checkout.bannerMessage":
+      "Jesteś o krok od swojego spersonalizowanego CV. Jednorazowa opłata. Bez subskrypcji.",
+    "checkout.heading": "Wybierz jednorazowy pakiet CV",
+    "checkout.subheading": "Płać raz. Uzyskaj pełny dostęp do swojego CV.",
+    "checkout.currencyEUR": "EUR (€)",
+    "checkout.currencyPLN": "PLN (zł)",
+    "checkout.helpTitle": "Potrzebujesz pomocy przy wyborze?",
+    "checkout.helpDescription":
+      "Nie wiesz, który plan będzie dla Ciebie najlepszy? Sprawdź te wskazówki:",
+    "checkout.helpCvsTitle": "Liczba CV:",
+    "checkout.helpCvsDesc":
+      "Zastanów się, ile różnych wersji CV możesz potrzebować.",
+    "checkout.helpLangTitle": "Obsługiwane języki:",
+    "checkout.helpLangDesc":
+      "Wszystkie plany obsługują angielski, polski i hiszpański.",
   },
   es: {
     // Header
@@ -539,6 +709,25 @@ export const translations = {
     "cv.languages": "Idiomas",
     "cv.education": "Educación",
     "cv.present": "Presente",
+    "cv.preview": "Vista previa del CV",
+    "cv.joinUsers":
+      "¡Únete a más de 100 usuarios que desbloquearon su CV esta semana!",
+    "cv.optimizedCvs": "Más de 100 CV optimizados esta semana",
+    "cv.moreInterviews": "Los CV personalizados generan 3× más entrevistas",
+    "cv.unlockSkills":
+      "Desbloquea para ver todas las habilidades adaptadas a la oferta. 🔒",
+    "cv.unlockExperience":
+      "Desbloquea para ver toda la experiencia adaptada a esta oferta. 🔒",
+    "cv.downloadSuccessTitle": "Descarga completada con éxito",
+    "cv.downloadSuccess": "Tu CV ha sido descargado.",
+    "cv.downloadError": "Error de descarga, por favor intenta de nuevo.",
+    "cv.noData": "No se encontraron datos del CV",
+    "cv.paymentSuccessTitle": "Pago realizado con éxito",
+    "cv.paymentSuccess": "Tu CV está listo para descargar.",
+    "cv.errorLoading": "No se pudo cargar los datos del CV",
+    "cv.unlock": "Desbloquear CV",
+    "cv.download": "Descargar CV",
+    "cv.dashboard": "Ir al panel",
 
     // Footer section
     "footer.title":
@@ -573,66 +762,128 @@ export const translations = {
     "login.byContinuing":
       "Al continuar, acepta los términos y condiciones de NICE CV",
     "login.and": "y",
+    "login.oneStepAway": "Estás a un paso de tu CV personalizado",
+    "login.unlockAndDownload":
+      "Inicia sesión para desbloquear y descargar tu CV optimizado",
+    "login.continueWithGoogle": "Continuar con Google",
+    "login.continueWithGoogleUnlock":
+      "Continuar con Google para desbloquear tu CV",
 
     // Create cv
     "create.title": "Crear nuevo CV",
     "create.titleDesc":
-      "Crea un CV perfectamente adaptado al trabajo de tus sueños",
+      "Crea un CV perfectamente adaptado para tu trabajo ideal",
     "create.step": "Paso",
     "create.of": "de",
-    "create.enterUrl":
-      "Ingrese la URL de la descripción del trabajo o pegue la descripción",
     "create.upload": "Sube tu CV",
-    "create.jobUrl": "URL de descripción del puesto",
-
-    "create.pasteUrlDesc":
-      "Pegue la URL de la descripción del trabajo para el que se postula (sitios web permitidos",
     "create.uploadCv": "Subir CV",
-    "create.useExistingCv": "Utilizar CV existente",
-    "create.dropCv": "Arrastra tu CV aquí o haz clic para buscar",
+    "create.useExistingCv": "Usar CV existente",
+    "create.dropCv": "Haz clic aquí para elegir tu CV",
     "create.supportedFormats": "Formatos compatibles",
-    "create.selectCv": "Seleccione un CV existente de su repositorio",
-    "create.createdAt": "Creado en",
-    "create.language": "Lenguaje del CV",
+    "create.selectCv": "Selecciona un CV existente de tu repositorio",
+    "create.language": "Idioma del CV",
     "create.english": "Inglés",
     "create.polish": "Polaco",
     "create.spanish": "Español",
-    "create.back": "Atras",
+    "create.back": "Atrás",
     "create.generateCv": "Generar CV",
-    "create.next": "Siguiente",
-    "create.processing": "Procesando oferta de trabajo",
-    "create.analyzing": "Analizando oferta de empleo y extrayendo datos...",
+    "create.next": "Siguiente: subir tu CV",
+    "create.complete": "completado",
+    "create.processing": "Procesando la oferta de trabajo",
+    "create.analyzing": "Analizando la oferta de trabajo y extrayendo datos...",
     "create.missingTitle": "Información faltante",
-    "create.missingDesc": "Proporcione una URL de descripción del trabajo",
-    "create.errorUrl": "Error al procesar la URL de la oferta de trabajo",
-    "create.errorCv": "Error al crear CV",
+    "create.missingDesc":
+      "Por favor proporciona un enlace o texto de la oferta",
+    "create.errorUrl": "Error al procesar la URL de la oferta",
+    "create.errorCv": "Error al generar el CV",
     "create.error": "Error",
-    "create.processedTitle": "Oferta de trabajo procesada",
-    "create.processedDesc":
-      "Detalles de la oferta de trabajo guardados exitosamente.",
+    "create.processedTitle": "Oferta procesada",
+    "create.processedDesc": "Detalles de la oferta guardados correctamente.",
     "create.cvGeneratedTitle": "CV generado",
-    "create.cvGeneratedDesc": "Tu CV personalizado ha sido creado.",
-    "create.cvPleaseUploadOrSelect":
-      "Por favor, sube tu CV o selecciona uno existente",
+    "create.cvGeneratedDesc": "Tu CV ha sido creado con éxito.",
+    "create.cvPleaseUploadOrSelect": "Sube tu CV o selecciona uno existente",
     "create.cvPleaseUpload": "Por favor sube tu CV",
-    "create.pasteUrl": "Pegar la URL",
-    "create.pasteJobDesc": "Pegar la descripción",
+    "create.chooseInput": "Elige el método de entrada:",
+    "create.pasteJobLink": "Pegar enlace de la oferta",
+    "create.pasteJobLinkDesc":
+      "Rápido y fácil: solo pega la URL de un portal de empleo",
+    "create.pasteJobDesc": "Pegar descripción completa",
     "create.pasteJobDescExplanation":
-      "Pegue aquí la descripción completa de la oferta de trabajo.",
-    "create.jobListingDesc": "Descripción del listado de trabajos",
+      "Copia y pega todo el texto de la oferta de trabajo",
+    "create.jobUrl": "URL de la oferta",
+    "create.jobDescription": "Descripción del puesto",
+    "create.jobDescriptionPlaceholder":
+      "Buscamos un Desarrollador Frontend para nuestro equipo en Varsovia. Trabajarás con React, TypeScript y tecnologías web modernas...",
+    "create.supportedPlatforms":
+      "Plataformas compatibles: justjoin.it, nofluffjobs.com y más pronto!",
+    "create.optimizedCvs": "Más de 100 CVs optimizados esta semana",
+    "create.tip": "Consejo:",
+    "create.tipText":
+      "Incluye requisitos, responsabilidades e información de la empresa para mejores resultados",
+    "create.step1title": "Pega la oferta de trabajo",
+    "create.step1desc":
+      "Pega el enlace o la descripción completa de la oferta y nuestra IA adaptará tu CV perfectamente.",
+    "create.step2title": "Sube tu CV",
+    "create.step2desc":
+      "Sube tu currículum actual y nuestra IA lo reescribirá para que coincida perfectamente con la oferta.",
+    "create.step1next": "Siguiente: subir tu CV",
+    "create.cvPreviewTitle": "Así podría verse tu CV personalizado",
+    "create.cvPreviewDesc": "Mira un ejemplo de tu futuro CV optimizado",
+    "create.cvPreviewCaption":
+      "Vista previa de un CV de ejemplo. El tuyo se personalizará según tu perfil.",
+    "create.aiBoostLine1":
+      "Los usuarios que adaptan su CV con NiceCV reciben 3x más invitaciones a entrevistas.",
+    "create.aiBoostLine2":
+      "La generación tarda unos 40-60 segundos. No se necesita tarjeta de crédito.",
 
     // Loader Section
-    "loader.building": "Preparando algo especial, hecho a tu medida...",
-    "loader.grabCoffee":
-      "Prepara un café mientras preparamos tu CV impecable...",
-    "loader.addingTouch":
-      "Puliendo tu CV para darle un aspecto más profesional...",
-    "loader.almost": "¡Ya casi! Tu currículum va a quedar impresionante.",
-    "loader.polishing": "Puliendo los últimos detalles...",
-    "loader.justSeconds": "Sólo unos segundos más para la perfección...",
-    "loader.magic": "NICE CV Realizando nuestra magia",
-    "loader.creating":
-      "¡Estamos creando algo extraordinario que hará que tu CV destaque!",
+    "loader.loader1": "☕ Tómate un café mientras creamos tu CV perfecto...",
+    "loader.loader2":
+      "⏳ Analizando la oferta de trabajo y sus requisitos clave...",
+    "loader.loader3":
+      "🤖 Comparando tu experiencia con lo que buscan los reclutadores...",
+    "loader.loader4": "🧠 Optimizando tu CV para superar los sistemas ATS...",
+    "loader.loader5": "🪄 Dándole un toque profesional y pulido...",
+    "loader.loader6": "💥 ¡Ya casi está! Tu CV va a ser una bomba.",
+    "loader.promise":
+      "Ya casi... Estás a segundos de un CV que consigue entrevistas.",
+    "loader.explanation":
+      "Esto suele tardar entre 40 y 60 segundos, según la complejidad.",
+    "loader.magic": "Magia de NICE CV en progreso",
+
+    // Checkout section
+    "checkout.planSelected": "Plan seleccionado",
+    "checkout.planSelectedMessage": "Has seleccionado el plan",
+    "checkout.proceeding": "Redirigiendo al pago...",
+    "checkout.mostPopular": "MÁS POPULAR",
+    "checkout.create": "Crear",
+    "checkout.cvs": "CVs",
+    "checkout.languages": "Idiomas: inglés, polaco y español",
+    "checkout.template": "Plantilla profesional",
+    "checkout.pdf": "Formato PDF",
+    "checkout.buyNow": "Comprar ahora",
+    "checkout.securePayment": "Pago seguro con Stripe",
+    "checkout.back": "Atrás",
+    "checkout.nice": "NICE",
+    "checkout.cv": "CV",
+    "checkout.stopTailoring": "Deja de ajustar,",
+    "checkout.startInterviewing": "empieza a tener entrevistas.",
+    "checkout.bannerMessage":
+      "Estás a un paso de tu CV personalizado. Pago único. Sin suscripciones.",
+    "checkout.heading": "Elige tu paquete de CV único",
+    "checkout.subheading":
+      "Paga una vez. Accede por completo a tu currículum optimizado.",
+    "checkout.currencyEUR": "EUR (€)",
+    "checkout.currencyPLN": "PLN (zł)",
+    "checkout.helpTitle": "¿Necesitas ayuda para elegir?",
+    "checkout.helpDescription":
+      "¿No sabes qué plan elegir? Aquí tienes algunas sugerencias:",
+    "checkout.helpCvsTitle": "Cantidad de CVs:",
+    "checkout.helpCvsDesc":
+      "Piensa cuántas versiones diferentes de tu CV puedes necesitar.",
+    "checkout.helpLangTitle": "Soporte de idiomas:",
+    "checkout.helpLangDesc":
+      "Todos los planes incluyen soporte para inglés, polaco y español.",
   },
 };
 

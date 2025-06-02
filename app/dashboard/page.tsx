@@ -147,7 +147,7 @@ const Dashboard = () => {
               />
               {userStats.tokens_left === 0 && (
                 <div className="mt-4">
-                  <Link href="/subscriptions">
+                  <Link href="/checkout">
                     <Button className="w-full" size="sm">
                       <Zap className="mr-2 h-4 w-4" />
                       Buy More Credits

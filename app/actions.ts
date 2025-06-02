@@ -82,7 +82,9 @@ export const signInAction = async (formData: FormData) => {
   }
 
   const redirectTo =
-    cvId && lang ? `/cv-preview?cvId=${cvId}&lang=${lang}` : "/dashboard";
+    cvId && lang
+      ? `/cv-preview?cvId=${cvId}&lang=${lang}&loginSuccessful=true`
+      : "/dashboard";
 
   return redirect(redirectTo);
 };
@@ -94,7 +96,9 @@ export const signInWithGoogleAction = async (formData: FormData) => {
   const origin = process.env.NEXT_PUBLIC_BASE_URL!;
 
   const redirectPath =
-    cvId && lang ? `/cv-preview?cvId=${cvId}&lang=${lang}` : `/dashboard`;
+    cvId && lang
+      ? `/cv-preview?cvId=${cvId}&lang=${lang}&loginSuccessful=true`
+      : `/dashboard`;
 
   const redirectUrl = encodeURIComponent(redirectPath);
 
@@ -251,8 +255,8 @@ export const createCheckoutSession = async (
     : `${process.env.NEXT_PUBLIC_BASE_URL}`;
 
   const cancelUrl = cvId
-    ? `${process.env.NEXT_PUBLIC_BASE_URL}/subscriptions?cvId=${cvId}&lang=${lang}`
-    : `${process.env.NEXT_PUBLIC_BASE_URL}/subscriptions`;
+    ? `${process.env.NEXT_PUBLIC_BASE_URL}/checkout?cvId=${cvId}&lang=${lang}`
+    : `${process.env.NEXT_PUBLIC_BASE_URL}/checkout`;
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],

@@ -14,16 +14,16 @@ export default function LoadingScreen() {
   const { t } = useLanguage();
 
   const messages = [
-    t("loader.building"),
-    t("loader.grabCoffee"),
-    t("loader.addingTouch"),
-    t("loader.almost"),
-    t("loader.polishing"),
-    t("loader.justSeconds"),
+    t("loader.loader1"),
+    t("loader.loader2"),
+    t("loader.loader3"),
+    t("loader.loader4"),
+    t("loader.loader5"),
+    t("loader.loader6"),
   ];
 
   useEffect(() => {
-    const totalDuration = 80; // czas trwania w sekundach
+    const totalDuration = 60;
     const increment = 100 / totalDuration;
 
     const progressInterval = setInterval(() => {
@@ -42,7 +42,7 @@ export default function LoadingScreen() {
 
     const hideTimer = setTimeout(() => {
       setVisible(false);
-    }, totalDuration * 1000); // 70 sekund
+    }, totalDuration * 1000);
 
     return () => {
       clearInterval(progressInterval);
@@ -86,13 +86,24 @@ export default function LoadingScreen() {
         <div className="mb-6 flex items-center gap-4">
           <Loader2 className="h-5 w-5 animate-spin" />
           <Progress value={progress} className="h-2 w-full" />
+          <div className="text-sm text-slate-400 text-right mt-1">
+            {Math.min(Math.round(progress), 100)}%
+          </div>
         </div>
 
-        <p
-          className={`mt-8 text-slate-300 ${isMobile ? "text-sm" : "text-base"}`}
-        >
-          {t("loader.creating")}
-        </p>
+        {progress < 30 ? (
+          <p
+            className={`mt-8 text-slate-300 ${isMobile ? "text-sm" : "text-base"}`}
+          >
+            {t("loader.explanation")}
+          </p>
+        ) : (
+          <p
+            className={`mt-8 text-slate-300 ${isMobile ? "text-sm" : "text-base"}`}
+          >
+            {t("loader.promise")}
+          </p>
+        )}
       </div>
     </div>
   );
