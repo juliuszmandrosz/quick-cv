@@ -99,7 +99,7 @@ const SubscriptionPlan: React.FC<
       <CardContent className="pt-0 pb-3">
         <ul className="space-y-3 text-sm">
           {[
-            `${t("checkout.create")} ${cvCount} ${t("checkout.CVs")}`,
+            `${t("checkout.create")} ${cvCount} ${t("checkout.cvs")}`,
             `${t("checkout.languages")}`,
             `${t("checkout.template")}`,
             `${t("checkout.pdf")}`,
