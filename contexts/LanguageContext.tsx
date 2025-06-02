@@ -595,8 +595,8 @@ export const translations = {
     "header.signUp": "Regístrate",
 
     // Hero
-    "hero.title": "Basta de modificar a mano, ",
-    "hero.titleBold": "ve directo a las entrevistas.",
+    "hero.title": "Menos tiempo editando, ",
+    "hero.titleBold": "más preparando entrevistas.",
     "hero.subtitle":
       "Sube tu CV y el link de la oferta. Nuestra IA optimiza tu currículum a la perfección en segundos para que superes los ATS y consigas más entrevistas.",
     "hero.cta": "Crea tu CV perfecto",
@@ -866,8 +866,8 @@ export const translations = {
     "checkout.back": "Atrás",
     "checkout.nice": "NICE",
     "checkout.cv": "CV",
-    "checkout.stopTailoring": "Deja de ajustar,",
-    "checkout.startInterviewing": "empieza a tener entrevistas.",
+    "checkout.stopTailoring": "Menos tiempo editando, ",
+    "checkout.startInterviewing": "más preparando entrevistas.",
     "checkout.bannerMessage":
       "Estás a un paso de tu CV personalizado. Pago único. Sin suscripciones.",
     "checkout.heading": "Elige tu paquete de CV único",
