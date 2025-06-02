@@ -9,6 +9,7 @@ import {
   Globe,
   HelpCircle,
   Languages,
+  Unlock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +28,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLanguage } from "@/contexts/LanguageContext";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 interface SubscriptionPlanProps {
   cvId?: string | null;
@@ -47,14 +50,15 @@ const SubscriptionPlan: React.FC<
   SubscriptionPlanProps & { currency: string }
 > = ({ cvId, lang, title, price, cvCount, isPopular = false, currency }) => {
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleSubscribe = async (
     cvId?: string | null,
     lang?: string | null,
   ) => {
     toast({
-      title: "Plan Selected",
-      description: `You've selected the ${title} plan. Proceeding to checkout...`,
+      title: t("checkout.planSelected"),
+      description: `${t("checkout.planSelectedMessage")} ${title}. ${t("checkout.proceeding")}`,
     });
 
     await createCheckoutSession(
@@ -75,7 +79,7 @@ const SubscriptionPlan: React.FC<
     >
       {isPopular && (
         <div className="bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] text-white py-1.5 px-3 text-xs font-medium text-center">
-          MOST POPULAR
+          ${t("checkout.mostPopular")}
         </div>
       )}
 
@@ -95,10 +99,10 @@ const SubscriptionPlan: React.FC<
       <CardContent className="pt-0 pb-3">
         <ul className="space-y-3 text-sm">
           {[
-            `Create ${cvCount} CVs`,
-            "English, Polish & Spanish languages",
-            "Professional template",
-            "PDF format",
+            `${t("checkout.create")} ${cvCount} ${t("checkout.CVs")}`,
+            `${t("checkout.languages")}`,
+            `${t("checkout.template")}`,
+            `${t("checkout.pdf")}`,
           ].map((item, i) => (
             <li key={i} className="flex items-center">
               <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
@@ -108,16 +112,20 @@ const SubscriptionPlan: React.FC<
         </ul>
       </CardContent>
 
-      <CardFooter className="pb-5">
+      <CardFooter className="pb-3">
         <Button
           onClick={() => handleSubscribe(cvId, lang)}
           className={`w-full bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] hover:from-[#8A76E4] hover:to-[#4A1DEE] text-white transition-all duration-200 ${
             isPopular ? "shadow-md" : ""
           }`}
         >
-          Buy Now
+          ${t("checkout.buyNow")}
         </Button>
       </CardFooter>
+
+      <p className="text-xs text-muted-foreground text-center pb-4">
+        🔒 ${t("checkout.securePayment")}
+      </p>
     </Card>
   );
 };
@@ -130,8 +138,8 @@ export default function SubscriptionClient() {
 
   const [mounted, setMounted] = useState(false);
   const [currency, setCurrency] = useState<"EUR" | "PLN">("PLN");
+  const { t } = useLanguage();
 
-  // Currency conversion rates
   const currencyRates: CurrencyRates = {
     EUR: {
       Basic: 3,
@@ -178,63 +186,78 @@ export default function SubscriptionClient() {
               router.push("/dashboard");
             }
           }}
-          variant="ghost"
+          variant="outline"
           size="sm"
           className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors flex items-center"
         >
           <ChevronLeft className="mr-1 h-4 w-4" />
-          Back
+          {t("checkout.back")}
         </Button>
       </div>
 
       <div
-        className={`subscription-container max-w-7xl mx-auto pt-16 md:pt-20 transition-opacity duration-500 ${mounted ? "opacity-100" : "opacity-0"}`}
+        className={`subscription-container max-w-7xl mx-auto transition-opacity duration-500 ${mounted ? "opacity-100" : "opacity-0"}`}
       >
-        <div className="text-center mb-10">
-          <div className="mb-8">
+        <div className="text-center space-y-4 mb-4 sm:mb-8">
+          <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              NICE{" "}
+              {t("checkout.nice")}{" "}
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF]">
-                CV
+                {t("checkout.cv")}
               </span>
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
-              Stop tailoring,{" "}
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
+              {t("checkout.stopTailoring")}{" "}
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF]">
-                {" "}
-                start interviewing.{" "}
+                {t("checkout.startInterviewing")}
               </span>
             </p>
           </div>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
-            Choose Your Perfect Plan
+          <div className="max-w-xl mx-auto">
+            <div className="flex items-center justify-center gap-2 text-sm 2xl:text-base text-purple-900 bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-800 rounded-lg py-2.5 px-4">
+              <Unlock className="h-4 w-4 text-purple-600" />
+              <span className="font-medium">{t("checkout.bannerMessage")}</span>
+            </div>
+          </div>
+
+          <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+            {t("checkout.heading")}
           </h2>
-          <div className="flex justify-center mb-4">
+
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            {t("checkout.subheading")}
+          </p>
+
+          <div className="flex justify-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2 bg-white/80 hover:bg-gray-100"
+                >
                   <Globe className="h-4 w-4" />
-                  {currency === "EUR" ? "EUR (€)" : "PLN (zł)"}
+                  {currency === "EUR"
+                    ? t("checkout.currencyEUR")
+                    : t("checkout.currencyPLN")}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setCurrency("EUR")}>
-                  EUR (€)
+                  {t("checkout.currencyEUR")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setCurrency("PLN")}>
-                  PLN (zł)
+                  {t("checkout.currencyPLN")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            <LanguageSwitcher />
           </div>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Select a plan that suits your needs. All plans include our premium
-            features and support.
-          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-4 sm:mb-8">
           <SubscriptionPlan
             cvId={cvId}
             lang={lang}
@@ -282,34 +305,27 @@ export default function SubscriptionClient() {
               </div>
               <div className="md:w-2/3">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                  Need Help Choosing?
+                  {t("checkout.helpTitle")}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  Not sure which plan is right for you? Here are some things to
-                  consider:
+                  {t("checkout.helpDescription")}
                 </p>
                 <ul className="space-y-3">
                   <li className="flex items-start">
                     <FileText className="h-5 w-5 mr-2 text-[#5B2EFF] dark:text-[#9B87F5] mt-0.5 flex-shrink-0" />
                     <span className="text-gray-600 dark:text-gray-300">
-                      <strong>Number of CVs:</strong> Consider how many
-                      different CV versions you'll need.
+                      <strong>{t("checkout.helpCvsTitle")}</strong>{" "}
+                      {t("checkout.helpCvsDesc")}
                     </span>
                   </li>
                   <li className="flex items-start">
                     <Languages className="h-5 w-5 mr-2 text-[#5B2EFF] dark:text-[#9B87F5] mt-0.5 flex-shrink-0" />
                     <span className="text-gray-600 dark:text-gray-300">
-                      <strong>Language Support:</strong> All plans support
-                      English, Polish and Spanish languages.
+                      <strong>{t("checkout.helpLangTitle")}</strong>{" "}
+                      {t("checkout.helpLangDesc")}
                     </span>
                   </li>
                 </ul>
-
-                {/*<div className="mt-6">*/}
-                {/*  <Button className="bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] hover:from-[#8A76E4] hover:to-[#4A1DEE] text-white transition-all duration-200">*/}
-                {/*    Contact Support*/}
-                {/*  </Button>*/}
-                {/*</div>*/}
               </div>
             </div>
           </CardContent>

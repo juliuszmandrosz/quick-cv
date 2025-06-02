@@ -183,6 +183,11 @@ export const translations = {
     "login.hasAccount": "Already have an account?",
     "login.byContinuing": "By continuing, you agree to NICE CV's",
     "login.and": "and",
+    "login.oneStepAway": "You’re one step away from your full tailored CV",
+    "login.unlockAndDownload":
+      "Log in to unlock and download your optimized resume",
+    "login.continueWithGoogle": "Continue with Google",
+    "login.continueWithGoogleUnlock": "Continue with Google to unlock your CV",
 
     // Create cv
     "create.title": "Create New CV",
@@ -264,6 +269,39 @@ export const translations = {
     "loader.explanation":
       "This usually takes 40-60 seconds, depending on job complexity.",
     "loader.magic": "NICE CV Magic in Progress",
+
+    // Checkout section
+    "checkout.planSelected": "Plan Selected",
+    "checkout.planSelectedMessage": "You've selected the",
+    "checkout.proceeding": "Proceeding to checkout...",
+    "checkout.mostPopular": "MOST POPULAR",
+    "checkout.create": "Create",
+    "checkout.cvs": "CVs",
+    "checkout.languages": "English, Polish & Spanish languages",
+    "checkout.template": "Professional template",
+    "checkout.c": "PDF format",
+    "checkout.buyNow": "Buy Now",
+    "checkout.securePayment": "Secure payment via Stripe",
+    "checkout.back": "Back",
+    "checkout.nice": "NICE",
+    "checkout.cv": "CV",
+    "checkout.stopTailoring": "Stop tailoring,",
+    "checkout.startInterviewing": "start interviewing.",
+    "checkout.bannerMessage":
+      "You’re one step away from your full tailored CV. One-time payment. No subscription.",
+    "checkout.heading": "Select a One-Time CV Package",
+    "checkout.subheading": "Pay once. Get full access to your tailored resume.",
+    "checkout.currencyEUR": "EUR (€)",
+    "checkout.currencyPLN": "PLN (zł)",
+    "checkout.helpTitle": "Need Help Choosing?",
+    "checkout.helpDescription":
+      "Not sure which plan is right for you? Here are some things to consider:",
+    "checkout.helpCvsTitle": "Number of CVs:",
+    "checkout.helpCvsDesc":
+      "Consider how many different CV versions you'll need.",
+    "checkout.helpLangTitle": "Language Support:",
+    "checkout.helpLangDesc":
+      "All plans support English, Polish and Spanish languages.",
   },
   pl: {
     // Header
@@ -427,6 +465,11 @@ export const translations = {
     "login.hasAccount": "Masz już konto?",
     "login.byContinuing": "Kontynuując, akceptujesz regulamin NICE CV",
     "login.and": "oraz",
+    "login.oneStepAway": "Jesteś o krok od swojego dopasowanego CV",
+    "login.unlockAndDownload":
+      "Zaloguj się, aby odblokować i pobrać zoptymalizowane CV",
+    "login.continueWithGoogle": "Kontynuuj z Google",
+    "login.continueWithGoogleUnlock": "Kontynuuj z Google, aby odblokować CV",
 
     // Create cv
     "create.title": "Stwórz nowe CV",
@@ -509,6 +552,39 @@ export const translations = {
     "loader.explanation":
       "To zazwyczaj zajmuje 40-60 sekund, zależnie od złożoności oferty.",
     "loader.magic": "Trwa magia NICE CV",
+
+    // Checkout section
+    "checkout.planSelected": "Plan wybrany",
+    "checkout.planSelectedMessage": "Wybrałeś plan",
+    "checkout.proceeding": "Przechodzę do płatności...",
+    "checkout.mostPopular": "NAJPOPULARNIEJSZY",
+    "checkout.create": "Utwórz",
+    "checkout.cvs": "CV",
+    "checkout.languages": "Języki: angielski, polski i hiszpański",
+    "checkout.template": "Profesjonalny szablon",
+    "checkout.pdf": "Format PDF",
+    "checkout.buyNow": "Kup teraz",
+    "checkout.securePayment": "Bezpieczna płatność przez Stripe",
+    "checkout.back": "Wstecz",
+    "checkout.nice": "NICE",
+    "checkout.cv": "CV",
+    "checkout.stopTailoring": "Przestań dopasowywać CV,",
+    "checkout.startInterviewing": "zacznij chodzić na rozmowy.",
+    "checkout.bannerMessage":
+      "Jesteś o krok od swojego spersonalizowanego CV. Jednorazowa opłata. Bez subskrypcji.",
+    "checkout.heading": "Wybierz jednorazowy pakiet CV",
+    "checkout.subheading": "Płać raz. Uzyskaj pełny dostęp do swojego CV.",
+    "checkout.currencyEUR": "EUR (€)",
+    "checkout.currencyPLN": "PLN (zł)",
+    "checkout.helpTitle": "Potrzebujesz pomocy przy wyborze?",
+    "checkout.helpDescription":
+      "Nie wiesz, który plan będzie dla Ciebie najlepszy? Sprawdź te wskazówki:",
+    "checkout.helpCvsTitle": "Liczba CV:",
+    "checkout.helpCvsDesc":
+      "Zastanów się, ile różnych wersji CV możesz potrzebować.",
+    "checkout.helpLangTitle": "Obsługiwane języki:",
+    "checkout.helpLangDesc":
+      "Wszystkie plany obsługują angielski, polski i hiszpański.",
   },
   es: {
     // Header
@@ -686,6 +762,12 @@ export const translations = {
     "login.byContinuing":
       "Al continuar, acepta los términos y condiciones de NICE CV",
     "login.and": "y",
+    "login.oneStepAway": "Estás a un paso de tu CV personalizado",
+    "login.unlockAndDownload":
+      "Inicia sesión para desbloquear y descargar tu CV optimizado",
+    "login.continueWithGoogle": "Continuar con Google",
+    "login.continueWithGoogleUnlock":
+      "Continuar con Google para desbloquear tu CV",
 
     // Create cv
     "create.title": "Crear nuevo CV",
@@ -768,6 +850,40 @@ export const translations = {
     "loader.explanation":
       "Esto suele tardar entre 40 y 60 segundos, según la complejidad.",
     "loader.magic": "Magia de NICE CV en progreso",
+
+    // Checkout section
+    "checkout.planSelected": "Plan seleccionado",
+    "checkout.planSelectedMessage": "Has seleccionado el plan",
+    "checkout.proceeding": "Redirigiendo al pago...",
+    "checkout.mostPopular": "MÁS POPULAR",
+    "checkout.create": "Crear",
+    "checkout.cvs": "CVs",
+    "checkout.languages": "Idiomas: inglés, polaco y español",
+    "checkout.template": "Plantilla profesional",
+    "checkout.pdf": "Formato PDF",
+    "checkout.buyNow": "Comprar ahora",
+    "checkout.securePayment": "Pago seguro con Stripe",
+    "checkout.back": "Atrás",
+    "checkout.nice": "NICE",
+    "checkout.cv": "CV",
+    "checkout.stopTailoring": "Deja de ajustar,",
+    "checkout.startInterviewing": "empieza a tener entrevistas.",
+    "checkout.bannerMessage":
+      "Estás a un paso de tu CV personalizado. Pago único. Sin suscripciones.",
+    "checkout.heading": "Elige tu paquete de CV único",
+    "checkout.subheading":
+      "Paga una vez. Accede por completo a tu currículum optimizado.",
+    "checkout.currencyEUR": "EUR (€)",
+    "checkout.currencyPLN": "PLN (zł)",
+    "checkout.helpTitle": "¿Necesitas ayuda para elegir?",
+    "checkout.helpDescription":
+      "¿No sabes qué plan elegir? Aquí tienes algunas sugerencias:",
+    "checkout.helpCvsTitle": "Cantidad de CVs:",
+    "checkout.helpCvsDesc":
+      "Piensa cuántas versiones diferentes de tu CV puedes necesitar.",
+    "checkout.helpLangTitle": "Soporte de idiomas:",
+    "checkout.helpLangDesc":
+      "Todos los planes incluyen soporte para inglés, polaco y español.",
   },
 };
 
