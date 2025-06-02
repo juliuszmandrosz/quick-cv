@@ -18,25 +18,23 @@ const HowItWorks = () => {
 
         <div className="max-w-5xl mx-auto">
           <div className="relative">
-            {/* Connecting line */}
             <div className="absolute top-0 bottom-0 left-1/2 w-1 bg-nicecv-purple/20 -translate-x-1/2 hidden md:block"></div>
 
-            {/* Step 1 */}
             <div
               className="flex flex-col md:flex-row items-center mb-16 md:mb-24 relative animate-fade-in"
               style={{ animationDelay: "0.1s" }}
             >
               <div className="md:w-1/2 md:pr-12 mb-6 md:mb-0 md:text-right">
                 <h3 className="text-2xl font-bold mb-3">
-                  {t("howItWorks.upload.title")}
+                  {t("howItWorks.url.title")}
                 </h3>
                 <p className="text-lg text-gray-700">
-                  {t("howItWorks.upload.desc")}
+                  {t("howItWorks.url.desc")}
                 </p>
               </div>
 
               <div className="w-16 h-16 bg-nicecv-purple flex items-center justify-center rounded-full text-white font-bold text-xl z-10 my-4 md:my-0">
-                <FileText className="w-8 h-8" />
+                <Link2 className="w-8 h-8" />
               </div>
 
               <div className="md:w-1/2 md:pl-12">
@@ -50,22 +48,21 @@ const HowItWorks = () => {
               </div>
             </div>
 
-            {/* Step 2 */}
             <div
               className="flex flex-col md:flex-row-reverse items-center mb-16 md:mb-24 relative animate-fade-in"
               style={{ animationDelay: "0.3s" }}
             >
               <div className="md:w-1/2 md:pl-12 mb-6 md:mb-0 md:text-left">
                 <h3 className="text-2xl font-bold mb-3">
-                  {t("howItWorks.url.title")}
+                  {t("howItWorks.upload.title")}
                 </h3>
                 <p className="text-lg text-gray-700">
-                  {t("howItWorks.url.desc")}
+                  {t("howItWorks.upload.desc")}
                 </p>
               </div>
 
               <div className="w-16 h-16 bg-nicecv-purple flex items-center justify-center rounded-full text-white font-bold text-xl z-10 my-4 md:my-0">
-                <Link2 className="w-8 h-8" />
+                <FileText className="w-8 h-8" />
               </div>
 
               <div className="md:w-1/2 md:pr-12">
@@ -82,7 +79,6 @@ const HowItWorks = () => {
               </div>
             </div>
 
-            {/* Step 3 */}
             <div
               className="flex flex-col md:flex-row items-center relative animate-fade-in"
               style={{ animationDelay: "0.5s" }}

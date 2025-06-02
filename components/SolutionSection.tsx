@@ -24,7 +24,7 @@ const SolutionSection = () => {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-nicecv-purple/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Upload className="w-8 h-8 text-nicecv-purple" />
+                <Link className="w-8 h-8 text-nicecv-purple" />
               </div>
               <h3 className="text-xl font-semibold mb-2">
                 {t("solution.step1")}
@@ -39,7 +39,7 @@ const SolutionSection = () => {
 
             <div className="text-center">
               <div className="w-16 h-16 bg-nicecv-purple/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Link className="w-8 h-8 text-nicecv-purple" />
+                <Upload className="w-8 h-8 text-nicecv-purple" />
               </div>
               <h3 className="text-xl font-semibold mb-2">
                 {t("solution.step2")}
