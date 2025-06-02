@@ -79,7 +79,7 @@ const SubscriptionPlan: React.FC<
     >
       {isPopular && (
         <div className="bg-gradient-to-r from-[#9B87F5] to-[#5B2EFF] text-white py-1.5 px-3 text-xs font-medium text-center">
-          ${t("checkout.mostPopular")}
+          {t("checkout.mostPopular")}
         </div>
       )}
 
@@ -119,12 +119,12 @@ const SubscriptionPlan: React.FC<
             isPopular ? "shadow-md" : ""
           }`}
         >
-          ${t("checkout.buyNow")}
+          {t("checkout.buyNow")}
         </Button>
       </CardFooter>
 
       <p className="text-xs text-muted-foreground text-center pb-4">
-        🔒 ${t("checkout.securePayment")}
+        🔒 {t("checkout.securePayment")}
       </p>
     </Card>
   );
