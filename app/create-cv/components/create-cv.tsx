@@ -425,7 +425,7 @@ export default function CreateCvClientPage() {
                           placeholder="https://justjoin.it/job-offer/fullstack-developer"
                           value={jobUrl}
                           onChange={(e) => setJobUrl(e.target.value)}
-                          className="w-full pl-10 sm:pl-11 md:pl-12 lg:pl-10 xl:pl-10 2xl:pl-12 h-10 sm:h-11 md:h-12 lg:h-10 xl:h-10 2xl:h-12 text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base"
+                          className="w-full pl-10 sm:pl-11 md:pl-12 lg:pl-10 xl:pl-10 2xl:pl-12 h-10 sm:h-11 md:h-12 lg:h-10 xl:h-10 2xl:h-12 text-[16px] sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base"
                         />
                       </div>
                       <p className="text-xs sm:text-sm md:text-sm lg:text-xs xl:text-xs 2xl:text-sm text-muted-foreground bg-blue-50 dark:bg-blue-950/20 p-2.5 sm:p-3 rounded border">
@@ -446,7 +446,7 @@ export default function CreateCvClientPage() {
                         placeholder={t("create.jobDescriptionPlaceholder")}
                         value={jobDesc}
                         onChange={(e) => setJobDesc(e.target.value)}
-                        className="w-full min-h-[120px] sm:min-h-[140px] md:min-h-[150px] lg:min-h-[130px] xl:min-h-[130px] 2xl:min-h-[150px] p-3 sm:p-3.5 md:p-4 rounded-lg border-2 border-input focus:border-primary bg-background resize-none text-sm sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base leading-relaxed transition-colors"
+                        className="w-full min-h-[120px] sm:min-h-[140px] md:min-h-[150px] lg:min-h-[130px] xl:min-h-[130px] 2xl:min-h-[150px] p-3 sm:p-3.5 md:p-4 rounded-lg border-2 border-input focus:border-primary bg-background resize-none text-[16px] sm:text-base md:text-base lg:text-xs xl:text-xs 2xl:text-base leading-relaxed transition-colors"
                       />
                       <p className="text-xs sm:text-sm md:text-sm lg:text-xs xl:text-xs 2xl:text-sm text-muted-foreground bg-green-50 dark:bg-green-950/20 p-2.5 sm:p-3 rounded border">
                         {t("create.tip")} {t("create.tipText")}
@@ -524,7 +524,7 @@ export default function CreateCvClientPage() {
                             <input
                               id="cv-upload"
                               type="file"
-                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer text-[16px]"
                               onChange={handleCVFileChange}
                               accept=".pdf,.doc,.docx"
                             />
@@ -635,7 +635,7 @@ export default function CreateCvClientPage() {
                           <input
                             id="cv-upload-fallback"
                             type="file"
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer text-[16px]"
                             onChange={handleCVFileChange}
                             accept=".pdf"
                           />
