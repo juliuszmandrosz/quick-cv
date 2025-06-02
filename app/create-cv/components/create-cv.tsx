@@ -311,7 +311,7 @@ export default function CreateCvClientPage() {
                 {t("create.titleDesc")}
               </p>
             </div>
-            <LanguageSwitcher className="flex-shrink-0" />
+            <LanguageSwitcher />
           </div>
 
           <div className="mt-3 sm:mt-4 2xl:mt-5">
