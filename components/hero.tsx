@@ -1,25 +1,15 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, FileText, FileUp, Pause, Play } from "lucide-react";
+import { Pause, Play } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
 
 export const Hero = () => {
   const { t } = useLanguage();
   const router = useRouter();
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [audioUrl, setAudioUrl] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
-
-  useEffect(() => {
-    const supabase = createClient();
-    const { data } = supabase.storage
-      .from("podcasts")
-      .getPublicUrl("learn_more.wav");
-    setAudioUrl(data.publicUrl);
-  }, []);
 
   const handleToggleAudio = () => {
     if (!audioRef.current) return;
@@ -72,14 +62,12 @@ export const Hero = () => {
                   </>
                 )}
               </Button>
-              {audioUrl && (
-                <audio
-                  ref={audioRef}
-                  src={audioUrl}
-                  preload="auto"
-                  onEnded={handleAudioEnded}
-                />
-              )}
+              <audio
+                ref={audioRef}
+                src="/podcast.wav"
+                preload="auto"
+                onEnded={handleAudioEnded}
+              />
             </div>
           </div>
 
@@ -87,38 +75,15 @@ export const Hero = () => {
             className="lg:w-1/2 animate-fade-in"
             style={{ animationDelay: "0.3s" }}
           >
-            <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="flex justify-center items-center mb-8">
-                <div className="rounded-full bg-nicecv-soft-gray p-4">
-                  <FileText className="w-8 h-8 text-nicecv-purple" />
-                </div>
-                <ArrowRight className="mx-4 text-nicecv-gray" />
-                <div className="rounded-full bg-nicecv-soft-gray p-4">
-                  <FileUp className="w-8 h-8 text-nicecv-purple" />
-                </div>
-                <ArrowRight className="mx-4 text-nicecv-gray" />
-                <div className="rounded-full bg-nicecv-purple p-4">
-                  <FileText className="w-8 h-8 text-white" />
-                </div>
-              </div>
-              <div className="relative">
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-white opacity-70"></div>
-                <div className="border border-gray-200 rounded-lg p-4 shadow-sm">
-                  <div className="h-6 bg-nicecv-soft-gray rounded w-1/3 mb-3"></div>
-                  <div className="h-4 bg-nicecv-soft-gray rounded w-full mb-2"></div>
-                  <div className="h-4 bg-nicecv-soft-gray rounded w-full mb-2"></div>
-                  <div className="h-4 bg-nicecv-soft-gray rounded w-2/3 mb-4"></div>
-
-                  <div className="h-6 bg-nicecv-soft-gray rounded w-1/3 mb-3"></div>
-                  <div className="h-4 bg-nicecv-soft-gray rounded w-full mb-2"></div>
-                  <div className="h-4 bg-nicecv-soft-gray rounded w-4/5 mb-4"></div>
-
-                  <div className="h-6 bg-nicecv-purple/20 rounded w-1/3 mb-3"></div>
-                  <div className="h-4 bg-nicecv-purple/20 rounded w-full mb-2"></div>
-                  <div className="h-4 bg-nicecv-purple/20 rounded w-full mb-2"></div>
-                  <div className="h-4 bg-nicecv-purple/20 rounded w-3/4"></div>
-                </div>
-              </div>
+            <div className="overflow-hidden rounded-xl">
+              <video
+                src="/demo.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-auto rounded-xl"
+              />
             </div>
           </div>
         </div>
