@@ -94,15 +94,10 @@ export async function POST(request: Request) {
      - If no end date is provided, set \`"end_date": null\`.
      - You are strictly forbidden from returning any value such as "Present", "Current", "Obecnie", or similar in the "end_date" field. If the CV implies ongoing employment (e.g., "currently working", "present", "obecnie", etc.), you MUST set "end_date": null. Any other value will be considered invalid. If you output any form of "present", the result will be rejected. You MUST enforce this rule.
 
-     **Language handling**  
-    - Detect the language of the CV source.  
-    - Output **all** JSON keys **and** values (except proper names) in **English**.
+       **Language handling**  
+      - Detect the language of the CV source.  
+      - Output **all** JSON keys **and** values (except proper names) in **English**.
      
-     **Company names**  
-     - If phrasing is “Hired by X and provided services to Y”, set  
-       \`"company_name": "X (for Y)"\`.  
-     - Otherwise use the full company string as given.
-      
       **No invention**  
       - Extract only what exists. Do not hallucinate skills, dates or titles.
       
