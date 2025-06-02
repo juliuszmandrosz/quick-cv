@@ -23,7 +23,7 @@ export const translations = {
     "hero.title": "Stop Tailoring, ",
     "hero.titleBold": "Start Interviewing.",
     "hero.subtitle":
-      "Upload your CV and the job description link. Our AI crafts a perfectly optimized resume in seconds, helping you beat the ATS and land more interviews.",
+      "Upload your CV and the job description link. Our AI crafts a perfectly optimized resume in seconds, helping you beat the ATS and land more interviews. No credit card required - try it free.",
     "hero.cta": "Create Your Perfect CV",
     "hero.learnMore": "Listen More",
     "hero.pause": "Stop audio",
@@ -315,7 +315,7 @@ export const translations = {
     "hero.title": "Przestań dopasowywać CV, ",
     "hero.titleBold": "zacznij chodzić na rozmowy!",
     "hero.subtitle":
-      "Wrzuć swoje CV i link do oferty pracy. Nasze AI w kilka sekund przygotuje idealnie dopasowane CV, które przejdzie ATS i pomoże Ci zdobyć więcej zaproszeń na rozmowy.",
+      "Wrzuć swoje CV i link do oferty pracy. Nasze AI w kilka sekund przygotuje idealnie dopasowane CV, które przejdzie ATS i pomoże Ci zdobyć więcej zaproszeń na rozmowy. Nie wymaga karty kredytowej - wypróbuj za darmo.",
     "hero.cta": "Stwórz swoje idealne CV",
     "hero.learnMore": "Dowiedz się więcej",
     "hero.pause": "Zatrzymaj audio",
@@ -598,13 +598,13 @@ export const translations = {
     "hero.title": "Menos tiempo editando, ",
     "hero.titleBold": "más preparando entrevistas.",
     "hero.subtitle":
-      "Sube tu CV y el link de la oferta. Nuestra IA optimiza tu currículum a la perfección en segundos para que superes los ATS y consigas más entrevistas.",
+      "Sube tu CV y el link de la oferta. Nuestra IA optimiza tu currículum a la perfección en segundos para que superes los ATS y consigas más entrevistas. No se necesita tarjeta de crédito – pruébalo gratis.",
     "hero.cta": "Crea tu CV perfecto",
     "hero.learnMore": "Escuchar más",
     "hero.pause": "Detener el audio",
 
     // Problem Section
-    "problem.title": "La búsqueda de empleo",
+    "problem.title": "La búsqueda de empleo ",
     "problem.titleBold": "No debería ser tan difícil",
     "problem.paragraph1":
       "¿Te acuerdas de todas esas horas dedicadas a pulir tu CV para una sola oferta? La frustración de buscar las palabras clave, la duda de si era suficiente, el silencio después de hacer clic en enviar?",
@@ -825,14 +825,14 @@ export const translations = {
       "Pega el enlace o la descripción completa de la oferta y nuestra IA adaptará tu CV perfectamente.",
     "create.step2title": "Sube tu CV",
     "create.step2desc":
-      "Sube tu currículum actual y nuestra IA lo reescribirá para que coincida perfectamente con la oferta.",
+      "Sube tu currículum actual y lo optimizaremos para que coincida perfectamente con la oferta.",
     "create.step1next": "Siguiente: subir tu CV",
-    "create.cvPreviewTitle": "Así podría verse tu CV personalizado",
-    "create.cvPreviewDesc": "Mira un ejemplo de tu futuro CV optimizado",
+    "create.cvPreviewTitle": "Plantilla profesional ATS",
+    "create.cvPreviewDesc": "Este es un ejemplo de tu CV optimizado",
     "create.cvPreviewCaption":
-      "Vista previa de un CV de ejemplo. El tuyo se personalizará según tu perfil.",
+      "Elaboraremos tu nuevo CV exclusivamente para que destaques",
     "create.aiBoostLine1":
-      "Los usuarios que adaptan su CV con NiceCV reciben 3x más invitaciones a entrevistas.",
+      "Los usuarios que adaptan su CV con NiceCV reciben 3x más llamadas de entrevistas.",
     "create.aiBoostLine2":
       "La generación tarda unos 40-60 segundos. No se necesita tarjeta de crédito.",
 
