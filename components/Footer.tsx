@@ -76,27 +76,27 @@ const Footer = () => {
           {/*  </ul>*/}
           {/*</div>*/}
 
-          {/*<div>*/}
-          {/*  <h4 className="font-semibold mb-4">{t("footer.legal")}</h4>*/}
-          {/*  <ul className="space-y-2">*/}
-          {/*    <li>*/}
-          {/*      <a*/}
-          {/*        href="#"*/}
-          {/*        className="text-gray-600 hover:text-nicecv-purple transition-colors"*/}
-          {/*      >*/}
-          {/*        {t("footer.privacyPolicy")}*/}
-          {/*      </a>*/}
-          {/*    </li>*/}
-          {/*    <li>*/}
-          {/*      <a*/}
-          {/*        href="#"*/}
-          {/*        className="text-gray-600 hover:text-nicecv-purple transition-colors"*/}
-          {/*      >*/}
-          {/*        {t("footer.termsOfService")}*/}
-          {/*      </a>*/}
-          {/*    </li>*/}
-          {/*  </ul>*/}
-          {/*</div>*/}
+          <div>
+            <h4 className="font-semibold mb-4">{t("footer.legal")}</h4>
+            <ul className="space-y-2">
+              <li>
+                <a
+                  href="/privacy-policy"
+                  className="text-gray-600 hover:text-nicecv-purple transition-colors"
+                >
+                  {t("footer.privacyPolicy")}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/terms-of-service"
+                  className="text-gray-600 hover:text-nicecv-purple transition-colors"
+                >
+                  {t("footer.termsOfService")}
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div className="border-t border-gray-100 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
