@@ -66,7 +66,7 @@ export async function POST(req: Request) {
     console.log(url, "URL for PDF generation");
     const apiKey = process.env.BROWSERLESS_API_KEY;
     const browser = await chromium.connectOverCDP(
-      `wss://chrome.browserless.io?token=${apiKey}`,
+      `wss://production-sfo.browserless.io/?token=${apiKey}`,
     );
     const context = await browser.newContext();
     const page = await context.newPage();
