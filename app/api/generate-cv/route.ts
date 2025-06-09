@@ -131,6 +131,10 @@ export async function POST(request: Request) {
       Avoid vague or informal phrases such as "on the frontend" or "on the backend" without context. Always provide specific technical details and results. Replace generic expressions with professional and precise language such as "in the frontend layer", "within backend services", or "in server-side logic", depending on the context. Clarify what was built, optimized, or improved, and what the outcome was.
       **Write all bullet points using the first person singular in ${language}**, maintaining a natural and professional tone (e.g., "Zaprojektowałem", "Wdrożyłem", "Koordynowałem"). Avoid passive voice or third-person formulations.
       Limit the number of bullet points per experience to **a maximum of 3**, prioritizing the most impactful and relevant achievements.
+      **Ideal bullet point examples in English** (for tone, structure, and clarity):
+      - Collaborated with Product and Data Science teams to implement A/B tests, resulting in a 10% increase in company revenue.
+      - Led the migration of legacy APIs to a microservices architecture, reducing system downtime by 30%.
+      - Developed a real-time dashboard used by 3 departments, improving decision-making speed by 25%.
     
     ##ACCOMPLISHMENTS:
       This is guidance for how to phrase bullet points within the "EXPERIENCE & RESPONSIBILITIES". Frame accomplishments positively, focusing on the results and positive impact of the candidate's actions. 
@@ -254,7 +258,7 @@ export async function POST(request: Request) {
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      temperature: 1.0,
+      temperature: 0.4,
       response_format: { type: "json_object" },
     });
 
