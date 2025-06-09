@@ -137,7 +137,7 @@ export default function SubscriptionClient() {
   const lang = searchParams.get("lang") || "en";
 
   const [mounted, setMounted] = useState(false);
-  const [currency, setCurrency] = useState<"EUR" | "PLN">("PLN");
+  const [currency, setCurrency] = useState<"EUR" | "PLN">("EUR");
   const { t } = useLanguage();
 
   const currencyRates: CurrencyRates = {
