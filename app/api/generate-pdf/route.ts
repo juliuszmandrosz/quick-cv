@@ -62,7 +62,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const url = `${process.env.NEXT_PUBLIC_BASE_URL}/cv-download?cvId=${cvId}&language=${language}`;
+    const url = `${process.env.NEXT_PUBLIC_BASE_URL}/cv-download?cvId=${cvId}&lang=${language}`;
     console.log(url, "URL for PDF generation");
     const apiKey = process.env.BROWSERLESS_API_KEY;
     const browser = await chromium.connectOverCDP(
