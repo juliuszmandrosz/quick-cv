@@ -84,7 +84,7 @@ export async function POST(req: Request) {
 
     await browser.close();
 
-    return new Response(pdfBuffer, {
+    return new Response(pdfBuffer as any, {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": "attachment; filename=cv.pdf",
