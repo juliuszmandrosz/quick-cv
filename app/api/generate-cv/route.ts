@@ -130,7 +130,13 @@ export async function POST(request: Request) {
       Make sure the position titles feel natural and realistic in ${language}, especially for technical and senior-level roles. Do not mix languages in a single title.
       Avoid vague or informal phrases such as "on the frontend" or "on the backend" without context. Always provide specific technical details and results. Replace generic expressions with professional and precise language such as "in the frontend layer", "within backend services", or "in server-side logic", depending on the context. Clarify what was built, optimized, or improved, and what the outcome was.
       **Write all bullet points using the first person singular in ${language}**, maintaining a natural and professional tone (e.g., "Zaprojektowałem", "Wdrożyłem", "Koordynowałem"). Avoid passive voice or third-person formulations.
-      Limit the number of bullet points per experience to **a maximum of 3**, prioritizing the most impactful and relevant achievements.
+      Rewrite responsibilities into concise, high-impact one-liners.  
+      - Use strong action verbs (e.g., Built, Integrated, Optimized, Delivered).  
+      - Include technology + business outcome in each line.  
+      - Limit to exactly 3 bullets per role.  
+      - Each bullet must be no longer than 20 words.  
+      - Remove filler, narrative phrases, and redundancies.  
+      Focus on impact, technologies, and measurable results only.
       **Ideal bullet point examples in English** (for tone, structure, and clarity):
       - Collaborated with Product and Data Science teams to implement A/B tests, resulting in a 10% increase in company revenue.
       - Led the migration of legacy APIs to a microservices architecture, reducing system downtime by 30%.
@@ -166,6 +172,8 @@ export async function POST(request: Request) {
       Generate a short, natural-sounding and compelling personal summary (candidate_description) written entirely in ${language}. It should sound like it was written by a real person, not a marketing bot or AI.
       Highlight the candidate's most relevant qualifications, key strengths, and unique value for this specific role. Integrate keywords from the job offer naturally, without stuffing.
       Avoid vague statements, overused buzzwords, and generic phrases (e.g., “passionate team player”, “results-oriented professional”). Use fluent, confident, and professional phrasing appropriate for a CV in ${language}.
+      The personal summary must be short (2–3 sentences). Highlight stack, years of experience, and key impact. Avoid generic marketing language.
+
     
     ##VERBS:
       Employ sophisticated, high-impact action verbs (e.g., Accelerated, Advocated, Amplified, Architected, Attained, Authored, Capitalized, Catalyzed, Championed, Commanded, Conceptualized, Cultivated, Deciphered, Delivered, Devised, Directed, Drove, Elevated, Engineered, Established, Executed, Forged, Fortified, Founded, Generated, Governed, Guided, Harmonized, Ignited, Influenced, Innovated, Instituted, Launched, Masterminded, Mobilized, Modernized, Navigated, Negotiated, Orchestrated, Overhauled, Pioneered, Piloted, Quantified, Reconciled, Rectified, Revitalized, Secured, Spearheaded, Steered, Transformed). These are non-strict examples for your reference; you can use other words that fit perfectly with the context of the sentence.
