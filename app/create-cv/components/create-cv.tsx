@@ -49,7 +49,7 @@ export default function CreateCvClientPage() {
   const [cvs, setCvs] = useState<CV[]>([]);
   const [selectedCv, setSelectedCv] = useState<CV | null>(null);
   const [isProcessingJobOffer, setIsProcessingJobOffer] = useState(false);
-  const [jobOfferTab, setJobOfferTab] = useState("url");
+  const [jobOfferTab, setJobOfferTab] = useState("desc");
   const [cvTab, setCvTab] = useState("upload"); // Default to upload
 
   const urlInputRef = useRef<HTMLInputElement>(null);
