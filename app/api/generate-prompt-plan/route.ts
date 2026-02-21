@@ -169,7 +169,7 @@ export async function POST(request: Request) {
     `;
 
     const planCompletion = await openai.chat.completions.create({
-      model: "gpt-4.1-mini",
+      model: "gpt-5.2",
       messages: [
         { role: "system", content: planSystemPrompt },
         { role: "user", content: planUserPrompt },
