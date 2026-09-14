@@ -3,6 +3,7 @@ import pdf from "pdf-parse/lib/pdf-parse";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import OpenAI from "openai";
+import { CV_GENERATION_MODEL, logModelUsage } from "@/lib/ai-model";
 
 export async function POST(request: Request) {
   const errorMessage =
@@ -168,8 +169,10 @@ export async function POST(request: Request) {
       Your entire response must be only the valid JSON object defined above. No introductory phrases, no concluding remarks, no explanations, no markdown code fences, just the raw JSON.
     `;
 
+    logModelUsage("generate-prompt-plan");
+
     const planCompletion = await openai.chat.completions.create({
-      model: "gpt-6-astra",
+      model: CV_GENERATION_MODEL,
       messages: [
         { role: "system", content: planSystemPrompt },
         { role: "user", content: planUserPrompt },
@@ -177,6 +180,8 @@ export async function POST(request: Request) {
       temperature: 0.4,
       response_format: { type: "json_object" },
     });
+
+    logModelUsage("generate-prompt-plan", planCompletion);
 
     const promptPlan = JSON.parse(
       planCompletion.choices[0].message?.content || "{}",

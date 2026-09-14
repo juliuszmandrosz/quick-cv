@@ -10,6 +10,12 @@ import CvTemplate from "@/app/create-cv/components/cv-template";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
 import { useCurrentUser } from "@/hooks/use-auth";
+import {
+  clearCoverLetter,
+  downloadCoverLetter,
+  generateCoverLetter,
+  readCoverLetter,
+} from "@/lib/cover-letter";
 
 export const CvPreviewClient = () => {
   const { t } = useLanguage();
@@ -123,6 +129,18 @@ export const CvPreviewClient = () => {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+
+        // Second file: the cover letter generated right after the CV. If it is
+        // not in storage (other device, cleared storage), generate it now.
+        const coverLetter =
+          readCoverLetter(cvData!.id) ??
+          (await generateCoverLetter(cvData!.id, lang ?? "en"));
+
+        if (coverLetter) {
+          downloadCoverLetter(coverLetter);
+          clearCoverLetter(cvData!.id);
+        }
+
         toast({
           title: t("cv.downloadSuccessTitle"),
           description: t("cv.downloadSuccess"),

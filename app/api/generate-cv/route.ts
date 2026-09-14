@@ -3,6 +3,7 @@ import pdf from "pdf-parse/lib/pdf-parse";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import OpenAI from "openai";
+import { CV_GENERATION_MODEL, logModelUsage } from "@/lib/ai-model";
 
 export async function POST(request: Request) {
   const errorMessage =
@@ -260,8 +261,10 @@ export async function POST(request: Request) {
       apiKey: process.env.OPENAI_API_KEY,
     });
 
+    logModelUsage("generate-cv");
+
     const generationCompletion = await openai.chat.completions.create({
-      model: "gpt-6-astra",
+      model: CV_GENERATION_MODEL,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
@@ -269,6 +272,8 @@ export async function POST(request: Request) {
       temperature: 0.4,
       response_format: { type: "json_object" },
     });
+
+    logModelUsage("generate-cv", generationCompletion);
 
     const generationResponse = generationCompletion.choices[0].message?.content;
     if (!generationResponse) {
