@@ -201,7 +201,7 @@ export const CvPreviewClient = () => {
         <span>{t("cv.joinUsers")}</span>
       </div>
 
-      <CvTemplate cvData={cvData} lang={lang ?? "en"} isEditable={true} />
+      <CvTemplate cvData={cvData} lang={lang ?? "en"} />
 
       <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-2.5 text-xs 2xl:text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-900/30 border-t border-gray-200 dark:border-gray-700 py-2.5 sm:py-3 px-4 sm:px-5 mt-4 rounded-md">
         <Flame className="h-4 w-4 2xl:h-5 2xl:w-5 text-orange-500" />
