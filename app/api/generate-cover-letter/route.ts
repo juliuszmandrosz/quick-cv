@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { generateCoverLetterForCv } from "@/lib/cover-letter-server";
 
+// The model takes its time on a full letter.
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   const errorMessage =
     "Error generating cover letter, please try again. If the problem persists, contact support.";

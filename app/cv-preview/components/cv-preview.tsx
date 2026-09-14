@@ -10,7 +10,7 @@ import CvTemplate from "@/app/create-cv/components/cv-template";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
 import { useCurrentUser } from "@/hooks/use-auth";
-import { downloadCoverLetterPdf, readCoverLetter } from "@/lib/cover-letter";
+import { downloadCoverLetterPdf } from "@/lib/cover-letter";
 
 export const CvPreviewClient = () => {
   const { t } = useLanguage();
@@ -134,7 +134,6 @@ export const CvPreviewClient = () => {
         const coverLetterDownloaded = await downloadCoverLetterPdf(
           cvData!.id,
           lang ?? "en",
-          readCoverLetter(cvData!.id),
         );
 
         if (!coverLetterDownloaded) {

@@ -1,6 +1,8 @@
-import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { chromium } from "playwright";
+
+// Rendering alone is quick, but give it room beyond the default limit.
+export const maxDuration = 60;
 import { generateCoverLetterForCv } from "@/lib/cover-letter-server";
 import { buildCoverLetterHtml } from "@/lib/cover-letter-html";
 
@@ -60,8 +62,11 @@ export async function POST(req: Request) {
       .single();
 
     if (!coverLetter) {
-      console.log("[generate-cover-letter-pdf] no text supplied, regenerating");
-      letter = await generateCoverLetterForCv(supabase, cvId, language);
+      // Writing the letter and rendering it in one request overruns the
+      // function time limit, so the client generates the text first via
+      // /api/generate-cover-letter and posts it here.
+      console.error("[generate-cover-letter-pdf] no cover letter text supplied");
+      return new Response("Missing cover letter text", { status: 400 });
     } else {
       letter.fullName = personal?.full_name ?? "";
       letter.title = cvRow?.title ?? null;
@@ -99,23 +104,19 @@ export async function POST(req: Request) {
 
     await browser.close();
 
-    const safeName = (letter.fileName || "cover-letter").replace(
-      /\.(pdf|txt)$/i,
-      "",
-    );
-
+    // HTTP headers are latin-1 only, and the generated file name can carry
+    // Polish characters, so keep the header ASCII. The browser names the file
+    // from the anchor's download attribute anyway.
     return new Response(pdfBuffer as any, {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="${safeName}.pdf"`,
+        "Content-Disposition": "attachment; filename=cover-letter.pdf",
         "Content-Length": pdfBuffer.length.toString(),
       },
     });
   } catch (error) {
     console.error("Cover letter PDF error:", error);
-    return NextResponse.json({
-      error: "Cover letter PDF generation failed",
-      status: 500,
-    });
+    // Must be a real 500: a 200 with a JSON body would be saved as a broken PDF.
+    return new Response("Cover letter PDF generation failed", { status: 500 });
   }
 }

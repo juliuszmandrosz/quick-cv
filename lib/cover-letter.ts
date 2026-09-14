@@ -70,22 +70,39 @@ export function clearCoverLetter(cvId: string) {
 export async function downloadCoverLetterPdf(
   cvId: string,
   language: string,
-  letter: GeneratedCoverLetter | null,
 ): Promise<boolean> {
   try {
+    // The text is normally written right after the CV and kept in storage.
+    // Generating it is a separate request from rendering it: doing both in one
+    // call overruns the function time limit.
+    const letter =
+      readCoverLetter(cvId) ?? (await generateCoverLetter(cvId, language));
+
+    if (!letter?.coverLetter) {
+      console.error("No cover letter text available for", cvId);
+      return false;
+    }
+
     const response = await fetch("/api/generate-cover-letter-pdf", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         cvId,
         language,
-        coverLetter: letter?.coverLetter,
-        fileName: letter?.fileName,
+        coverLetter: letter.coverLetter,
+        fileName: letter.fileName,
       }),
     });
 
-    if (!response.ok) {
-      console.error("Cover letter PDF failed:", response.status);
+    // A non-PDF body here means the route failed; saving it would produce a
+    // file that will not open.
+    const contentType = response.headers.get("content-type") ?? "";
+    if (!response.ok || !contentType.includes("application/pdf")) {
+      console.error(
+        "Cover letter PDF failed:",
+        response.status,
+        await response.text().catch(() => ""),
+      );
       return false;
     }
 
@@ -93,7 +110,7 @@ export async function downloadCoverLetterPdf(
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${(letter?.fileName ?? "cover-letter").replace(/\.(pdf|txt)$/i, "")}.pdf`;
+    a.download = `${(letter.fileName ?? "cover-letter").replace(/\.(pdf|txt)$/i, "")}.pdf`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
