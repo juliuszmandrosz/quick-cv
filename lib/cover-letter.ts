@@ -67,16 +67,40 @@ export function clearCoverLetter(cvId: string) {
   }
 }
 
-export function downloadCoverLetter(letter: GeneratedCoverLetter) {
-  const blob = new Blob([letter.coverLetter], {
-    type: "text/plain;charset=utf-8",
-  });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${letter.fileName.replace(/\.(pdf|txt)$/i, "")}.txt`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+export async function downloadCoverLetterPdf(
+  cvId: string,
+  language: string,
+  letter: GeneratedCoverLetter | null,
+): Promise<boolean> {
+  try {
+    const response = await fetch("/api/generate-cover-letter-pdf", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        cvId,
+        language,
+        coverLetter: letter?.coverLetter,
+        fileName: letter?.fileName,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("Cover letter PDF failed:", response.status);
+      return false;
+    }
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${(letter?.fileName ?? "cover-letter").replace(/\.(pdf|txt)$/i, "")}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    return true;
+  } catch (error) {
+    console.error("Cover letter PDF download error:", error);
+    return false;
+  }
 }

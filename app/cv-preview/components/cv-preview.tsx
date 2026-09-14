@@ -10,12 +10,7 @@ import CvTemplate from "@/app/create-cv/components/cv-template";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
 import { useCurrentUser } from "@/hooks/use-auth";
-import {
-  clearCoverLetter,
-  downloadCoverLetter,
-  generateCoverLetter,
-  readCoverLetter,
-} from "@/lib/cover-letter";
+import { downloadCoverLetterPdf, readCoverLetter } from "@/lib/cover-letter";
 
 export const CvPreviewClient = () => {
   const { t } = useLanguage();
@@ -130,15 +125,24 @@ export const CvPreviewClient = () => {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        // Second file: the cover letter generated right after the CV. If it is
-        // not in storage (other device, cleared storage), generate it now.
-        const coverLetter =
-          readCoverLetter(cvData!.id) ??
-          (await generateCoverLetter(cvData!.id, lang ?? "en"));
+        // Second file: the cover letter as its own PDF. Browsers throttle a
+        // second programmatic download fired straight after the first, so give
+        // the CV download a moment to be committed first. The stored text is
+        // deliberately kept - if this download is blocked, a retry still works.
+        await new Promise((resolve) => setTimeout(resolve, 1200));
 
-        if (coverLetter) {
-          downloadCoverLetter(coverLetter);
-          clearCoverLetter(cvData!.id);
+        const coverLetterDownloaded = await downloadCoverLetterPdf(
+          cvData!.id,
+          lang ?? "en",
+          readCoverLetter(cvData!.id),
+        );
+
+        if (!coverLetterDownloaded) {
+          toast({
+            title: t("create.error"),
+            description: t("cv.downloadError"),
+            variant: "destructive",
+          });
         }
 
         toast({
@@ -197,7 +201,7 @@ export const CvPreviewClient = () => {
         <span>{t("cv.joinUsers")}</span>
       </div>
 
-      <CvTemplate cvData={cvData} lang={lang ?? "en"} />
+      <CvTemplate cvData={cvData} lang={lang ?? "en"} isEditable={true} />
 
       <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-2.5 text-xs 2xl:text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-900/30 border-t border-gray-200 dark:border-gray-700 py-2.5 sm:py-3 px-4 sm:px-5 mt-4 rounded-md">
         <Flame className="h-4 w-4 2xl:h-5 2xl:w-5 text-orange-500" />
