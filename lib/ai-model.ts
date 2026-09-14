@@ -6,6 +6,13 @@
 export const CV_GENERATION_MODEL = "gpt-6-astra";
 
 /**
+ * Do NOT pass `temperature`, `top_p`, `logprobs` or `top_logprobs` to this
+ * model. Astra rejects those fields with a 400 as soon as they are present -
+ * it does not merely ignore them. Steer the output through the prompt instead.
+ * `max_completion_tokens` replaces `max_tokens` if a cap is ever needed.
+ */
+
+/**
  * Logs which model a generation route is about to call, and what the API
  * actually answered with. `completion.model` is the model id returned by
  * OpenAI itself, so it is the proof the request really ran on the model we

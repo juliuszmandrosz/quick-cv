@@ -177,7 +177,6 @@ export async function POST(request: Request) {
         { role: "system", content: planSystemPrompt },
         { role: "user", content: planUserPrompt },
       ],
-      temperature: 0.4,
       response_format: { type: "json_object" },
     });
 
