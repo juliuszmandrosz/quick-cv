@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import OpenAI from "openai";
-import { CV_GENERATION_MODEL, logModelUsage } from "@/lib/ai-model";
+import {
+  CV_GENERATION_MODEL,
+  logModelUsage,
+  resolveLanguageName,
+} from "@/lib/ai-model";
 import { GeneratedCvFull } from "@/types/generated-cv-full";
 
 export async function POST(request: Request) {
@@ -64,7 +68,13 @@ export async function POST(request: Request) {
       ? ((cv.generated_personal_data as any[])[0] ?? null)
       : cv.generated_personal_data;
 
-    const cvLanguage = language || cv.lang || "English";
+    // "pl" -> "Polish": the prompt must name the language, not its code.
+    const cvLanguage = resolveLanguageName(language || cv.lang);
+
+    console.log(
+      `[generate-cover-letter] language: ${cvLanguage} ` +
+        `(requested: ${language ?? "-"}, cv: ${cv.lang ?? "-"})`,
+    );
 
     const systemPrompt = `
       ##CONTEXT:
@@ -77,6 +87,10 @@ export async function POST(request: Request) {
       employers, skills or numbers that are not in the CV.
 
       ##RULES:
+      - Write the ENTIRE letter in ${cvLanguage}. Every sentence, the greeting and
+        the sign-off included. Never fall back to English unless ${cvLanguage} is
+        English. Proper nouns (company and university names) keep their original
+        form; everything else is written in ${cvLanguage}.
       - Address the hiring team of the company from the job offer. If the company
         name is unknown, use a neutral greeting appropriate for ${cvLanguage}.
       - 3 to 4 short paragraphs, maximum 300 words in total.

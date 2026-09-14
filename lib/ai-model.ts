@@ -26,3 +26,21 @@ export function logModelUsage(
     completion.usage ?? {},
   );
 }
+
+/**
+ * The app stores CV languages as short codes ("pl", "en", "es"). Prompts are
+ * far more reliable when they name the language explicitly, so resolve the code
+ * to its English name before interpolating it into a prompt.
+ */
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: "English",
+  pl: "Polish",
+  es: "Spanish",
+};
+
+export function resolveLanguageName(language?: string | null): string {
+  if (!language) return LANGUAGE_NAMES.en;
+
+  const code = language.trim().toLowerCase();
+  return LANGUAGE_NAMES[code] ?? language.trim();
+}
