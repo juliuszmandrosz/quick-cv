@@ -261,7 +261,7 @@ export async function POST(request: Request) {
     });
 
     const generationCompletion = await openai.chat.completions.create({
-      model: "gpt-5.2",
+      model: "gpt-6-astra",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
