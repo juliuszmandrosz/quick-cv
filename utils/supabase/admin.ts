@@ -11,24 +11,30 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
  * NEVER import this from a client component, and never return its raw results
  * to a caller without checking that the caller owns the rows.
  *
- * Falls back to the anon key when SUPABASE_SERVICE_ROLE_KEY is absent, so that
- * deploying this file cannot break the app before the key is configured. Once
- * RLS is enabled that fallback stops working - which is the point at which the
- * key must be set.
+ * Accepts either key style Supabase offers:
+ *   SUPABASE_SECRET_KEY        - current "sb_secret_..." secret key
+ *   SUPABASE_SERVICE_ROLE_KEY  - legacy service_role JWT
+ * Set one of them; the secret key is the one Supabase now steers you towards.
+ *
+ * Falls back to the anon key when neither is present, so that deploying this
+ * file cannot break the app before the key is configured. Once RLS is enabled
+ * that fallback stops working - which is the point at which the key must be set.
  */
 export const createAdminClient = () => {
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const privilegedKey =
+    process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!serviceRoleKey) {
+  if (!privilegedKey) {
     console.warn(
-      "[supabase] SUPABASE_SERVICE_ROLE_KEY is not set - falling back to the " +
-        "anon key. This only works while RLS is disabled.",
+      "[supabase] neither SUPABASE_SECRET_KEY nor SUPABASE_SERVICE_ROLE_KEY " +
+        "is set - falling back to the anon key. This only works while RLS is " +
+        "disabled.",
     );
   }
 
   return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    serviceRoleKey ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    privilegedKey ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       auth: { persistSession: false, autoRefreshToken: false },
     },
