@@ -29,7 +29,9 @@ import {
   UploadCloud,
   X,
 } from "lucide-react";
-import LoadingScreen from "@/app/create-cv/components/loading-screen"; // Assuming this path is correct
+import LoadingScreen, {
+  type GenerationStage,
+} from "@/app/create-cv/components/loading-screen";
 import type { CV } from "@/app/create-cv/types/cv"; // Assuming this path is correct
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -46,6 +48,8 @@ export default function CreateCvClientPage() {
   const [jobOfferId, setJobOfferId] = useState<string | null>(null);
   const [cvLanguage, setCvLanguage] = useState<string>("en");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationStage, setGenerationStage] =
+    useState<GenerationStage>("extracting");
   const [cvs, setCvs] = useState<CV[]>([]);
   const [selectedCv, setSelectedCv] = useState<CV | null>(null);
   const [isProcessingJobOffer, setIsProcessingJobOffer] = useState(false);
@@ -147,6 +151,7 @@ export default function CreateCvClientPage() {
           if (uploadedPhoto) {
             formData.append("profile_photo", uploadedPhoto || undefined);
           }
+          setGenerationStage("extracting");
           const extractCvResponse = await fetch("/api/extract-cv", {
             method: "POST",
             body: formData,
@@ -186,6 +191,7 @@ export default function CreateCvClientPage() {
           }
         }
 
+        setGenerationStage("planning");
         const generatePromptPlanResponse = await fetch(
           "/api/generate-prompt-plan",
           {
@@ -211,6 +217,7 @@ export default function CreateCvClientPage() {
           return;
         }
 
+        setGenerationStage("writing");
         const generateCvResponse = await fetch("/api/generate-cv", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -295,7 +302,7 @@ export default function CreateCvClientPage() {
   };
 
   if (isGenerating) {
-    return <LoadingScreen />;
+    return <LoadingScreen stage={generationStage} />;
   }
 
   return (
