@@ -55,19 +55,24 @@ else:
 done
 
 echo
-echo "WRITE checks (filtered to a non-existent id, changes nothing):"
-NONE="00000000-0000-0000-0000-000000000000"
-for t in cv_user_data subscriptions generated_cv; do
-  code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 -X PATCH \
-    "$URL/rest/v1/$t?id=eq.$NONE" \
+echo "WRITE checks (INSERT of an empty row - rejected either way, nothing is stored):"
+# UPDATE is not a usable probe: filtered to a non-existent id it matches zero
+# rows, so PostgREST answers 204 whether RLS is on or off. INSERT is always
+# evaluated against the policies, so it distinguishes the two.
+for t in subscriptions cv_user_data job_offers generated_cv; do
+  out=$(curl -s --max-time 20 -X POST "$URL/rest/v1/$t" \
     -H "apikey: $KEY" -H "Authorization: Bearer $KEY" \
-    -H "Content-Type: application/json" -H "Prefer: return=minimal" -d '{}')
-  # 2xx means the write was permitted; 401/403/404 means RLS refused it.
-  if [ "${code:0:1}" = "2" ]; then
-    printf '  UPDATE %-38s EXPOSED  HTTP %s\n' "$t" "$code"
-    fail=1
+    -H "Content-Type: application/json" -H "Prefer: return=minimal" \
+    -w "\n%{http_code}" -d '{}')
+  code=$(printf '%s' "$out" | tail -1)
+  body=$(printf '%s' "$out" | head -1)
+  if printf '%s' "$body" | grep -q "row-level security"; then
+    printf '  INSERT %-38s OK       HTTP %s (blocked by RLS)\n' "$t" "$code"
+  elif [ "$code" = "401" ] || [ "$code" = "403" ]; then
+    printf '  INSERT %-38s OK       HTTP %s\n' "$t" "$code"
   else
-    printf '  UPDATE %-38s OK       HTTP %s\n' "$t" "$code"
+    printf '  INSERT %-38s EXPOSED  HTTP %s\n' "$t" "$code"
+    fail=1
   fi
 done
 
