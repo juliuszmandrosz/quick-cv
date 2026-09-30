@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { GeneratedCvFull } from "@/types/generated-cv-full";
 
 export async function GET(request: Request) {
@@ -15,7 +16,10 @@ export async function GET(request: Request) {
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  // Auth stays on the cookie-backed client; data access bypasses RLS, so every
+  // query below must filter by the authenticated user itself.
+  const db = createAdminClient();
+  const { data, error } = await db
     .from("generated_cv")
     .select(
       `
@@ -71,7 +75,7 @@ export async function GET(request: Request) {
     }
   }
 
-  const { data: jobOffer, error: jobError } = await supabase
+  const { data: jobOffer, error: jobError } = await db
     .from("job_offers")
     .select("job_url")
     .eq("id", data.job_offer_id)

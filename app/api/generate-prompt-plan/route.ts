@@ -6,7 +6,7 @@ import {
   rateLimitResponse,
 } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import OpenAI from "openai";
 import {
   CV_GENERATION_MODEL,
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       });
     }
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,

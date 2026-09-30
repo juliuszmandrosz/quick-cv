@@ -6,7 +6,7 @@ import {
   rateLimitResponse,
 } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import OpenAI from "openai";
 
 const MAX_CV_BYTES = 10 * 1024 * 1024;
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
       });
     }
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     let profilePhotoUrl: string | null = null;
     if (profilePhoto && profilePhoto instanceof File && profilePhoto.size > 0) {

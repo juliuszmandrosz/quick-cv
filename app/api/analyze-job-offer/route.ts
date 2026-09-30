@@ -4,7 +4,7 @@ import {
   rateLimitResponse,
 } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { Tables } from "@/database.types";
 import OpenAI from "openai";
 
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
       planCompletion.choices[0].message?.content || "{}",
     );
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const { data, error } = await supabase
       .from("job_offers")

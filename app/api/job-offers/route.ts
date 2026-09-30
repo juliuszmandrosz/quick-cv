@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import scrapeJobOffer from "@/utils/scraper";
-import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { Tables } from "@/database.types";
 
 export async function POST(request: Request) {
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     const parsedData = await scrapeJobOffer(jobUrl);
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const { data, error } = await supabase
       .from("job_offers")
@@ -55,7 +55,7 @@ export async function PATCH(req: Request) {
     });
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { error } = await supabase
     .from("job_offers")

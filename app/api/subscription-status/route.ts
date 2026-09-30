@@ -1,8 +1,12 @@
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   const supabase = await createClient();
+  // Auth stays on the cookie-backed client; data access bypasses RLS, so every
+  // query below must filter by the authenticated user itself.
+  const db = createAdminClient();
 
   const {
     data: { user },
@@ -12,7 +16,7 @@ export async function GET() {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const { data: data, error: subError } = await supabase
+  const { data: data, error: subError } = await db
     .from("subscriptions")
     .select("*")
     .eq("user_id", user.id)

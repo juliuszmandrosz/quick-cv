@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 
 export async function GET() {
   const supabase = await createClient();
+  // Auth stays on the cookie-backed client; data access bypasses RLS, so every
+  // query below must filter by the authenticated user itself.
+  const db = createAdminClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -14,7 +18,7 @@ export async function GET() {
     });
   }
 
-  const { data: sub, error: subError } = await supabase
+  const { data: sub, error: subError } = await db
     .from("subscriptions")
     .select("*")
     .eq("user_id", user.id)
@@ -31,7 +35,7 @@ export async function GET() {
     });
   }
 
-  const { count, error: cvsError } = await supabase
+  const { count, error: cvsError } = await db
     .from("generated_cv")
     .select("id", { count: "exact", head: true })
     .eq("user_id", user.id);

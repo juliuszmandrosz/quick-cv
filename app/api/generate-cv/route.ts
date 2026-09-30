@@ -6,7 +6,7 @@ import {
   rateLimitResponse,
 } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import OpenAI from "openai";
 import {
   CV_GENERATION_MODEL,
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     const { language, cvUserDataId, jobOfferId, promptPlanId } =
       await request.json();
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     const { data: fullCvData, error: selectError } = await supabase
       .from("cv_user_data")

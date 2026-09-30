@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { chromium } from "playwright";
 
 export async function POST(req: Request) {
@@ -12,6 +13,9 @@ export async function POST(req: Request) {
   }
 
   const supabase = await createClient();
+  // Auth stays on the cookie-backed client; data access bypasses RLS, so every
+  // query below must filter by the authenticated user itself.
+  const db = createAdminClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -23,7 +27,7 @@ export async function POST(req: Request) {
     });
   }
 
-  const { data: cv } = await supabase
+  const { data: cv } = await db
     .from("generated_cv")
     .select("token_consumed")
     .eq("id", cvId)
@@ -32,7 +36,7 @@ export async function POST(req: Request) {
   if (!cv) return new Response("CV not found", { status: 404 });
 
   if (!cv.token_consumed) {
-    const { data: sub, error } = await supabase
+    const { data: sub, error } = await db
       .from("subscriptions")
       .select("*")
       .eq("user_id", user.id)
@@ -45,17 +49,17 @@ export async function POST(req: Request) {
       return new Response("Insufficient tokens", { status: 402 });
     }
 
-    await supabase
+    await db
       .from("subscriptions")
       .update({ tokens_left: sub.tokens_left - 1 })
       .eq("id", sub.id);
 
-    await supabase
+    await db
       .from("generated_cv")
       .update({ token_consumed: true, user_id: user.id })
       .eq("id", cvId);
 
-    const { error: updateUserIdError } = await supabase
+    const { error: updateUserIdError } = await db
       .from("cv_user_data")
       .update({ user_id: user.id })
       .eq("id", cvDataId);

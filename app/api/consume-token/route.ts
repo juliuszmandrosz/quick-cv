@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -6,6 +7,9 @@ export async function POST(req: Request) {
   const { cvId } = body;
 
   const supabase = await createClient();
+  // Auth stays on the cookie-backed client; data access bypasses RLS, so every
+  // query below must filter by the authenticated user itself.
+  const db = createAdminClient();
 
   const {
     data: { user },
@@ -16,7 +20,7 @@ export async function POST(req: Request) {
   }
 
   // Pobierz cv_user_data_id z generated_cv
-  const { data: cvRow, error: cvError } = await supabase
+  const { data: cvRow, error: cvError } = await db
     .from("generated_cv")
     .select("cv_user_data_id, user_id, payment_completed")
     .eq("id", cvId)
@@ -40,17 +44,17 @@ export async function POST(req: Request) {
 
   const cvUserDataId = cvRow.cv_user_data_id;
 
-  const { error: updatePaymentError } = await supabase
+  const { error: updatePaymentError } = await db
     .from("generated_cv")
     .update({ payment_completed: true, user_id: user.id })
     .eq("id", cvId);
 
-  const { error: updateUserIdError } = await supabase
+  const { error: updateUserIdError } = await db
     .from("cv_user_data")
     .update({ user_id: user.id })
     .eq("id", cvUserDataId);
 
-  const { error: decrementError } = await supabase.rpc("decrement_tokens", {
+  const { error: decrementError } = await db.rpc("decrement_tokens", {
     user_id: user.id,
   });
 

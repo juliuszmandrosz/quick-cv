@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { redirect } from "next/navigation";
 
 export async function GET() {
   const supabase = await createClient();
+  // Auth stays on the cookie-backed client; data access bypasses RLS, so every
+  // query below must filter by the authenticated user itself.
+  const db = createAdminClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -12,7 +16,7 @@ export async function GET() {
     return redirect("/login");
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from("cv_user_data")
     .select("*")
     .eq("user_id", user.id)
