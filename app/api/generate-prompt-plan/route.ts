@@ -3,7 +3,12 @@ import pdf from "pdf-parse/lib/pdf-parse";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import OpenAI from "openai";
-import { CV_GENERATION_MODEL, logModelUsage } from "@/lib/ai-model";
+import {
+  CV_GENERATION_MODEL,
+  MAX_COMPLETION_TOKENS,
+  logModelUsage,
+  slimForPrompt,
+} from "@/lib/ai-model";
 
 export async function POST(request: Request) {
   const errorMessage =
@@ -118,10 +123,10 @@ export async function POST(request: Request) {
       INPUT DATA:
       
       CANDIDATE DATA:
-      ${JSON.stringify(fullCvData)}
+      ${JSON.stringify(slimForPrompt(fullCvData))}
       
       JOB OFFER:
-      ${JSON.stringify(jobOffer)}
+      ${JSON.stringify(slimForPrompt(jobOffer))}
       
       RULES AND GUIDELINES FOR GENERATING THE JSON PLAN:
       
@@ -178,6 +183,7 @@ export async function POST(request: Request) {
         { role: "user", content: planUserPrompt },
       ],
       response_format: { type: "json_object" },
+      max_completion_tokens: MAX_COMPLETION_TOKENS,
     });
 
     logModelUsage("generate-prompt-plan", planCompletion);
