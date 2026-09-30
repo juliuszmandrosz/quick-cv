@@ -1,5 +1,10 @@
 // @ts-ignore
 import pdf from "pdf-parse/lib/pdf-parse";
+import {
+  RATE_LIMITS,
+  checkRateLimit,
+  rateLimitResponse,
+} from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import OpenAI from "openai";
@@ -13,6 +18,11 @@ import {
 } from "@/lib/ai-model";
 
 export async function POST(request: Request) {
+  // These endpoints call OpenAI without requiring a session, so they are
+  // the ones an unauthenticated loop could run up a bill on.
+  const rateLimit = checkRateLimit(request, "generate-cv", RATE_LIMITS.generate);
+  if (!rateLimit.allowed) return rateLimitResponse(rateLimit);
+
   const errorMessage =
     "Error generating CV, please try again. If the problem persists, contact support.";
 

@@ -1,10 +1,29 @@
 // @ts-ignore
 import pdf from "pdf-parse/lib/pdf-parse";
+import {
+  RATE_LIMITS,
+  checkRateLimit,
+  rateLimitResponse,
+} from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import OpenAI from "openai";
 
+const MAX_CV_BYTES = 10 * 1024 * 1024;
+const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+const MAX_CV_TEXT_CHARS = 40_000;
+const ALLOWED_PHOTO_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+]);
+
 export async function POST(request: Request) {
+  // Calls OpenAI without requiring a session: throttle per IP so an
+  // unauthenticated loop cannot run up the bill.
+  const rateLimit = checkRateLimit(request, "extract-cv", RATE_LIMITS.analyze);
+  if (!rateLimit.allowed) return rateLimitResponse(rateLimit);
+
   const errorMessage =
     "Error extracting CV data, please try again. If the problem persists, contact support.";
 
@@ -21,10 +40,56 @@ export async function POST(request: Request) {
       });
     }
 
+    // pdf-parse happily chews on anything handed to it, so bound the input
+    // before it reaches the parser: an oversized or crafted file would
+    // otherwise exhaust the function's memory.
+    if (cvFile.size > MAX_CV_BYTES) {
+      return NextResponse.json({
+        success: false,
+        error: "CV file is too large. Maximum size is 10 MB.",
+        status: 413,
+      });
+    }
+
+    if (cvFile.type && cvFile.type !== "application/pdf") {
+      return NextResponse.json({
+        success: false,
+        error: "CV must be a PDF file.",
+        status: 415,
+      });
+    }
+
     const arrayBuffer = await cvFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const cvData = await pdf(buffer);
-    const cvText = cvData.text;
+
+    // A PDF always starts with %PDF-; refuse anything else regardless of the
+    // declared content type.
+    if (buffer.subarray(0, 5).toString("latin1") !== "%PDF-") {
+      return NextResponse.json({
+        success: false,
+        error: "CV must be a PDF file.",
+        status: 415,
+      });
+    }
+
+    let cvText: string;
+    try {
+      const cvData = await pdf(buffer);
+      cvText = cvData.text;
+    } catch (parseError) {
+      console.error("PDF parse error:", parseError);
+      return NextResponse.json({
+        success: false,
+        error: "Could not read this PDF. Try exporting it again.",
+        status: 400,
+      });
+    }
+
+    // Cap what reaches the model: a text-heavy PDF can carry far more than a
+    // CV ever needs, and every character is billed.
+    if (cvText.length > MAX_CV_TEXT_CHARS) {
+      cvText = cvText.slice(0, MAX_CV_TEXT_CHARS);
+    }
 
     if (!cvText || typeof cvText !== "string") {
       return NextResponse.json({
@@ -45,6 +110,22 @@ export async function POST(request: Request) {
 
     let profilePhotoUrl: string | null = null;
     if (profilePhoto && profilePhoto instanceof File && profilePhoto.size > 0) {
+      if (profilePhoto.size > MAX_PHOTO_BYTES) {
+        return NextResponse.json({
+          success: false,
+          error: "Profile photo is too large. Maximum size is 5 MB.",
+          status: 413,
+        });
+      }
+
+      if (!ALLOWED_PHOTO_TYPES.has(profilePhoto.type)) {
+        return NextResponse.json({
+          success: false,
+          error: "Profile photo must be a JPEG, PNG or WebP image.",
+          status: 415,
+        });
+      }
+
       const originalFileName = profilePhoto.name;
       const contentType = profilePhoto.type;
       const uniqueFileName = `${Date.now()}-${originalFileName}`;

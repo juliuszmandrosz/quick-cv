@@ -1,9 +1,19 @@
+import {
+  RATE_LIMITS,
+  checkRateLimit,
+  rateLimitResponse,
+} from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { Tables } from "@/database.types";
 import OpenAI from "openai";
 
 export async function POST(request: Request) {
+  // Calls OpenAI without requiring a session: throttle per IP so an
+  // unauthenticated loop cannot run up the bill.
+  const rateLimit = checkRateLimit(request, "analyze-job-offer", RATE_LIMITS.analyze);
+  if (!rateLimit.allowed) return rateLimitResponse(rateLimit);
+
   try {
     const { jobDesc } = await request.json();
 

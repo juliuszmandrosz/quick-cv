@@ -53,6 +53,24 @@ export async function GET(request: Request) {
     });
   }
 
+  // A freshly generated CV has no owner yet - the visitor is not signed in at
+  // that point, so the flow has to stay open. Once a CV is claimed it carries
+  // full personal data, and only its owner may read it back: the cvId travels
+  // in the URL and therefore leaks into history, logs and referrers.
+  if (data.user_id) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user || user.id !== data.user_id) {
+      return NextResponse.json({
+        success: false,
+        error: "Not authorized to view this CV",
+        status: 403,
+      });
+    }
+  }
+
   const { data: jobOffer, error: jobError } = await supabase
     .from("job_offers")
     .select("job_url")
