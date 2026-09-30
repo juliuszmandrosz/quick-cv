@@ -10,7 +10,6 @@ import CvTemplate from "@/app/create-cv/components/cv-template";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
 import { useCurrentUser } from "@/hooks/use-auth";
-import { downloadCoverLetterPdf } from "@/lib/cover-letter";
 
 export const CvPreviewClient = () => {
   const { t } = useLanguage();
@@ -124,25 +123,6 @@ export const CvPreviewClient = () => {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-
-        // Second file: the cover letter as its own PDF. Browsers throttle a
-        // second programmatic download fired straight after the first, so give
-        // the CV download a moment to be committed first. The stored text is
-        // deliberately kept - if this download is blocked, a retry still works.
-        await new Promise((resolve) => setTimeout(resolve, 1200));
-
-        const coverLetterDownloaded = await downloadCoverLetterPdf(
-          cvData!.id,
-          lang ?? "en",
-        );
-
-        if (!coverLetterDownloaded) {
-          toast({
-            title: t("create.error"),
-            description: t("cv.downloadError"),
-            variant: "destructive",
-          });
-        }
 
         toast({
           title: t("cv.downloadSuccessTitle"),

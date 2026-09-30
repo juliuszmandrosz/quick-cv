@@ -36,7 +36,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { generateCoverLetter } from "@/lib/cover-letter";
 
 export default function CreateCvClientPage() {
   const [step, setStep] = useState<number>(1);
@@ -234,10 +233,6 @@ export default function CreateCvClientPage() {
           });
           return;
         }
-
-        // Bonus file downloaded together with the CV. It must not block or fail
-        // the CV flow, so errors are swallowed inside generateCoverLetter.
-        await generateCoverLetter(generateCvResult.cvId, cvLanguage);
 
         setIsGenerating(false);
         toast({
