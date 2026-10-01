@@ -9,6 +9,7 @@ export default function CvDownload() {
   const searchParams = useSearchParams();
   const cvId = searchParams.get("cvId");
   const lang = searchParams.get("lang");
+  const renderToken = searchParams.get("renderToken");
 
   const [cvData, setCvData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -18,9 +19,11 @@ export default function CvDownload() {
 
     const fetchData = async () => {
       try {
-        const res = await fetch(`/api/cv-data?cvId=${cvId}`, {
-          cache: "no-store",
-        });
+        const res = await fetch(
+          `/api/cv-data?cvId=${cvId}` +
+            (renderToken ? `&renderToken=${renderToken}` : ""),
+          { cache: "no-store" },
+        );
         const json = await res.json();
         if (json.success) {
           setCvData(json.data);
@@ -56,7 +59,7 @@ export default function CvDownload() {
   }
 
   return (
-    <div>
+    <div data-cv-ready>
       <CvTemplate cvData={cvData} lang={lang ?? "en"} />
     </div>
   );

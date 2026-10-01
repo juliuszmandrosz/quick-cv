@@ -113,6 +113,7 @@ export const CvPreviewClient = () => {
           setIsDownloading(false);
           return;
         }
+        throw new Error(`PDF generation failed with ${response.status}`);
       } else {
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);

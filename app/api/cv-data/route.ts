@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { GeneratedCvFull } from "@/types/generated-cv-full";
+import { verifyPdfRenderToken } from "@/lib/pdf-render-token";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const cvId = searchParams.get("cvId");
+  const renderToken = searchParams.get("renderToken");
 
   if (!cvId) {
     return NextResponse.json({
@@ -61,7 +63,9 @@ export async function GET(request: Request) {
   // that point, so the flow has to stay open. Once a CV is claimed it carries
   // full personal data, and only its owner may read it back: the cvId travels
   // in the URL and therefore leaks into history, logs and referrers.
-  if (data.user_id) {
+  // The one exception is the PDF renderer: it has no session, so generate-pdf
+  // checks ownership and passes it a short-lived token for this cvId.
+  if (data.user_id && !verifyPdfRenderToken(cvId, renderToken)) {
     const {
       data: { user },
     } = await supabase.auth.getUser();

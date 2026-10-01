@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { chromium } from "playwright";
+import { createPdfRenderToken } from "@/lib/pdf-render-token";
 
 export async function POST(req: Request) {
   const { cvId, cvDataId, language } = await req.json();
@@ -29,11 +30,17 @@ export async function POST(req: Request) {
 
   const { data: cv } = await db
     .from("generated_cv")
-    .select("token_consumed")
+    .select("token_consumed, user_id")
     .eq("id", cvId)
     .single();
 
   if (!cv) return new Response("CV not found", { status: 404 });
+
+  // The renderer below is let past the owner check in /api/cv-data, so the
+  // owner check has to happen here.
+  if (cv.user_id && cv.user_id !== user.id) {
+    return new Response("Forbidden", { status: 403 });
+  }
 
   if (!cv.token_consumed) {
     const { data: sub, error } = await db
@@ -66,27 +73,36 @@ export async function POST(req: Request) {
   }
 
   try {
-    const url = `${process.env.NEXT_PUBLIC_BASE_URL}/cv-download?cvId=${cvId}&lang=${language}`;
-    console.log(url, "URL for PDF generation");
+    // The remote browser has no session cookie; the token lets it read this
+    // one CV now that it belongs to the user.
+    const renderToken = createPdfRenderToken(cvId);
+    const url =
+      `${process.env.NEXT_PUBLIC_BASE_URL}/cv-download?cvId=${cvId}&lang=${language}` +
+      (renderToken ? `&renderToken=${renderToken}` : "");
     const apiKey = process.env.BROWSERLESS_API_KEY;
     const browser = await chromium.connectOverCDP(
       `wss://production-sfo.browserless.io/?token=${apiKey}`,
     );
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    await page.emulateMedia({ media: "print" });
-    await page.goto(url, { waitUntil: "networkidle", timeout: 30000 });
-    await page.waitForTimeout(1000);
+    let pdfBuffer: Buffer;
+    try {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      await page.emulateMedia({ media: "print" });
+      await page.goto(url, { waitUntil: "networkidle", timeout: 30000 });
+      // Fail instead of returning a PDF of the "CV not found" message.
+      await page.waitForSelector("[data-cv-ready]", { timeout: 10000 });
+      await page.waitForTimeout(1000);
 
-    const pdfBuffer = await page.pdf({
-      format: "A4",
-      printBackground: true,
-      margin: { top: "0mm", bottom: "0mm", left: "0mm", right: "0mm" },
-      scale: 0.8,
-      preferCSSPageSize: true,
-    });
-
-    await browser.close();
+      pdfBuffer = await page.pdf({
+        format: "A4",
+        printBackground: true,
+        margin: { top: "0mm", bottom: "0mm", left: "0mm", right: "0mm" },
+        scale: 0.8,
+        preferCSSPageSize: true,
+      });
+    } finally {
+      await browser.close();
+    }
 
     return new Response(pdfBuffer as any, {
       headers: {
@@ -97,6 +113,9 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("PDF error:", error);
-    return NextResponse.json({ error: "PDF generation failed", status: 500 });
+    return NextResponse.json(
+      { error: "PDF generation failed" },
+      { status: 500 },
+    );
   }
 }
