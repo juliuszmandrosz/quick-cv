@@ -1,12 +1,10 @@
-// @ts-nocheck
-
 "use client";
 
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { CVData } from "@/app/create-cv/types/cv-data";
 import { format } from "date-fns";
-import { translations, useLanguage } from "@/contexts/LanguageContext";
+import { translateFor, useLanguage } from "@/contexts/LanguageContext";
 
 export default function CvTemplate({
   cvData,
@@ -18,7 +16,9 @@ export default function CvTemplate({
   const formatDate = (date: string | undefined | null) =>
     date ? format(new Date(date), "yyyy.MM") : "";
 
+  // UI hints follow the interface language; CV headings follow the CV's own.
   const { t } = useLanguage();
+  const label = (key: string) => translateFor(lang, key);
 
   return (
     <Card
@@ -50,12 +50,12 @@ export default function CvTemplate({
           </div>
         )}
       </div>
-      <Section title={(translations[lang] as any)["cv.summary"]}>
+      <Section title={label("cv.summary")}>
         <p className="text-gray-700 leading-relaxed">
           {cvData.candidate_description}
         </p>
       </Section>
-      <Section title={(translations[lang] as any)["cv.technicalSkills"]}>
+      <Section title={label("cv.technicalSkills")}>
         <div className="flex flex-wrap gap-2">
           {cvData.generated_skills.technical_skills.map((skill, i) => (
             <span
@@ -76,7 +76,7 @@ export default function CvTemplate({
           </div>
         )}
       </Section>
-      <Section title={(translations[lang] as any)["cv.softPowerSkills"]!}>
+      <Section title={label("cv.softPowerSkills")}>
         <div className="flex flex-wrap gap-2">
           {cvData.generated_skills.soft_skills.map((skill, i) => (
             <span
@@ -106,7 +106,7 @@ export default function CvTemplate({
           </div>
         )}
       </Section>
-      <Section title={(translations[lang] as any)["cv.experience"]!}>
+      <Section title={label("cv.experience")}>
         {cvData.generated_experience.map((exp, idx) => (
           <div
             key={idx}
@@ -129,7 +129,7 @@ export default function CvTemplate({
                   {formatDate(exp.start_date)} -{" "}
                   {exp.end_date
                     ? formatDate(exp.end_date)
-                    : (translations[lang] as any)["cv.present"]!}
+                    : label("cv.present")}
                 </span>
               )}
             </div>
@@ -152,20 +152,20 @@ export default function CvTemplate({
           </div>
         ))}
       </Section>
-      <Section title={(translations[lang] as any)["cv.languages"]!}>
+      <Section title={label("cv.languages")}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {cvData.generated_language.map((lang, i) => (
+          {cvData.generated_language.map((language, i) => (
             <div
               key={i}
               className="flex justify-between items-center border border-gray-100 px-3 py-1 rounded-md bg-gray-50"
             >
-              <span className="text-gray-600 text-sm">{lang.name}</span>
-              <span className="text-gray-600 text-sm">{lang.level}</span>
+              <span className="text-gray-600 text-sm">{language.name}</span>
+              <span className="text-gray-600 text-sm">{language.level}</span>
             </div>
           ))}
         </div>
       </Section>
-      <Section title={(translations[lang] as any)["cv.education"]!}>
+      <Section title={label("cv.education")}>
         {cvData.generated_education.map((edu, i) => (
           <div key={i} className="mb-4 last:mb-0">
             <div className="flex flex-col gap-1">
@@ -178,7 +178,7 @@ export default function CvTemplate({
                     {formatDate(edu.start_date)} -{" "}
                     {edu.end_date
                       ? formatDate(edu.end_date)
-                      : (translations[lang] as any)["cv.present"]!}
+                      : label("cv.present")}
                   </span>
                 )}
               </div>
