@@ -28,11 +28,13 @@ export async function GET() {
     .maybeSingle();
 
   if (subError) {
-    return NextResponse.json({
-      success: false,
-      error: "Error occurred while fetching subscription data",
-      status: 500,
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Error occurred while fetching subscription data",
+      },
+      { status: 500 },
+    );
   }
 
   const { count, error: cvsError } = await db
@@ -41,11 +43,13 @@ export async function GET() {
     .eq("user_id", user.id);
 
   if (cvsError) {
-    return NextResponse.json({
-      success: false,
-      error: "Error occurred while fetching CV data",
-      status: 500,
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Error occurred while fetching CV data",
+      },
+      { status: 500 },
+    );
   }
 
   const data = {
@@ -55,5 +59,5 @@ export async function GET() {
     total_cvs: count || 0,
   };
 
-  return NextResponse.json({ success: true, data, status: 200 });
+  return NextResponse.json({ success: true, data });
 }

@@ -24,19 +24,23 @@ export async function GET() {
     .limit(3);
 
   if (error) {
-    return NextResponse.json({
-      success: false,
-      error: "Error occurred while fetching CV data",
-      status: 500,
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Error occurred while fetching CV data",
+      },
+      { status: 500 },
+    );
   }
   if (!data) {
-    return NextResponse.json({
-      success: false,
-      error: "CVs not found",
-      status: 404,
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: "CVs not found",
+      },
+      { status: 404 },
+    );
   }
 
-  return NextResponse.json({ success: true, data, status: 200 });
+  return NextResponse.json({ success: true, data });
 }
