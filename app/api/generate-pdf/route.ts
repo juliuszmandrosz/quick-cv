@@ -5,7 +5,7 @@ import { chromium } from "playwright";
 import { createPdfRenderToken } from "@/lib/pdf-render-token";
 
 export async function POST(req: Request) {
-  const { cvId, cvDataId, language } = await req.json();
+  const { cvId, language } = await req.json();
   if (!cvId) {
     return new Response(null, {
       status: 400,
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
   const { data: cv } = await db
     .from("generated_cv")
-    .select("token_consumed, user_id")
+    .select("token_consumed, user_id, cv_user_data_id")
     .eq("id", cvId)
     .single();
 
@@ -43,33 +43,23 @@ export async function POST(req: Request) {
   }
 
   if (!cv.token_consumed) {
-    const { data: sub, error } = await db
-      .from("subscriptions")
-      .select("*")
-      .eq("user_id", user.id)
-      .gt("tokens_left", 0)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (!sub) {
+    const charged = await chargeTokenForCv(db, user.id, cvId);
+    if (!charged) {
       return new Response("Insufficient tokens", { status: 402 });
     }
 
-    await db
-      .from("subscriptions")
-      .update({ tokens_left: sub.tokens_left - 1 })
-      .eq("id", sub.id);
-
-    await db
-      .from("generated_cv")
-      .update({ token_consumed: true, user_id: user.id })
-      .eq("id", cvId);
-
-    const { error: updateUserIdError } = await db
-      .from("cv_user_data")
-      .update({ user_id: user.id })
-      .eq("id", cvDataId);
+    // The source data the CV was generated from follows the CV to its new
+    // owner. The id comes from the CV row, never from the request body.
+    if (cv.cv_user_data_id) {
+      const { error: claimDataError } = await db
+        .from("cv_user_data")
+        .update({ user_id: user.id })
+        .eq("id", cv.cv_user_data_id)
+        .is("user_id", null);
+      if (claimDataError) {
+        console.error("Claim cv_user_data error:", claimDataError.message);
+      }
+    }
   }
 
   try {
@@ -77,7 +67,7 @@ export async function POST(req: Request) {
     // one CV now that it belongs to the user.
     const renderToken = createPdfRenderToken(cvId);
     const url =
-      `${process.env.NEXT_PUBLIC_BASE_URL}/cv-download?cvId=${cvId}&lang=${language}` +
+      `${process.env.NEXT_PUBLIC_BASE_URL}/cv-download?cvId=${encodeURIComponent(cvId)}&lang=${encodeURIComponent(language ?? "en")}` +
       (renderToken ? `&renderToken=${renderToken}` : "");
     const apiKey = process.env.BROWSERLESS_API_KEY;
     const browser = await chromium.connectOverCDP(
@@ -104,7 +94,7 @@ export async function POST(req: Request) {
       await browser.close();
     }
 
-    return new Response(pdfBuffer as any, {
+    return new Response(new Uint8Array(pdfBuffer), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": "attachment; filename=cv.pdf",
@@ -118,4 +108,67 @@ export async function POST(req: Request) {
       { status: 500 },
     );
   }
+}
+
+type AdminClient = ReturnType<typeof createAdminClient>;
+
+/**
+ * Spends one token on a CV, safely under concurrent requests.
+ *
+ * 1. Claim the CV by flipping token_consumed false -> true. Only one request
+ *    can win that conditional update, so a double click never charges twice.
+ * 2. Decrement the newest subscription that still has tokens, guarded by the
+ *    value just read (optimistic locking), retrying a few times if another
+ *    request got there first.
+ * 3. If no token could be taken, release the claim so the CV stays locked.
+ *
+ * Returns true when the CV is paid for, including when a parallel request
+ * already paid for it.
+ */
+async function chargeTokenForCv(
+  db: AdminClient,
+  userId: string,
+  cvId: string,
+): Promise<boolean> {
+  const { data: claimed, error: claimError } = await db
+    .from("generated_cv")
+    .update({ token_consumed: true, user_id: userId })
+    .eq("id", cvId)
+    .eq("token_consumed", false)
+    .select("id");
+
+  if (claimError) {
+    console.error("Claim CV error:", claimError.message);
+    return false;
+  }
+  // Someone else flipped the flag first: the CV is already paid for.
+  if (!claimed?.length) return true;
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const { data: sub } = await db
+      .from("subscriptions")
+      .select("id, tokens_left")
+      .eq("user_id", userId)
+      .gt("tokens_left", 0)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (!sub || sub.tokens_left === null) break;
+
+    const { data: decremented } = await db
+      .from("subscriptions")
+      .update({ tokens_left: sub.tokens_left - 1 })
+      .eq("id", sub.id)
+      .eq("tokens_left", sub.tokens_left)
+      .select("id");
+
+    if (decremented?.length) return true;
+  }
+
+  await db
+    .from("generated_cv")
+    .update({ token_consumed: false })
+    .eq("id", cvId);
+  return false;
 }

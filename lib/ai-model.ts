@@ -32,7 +32,15 @@ export const LOW_REASONING = "low" as const;
  */
 export function logModelUsage(
   route: string,
-  completion?: { model?: string; usage?: any },
+  completion?: {
+    model?: string;
+    usage?: {
+      prompt_tokens?: number;
+      completion_tokens?: number;
+      prompt_tokens_details?: { cached_tokens?: number } | null;
+      completion_tokens_details?: { reasoning_tokens?: number } | null;
+    } | null;
+  },
 ) {
   if (!completion) {
     console.log(`[${route}] requesting OpenAI model: ${CV_GENERATION_MODEL}`);

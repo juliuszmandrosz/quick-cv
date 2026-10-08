@@ -10,11 +10,13 @@ export async function GET(request: Request) {
   const renderToken = searchParams.get("renderToken");
 
   if (!cvId) {
-    return NextResponse.json({
-      success: false,
-      error: "cvId is missing",
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: "cvId is missing",
+      },
+      { status: 400 },
+    );
   }
 
   const supabase = await createClient();
@@ -45,18 +47,22 @@ export async function GET(request: Request) {
     .single<GeneratedCvFull>();
 
   if (error) {
-    return NextResponse.json({
-      success: false,
-      error: "Error occurred while fetching CV data",
-      status: 500,
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Error occurred while fetching CV data",
+      },
+      { status: 500 },
+    );
   }
   if (!data) {
-    return NextResponse.json({
-      success: false,
-      error: "CV data not found",
-      status: 404,
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: "CV data not found",
+      },
+      { status: 404 },
+    );
   }
 
   // A freshly generated CV has no owner yet - the visitor is not signed in at
@@ -71,11 +77,13 @@ export async function GET(request: Request) {
     } = await supabase.auth.getUser();
 
     if (!user || user.id !== data.user_id) {
-      return NextResponse.json({
-        success: false,
-        error: "Not authorized to view this CV",
-        status: 403,
-      });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Not authorized to view this CV",
+        },
+        { status: 403 },
+      );
     }
   }
 
@@ -86,11 +94,13 @@ export async function GET(request: Request) {
     .single();
 
   if (jobError) {
-    return NextResponse.json({
-      success: false,
-      error: "Failed to fetch job offer",
-      status: 500,
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to fetch job offer",
+      },
+      { status: 500 },
+    );
   }
 
   data.generated_personal_data = Array.isArray(data.generated_personal_data)
@@ -103,5 +113,5 @@ export async function GET(request: Request) {
 
   data.job_url = jobOffer.job_url;
 
-  return NextResponse.json({ success: true, data, status: 200 });
+  return NextResponse.json({ success: true, data });
 }

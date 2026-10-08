@@ -30,6 +30,9 @@ export const RATE_LIMITS = {
   generate: { limit: 5, windowMs: 60 * 60 * 1000 },
   /** Cheaper preparatory calls, still billed per token. */
   analyze: { limit: 15, windowMs: 60 * 60 * 1000 },
+  /** Job offer scraping and linking: no OpenAI cost, but each POST makes an
+   *  outbound request and writes a row, so it still needs a ceiling. */
+  jobOffers: { limit: 30, windowMs: 60 * 60 * 1000 },
 } satisfies Record<string, RateLimitRule>;
 
 /**
