@@ -29,8 +29,8 @@ export default function PrivacyPolicyPage() {
           <strong>Introduction &amp; Who We Are</strong>
           <p>
             Nice CV respects your privacy. This policy explains how we handle
-            your personal data when you use Nice CV ("Service"). This policy
-            aims to comply with GDPR.
+            your personal data when you use Nice CV (&quot;Service&quot;). This
+            policy aims to comply with GDPR.
           </p>
         </li>
         <li>
@@ -77,7 +77,7 @@ export default function PrivacyPolicyPage() {
         <li>
           <strong>Sharing Your Information</strong>
           <div>
-            We don't sell your data.
+            We don&apos;t sell your data.
             <br />
             We only share it with:
             <ul className="list-disc list-inside ml-4">
@@ -151,8 +151,8 @@ export default function PrivacyPolicyPage() {
         <li>
           <strong>Children</strong>
           <p>
-            Our Service is not for users under 16. We don't knowingly collect
-            data from children.
+            Our Service is not for users under 16. We don&apos;t knowingly
+            collect data from children.
           </p>
         </li>
         <li>

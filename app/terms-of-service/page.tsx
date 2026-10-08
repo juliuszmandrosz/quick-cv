@@ -28,19 +28,19 @@ export default function TermsOfServicePage() {
         <li>
           <strong>Agreement &amp; Service</strong>
           <p>
-            Welcome to Nice CV! By using our app and services ("Service"),
-            provided by us, you agree to these Terms. Our Service helps you
-            create and manage CVs/resumes. If you don't agree, please don't use
-            the Service. You must be at least 16 years old (or the age of
-            consent in your region) to use the Service.
+            Welcome to Nice CV! By using our app and services
+            (&quot;Service&quot;), provided by us, you agree to these Terms. Our
+            Service helps you create and manage CVs/resumes. If you don&apos;t
+            agree, please don&apos;t use the Service. You must be at least 16
+            years old (or the age of consent in your region) to use the Service.
           </p>
         </li>
         <li>
           <strong>Your Account</strong>
           <p>
             You need an account for most features. Keep your information
-            accurate and your password safe. You're responsible for your account
-            activity.
+            accurate and your password safe. You&apos;re responsible for your
+            account activity.
           </p>
         </li>
         <li>
@@ -54,10 +54,10 @@ export default function TermsOfServicePage() {
         <li>
           <strong>Your CV Content</strong>
           <p>
-            You own the information you put into your CV ("User Content"). You
-            grant us a license to use, store, and process your User Content
-            solely to provide and improve the Service. You are responsible for
-            the accuracy and legality of your User Content.
+            You own the information you put into your CV (&quot;User
+            Content&quot;). You grant us a license to use, store, and process
+            your User Content solely to provide and improve the Service. You are
+            responsible for the accuracy and legality of your User Content.
           </p>
         </li>
         <li>
@@ -70,12 +70,13 @@ export default function TermsOfServicePage() {
         <li>
           <strong>Disclaimers &amp; Liability</strong>
           <p>
-            "As Is": The Service is provided "as is" without warranties. We
-            don't guarantee it will be error-free, secure, or always available.
-            Users should verify the final CV content before using it in any
-            application process. We are not liable for indirect or consequential
-            damages. It is the User's responsibility to perform a final review
-            of all CVs/resumes submitted for job applications.
+            &quot;As Is&quot;: The Service is provided &quot;as is&quot; without
+            warranties. We don&apos;t guarantee it will be error-free, secure,
+            or always available. Users should verify the final CV content before
+            using it in any application process. We are not liable for indirect
+            or consequential damages. It is the User&apos;s responsibility to
+            perform a final review of all CVs/resumes submitted for job
+            applications.
           </p>
         </li>
         <li>

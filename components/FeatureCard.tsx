@@ -1,6 +1,5 @@
-
-import React from 'react';
-import { LucideIcon } from 'lucide-react';
+import React from "react";
+import { LucideIcon } from "lucide-react";
 
 interface FeatureCardProps {
   icon: LucideIcon;
@@ -10,7 +9,10 @@ interface FeatureCardProps {
 
 const FeatureCard = ({ icon: Icon, title, description }: FeatureCardProps) => {
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow animate-fade-in" style={{ animationDelay: '0.1s' }}>
+    <div
+      className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow animate-fade-in"
+      style={{ animationDelay: "0.1s" }}
+    >
       <div className="w-14 h-14 bg-nicecv-purple/10 rounded-full flex items-center justify-center mb-4">
         <Icon className="w-7 h-7 text-nicecv-purple" />
       </div>

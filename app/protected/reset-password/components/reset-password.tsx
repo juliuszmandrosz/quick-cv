@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { resetPasswordAction } from "@/app/actions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +14,8 @@ export default function ResetPasswordClient() {
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const submissionCountRef = useRef(0);
+  // Bumped on every submit so the same error message is shown again.
+  const [submissionCount, setSubmissionCount] = useState(0);
 
   const cvId = searchParams.get("cvId");
   const lang = searchParams.get("lang");
@@ -28,7 +29,7 @@ export default function ResetPasswordClient() {
         variant: "destructive",
       });
     }
-  }, [message, submissionCountRef.current]);
+  }, [message, submissionCount]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -51,7 +52,7 @@ export default function ResetPasswordClient() {
 
       // After action completes, increment the submission counter
       // This will trigger the useEffect even if the message is the same
-      submissionCountRef.current += 1;
+      setSubmissionCount((count) => count + 1);
 
       // Force a refresh to get the latest URL parameters
       router.refresh();

@@ -34,8 +34,9 @@ export const CvPreviewClient = () => {
       try {
         const res = await fetch(`/api/cv-data?cvId=${cvId}`);
         const data = await res.json();
+        if (!data.success) throw new Error(data.error);
         setCvData(data.data);
-      } catch (e) {
+      } catch {
         toast({
           title: t("create.error"),
           description: t("cv.errorLoading"),
@@ -47,16 +48,22 @@ export const CvPreviewClient = () => {
     };
 
     fetchCV();
-  }, [cvId]);
+  }, [cvId, t, toast]);
 
   useEffect(() => {
     if (!paymentPending) return;
 
     setIsLoading(true);
 
+    // The Stripe webhook usually lands within seconds; stop polling when the
+    // page unmounts so a closed tab does not keep hitting the API.
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
     const pollTokens = async () => {
       const res = await fetch("/api/subscription-status");
       const data = await res.json();
+      if (cancelled) return;
 
       if (data.tokens_left > 0) {
         toast({
@@ -66,12 +73,16 @@ export const CvPreviewClient = () => {
         });
         setIsLoading(false);
       } else {
-        setTimeout(pollTokens, 3000);
+        timer = setTimeout(pollTokens, 3000);
       }
     };
 
     pollTokens();
-  }, [paymentPending]);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [paymentPending, t, toast]);
 
   useEffect(() => {
     const redirectToPayment = async () => {
@@ -79,7 +90,6 @@ export const CvPreviewClient = () => {
       setIsLoading(true);
       const res = await fetch("/api/subscription-status");
       const data = await res.json();
-      console.log(data);
       if (data?.tokens_left > 0) return;
       router.push("/checkout?cvId=" + cvId + "&lang=en");
       setIsLoading(false);
@@ -87,7 +97,7 @@ export const CvPreviewClient = () => {
     };
 
     redirectToPayment();
-  }, [loginSuccessful]);
+  }, [loginSuccessful, cvId, router]);
 
   const handleDownload = async () => {
     try {
