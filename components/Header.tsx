@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -13,9 +14,9 @@ const Header = () => {
     <header className="border-b border-gray-100 py-4 w-full top-0 bg-white/80 backdrop-blur-md z-50">
       <div className="container flex justify-between items-center">
         <div className="flex items-center">
-          <a href="/" className="flex items-center">
+          <Link href="/" className="flex items-center">
             <span className="text-2xl font-bold gradient-text">Nice CV</span>
-          </a>
+          </Link>
         </div>
 
         <nav className="hidden md:flex items-center space-x-8">

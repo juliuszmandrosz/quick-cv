@@ -58,7 +58,9 @@ const TestimonialsSection = () => {
                 ))}
               </div>
 
-              <p className="text-gray-700 mb-6">"{testimonial.quote}"</p>
+              <p className="text-gray-700 mb-6">
+                &quot;{testimonial.quote}&quot;
+              </p>
 
               <div>
                 <p className="font-semibold">{testimonial.name}</p>

@@ -37,12 +37,6 @@ type UserStats = {
 const Dashboard = () => {
   const user = useCurrentUser();
   const isMobile = useIsMobile();
-  const emptyStats = {
-    tokens_left: 0,
-    total_cvs: 0,
-    total_tokens: 0,
-    plan: "",
-  };
   const [recentCVs, setRecentCVs] = useState<RecentCV[]>([]);
   const [userStats, setUserStats] = useState<UserStats>(emptyStats);
   const [recentCvsLoading, setRecentCvsLoading] = useState(true);
@@ -53,7 +47,6 @@ const Dashboard = () => {
       try {
         const res = await fetch("/api/recent-generated-cvs");
         const data = await res.json();
-        console.log(data);
         setRecentCVs(data.data || []);
       } catch (error) {
         console.error("Failed to fetch recent CVs", error);
@@ -73,8 +66,8 @@ const Dashboard = () => {
         const data = await res.json();
         setUserStats(data.data || emptyStats);
       } catch (error) {
-        console.error("Failed to fetch recent CVs", error);
-        setRecentCVs([]);
+        console.error("Failed to fetch user stats", error);
+        setUserStats(emptyStats);
       } finally {
         setUserStatsLoading(false);
       }
@@ -183,7 +176,7 @@ const Dashboard = () => {
               </div>
             ) : recentCVs?.length === 0 ? (
               <div className="text-center text-muted-foreground py-24">
-                <p>You haven't created any CVs yet.</p>
+                <p>You haven&apos;t created any CVs yet.</p>
               </div>
             ) : (
               <div className="space-y-3 md:space-y-4">
@@ -253,6 +246,13 @@ const Dashboard = () => {
       </div>
     </div>
   );
+};
+
+const emptyStats: UserStats = {
+  tokens_left: 0,
+  total_cvs: 0,
+  total_tokens: 0,
+  plan: "",
 };
 
 export default Dashboard;

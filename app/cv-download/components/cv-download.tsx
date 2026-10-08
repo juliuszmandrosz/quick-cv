@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import CvTemplate from "@/app/create-cv/components/cv-template";
+import type { CVData } from "@/app/create-cv/types/cv-data";
 import { Loader2 } from "lucide-react";
 
 export default function CvDownload() {
@@ -11,7 +12,7 @@ export default function CvDownload() {
   const lang = searchParams.get("lang");
   const renderToken = searchParams.get("renderToken");
 
-  const [cvData, setCvData] = useState<any>(null);
+  const [cvData, setCvData] = useState<CVData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -20,8 +21,10 @@ export default function CvDownload() {
     const fetchData = async () => {
       try {
         const res = await fetch(
-          `/api/cv-data?cvId=${cvId}` +
-            (renderToken ? `&renderToken=${renderToken}` : ""),
+          `/api/cv-data?cvId=${encodeURIComponent(cvId)}` +
+            (renderToken
+              ? `&renderToken=${encodeURIComponent(renderToken)}`
+              : ""),
           { cache: "no-store" },
         );
         const json = await res.json();
@@ -36,10 +39,10 @@ export default function CvDownload() {
     };
 
     fetchData();
-  }, [cvId]);
+  }, [cvId, renderToken]);
 
   if (!cvId) {
-    return <div className="p-6">Brak identyfikatora CV. Sprawdź link.</div>;
+    return <div className="p-6">Missing CV id. Please check the link.</div>;
   }
 
   if (isLoading) {
@@ -53,7 +56,7 @@ export default function CvDownload() {
   if (!cvData) {
     return (
       <div className="p-6">
-        Nie znaleziono danych CV. Sprawdź, czy identyfikator jest poprawny.
+        CV not found. Please check that the link is correct.
       </div>
     );
   }
